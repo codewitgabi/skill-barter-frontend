@@ -48,14 +48,14 @@ export function LandingNavbar() {
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-3">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign In</Link>
+              <Link href="/auth/login">Sign In</Link>
             </Button>
             <Button
               size="sm"
               className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white hover:opacity-90"
               asChild
             >
-              <Link href="/signup">Get Started</Link>
+              <Link href="/auth/signup">Get Started</Link>
             </Button>
           </div>
 
@@ -132,7 +132,7 @@ export function LandingNavbar() {
                   <div className="p-6 space-y-3 border-t">
                     <SheetClose asChild>
                       <Button variant="outline" className="w-full" asChild>
-                        <Link href="/login">Sign In</Link>
+                        <Link href="/auth/login">Sign In</Link>
                       </Button>
                     </SheetClose>
                     <SheetClose asChild>
@@ -140,7 +140,7 @@ export function LandingNavbar() {
                         className="w-full bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white hover:opacity-90"
                         asChild
                       >
-                        <Link href="/signup">Get Started</Link>
+                        <Link href="/auth/signup">Get Started</Link>
                       </Button>
                     </SheetClose>
                   </div>

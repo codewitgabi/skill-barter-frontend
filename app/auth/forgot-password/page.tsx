@@ -31,6 +31,7 @@ function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
+    console.log({ data });
     setIsLoading(true);
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
