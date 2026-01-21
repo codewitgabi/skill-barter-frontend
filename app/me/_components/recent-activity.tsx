@@ -81,7 +81,7 @@ function RecentActivity() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm break-words">
+              <p className="text-sm wrap-break-word">
                 <span className="font-medium">{activity.message}</span>
                 {activity.skill && (
                   <span className="text-muted-foreground">

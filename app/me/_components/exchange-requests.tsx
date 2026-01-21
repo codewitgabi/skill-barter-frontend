@@ -70,7 +70,7 @@ function ExchangeRequests() {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
                 <div className="min-w-0 flex-1">
                   <span className="font-semibold block">{request.from}</span>
-                  <p className="text-sm text-muted-foreground mt-1 break-words">
+                  <p className="text-sm text-muted-foreground mt-1 wrap-break-word">
                     {request.message}
                   </p>
                 </div>
