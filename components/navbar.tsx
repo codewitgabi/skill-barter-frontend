@@ -12,6 +12,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TextAlignEnd, X, Bell, MessageCircle } from "lucide-react";
 
@@ -31,13 +32,14 @@ const appNavLinks = [
 
 export function AppNavbar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 w-full border-b border-border shadow-none bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Left side: Logo and Navigation */}
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-4 sm:space-x-8">
             <Link href="/@me" className="flex items-center space-x-2">
               <Logo />
             </Link>
@@ -47,8 +49,8 @@ export function AppNavbar() {
               {appNavLinks.map((link) => {
                 const isActive =
                   pathname === link.href ||
-                  (link.href === "/dashboard" &&
-                    pathname?.startsWith("/dashboard"));
+                  (link.href === "/@me" && pathname === "/@me") ||
+                  (link.href !== "/@me" && pathname?.startsWith(link.href));
                 return (
                   <Link
                     key={link.href}
@@ -71,12 +73,12 @@ export function AppNavbar() {
           </div>
 
           {/* Right side: Icons and Profile */}
-          <div className="flex items-center space-x-3">
-            {/* Notifications */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Desktop: Notifications */}
             <Button
               variant="ghost"
               size="icon"
-              className="relative rounded-full"
+              className="relative rounded-full hidden sm:flex"
               aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
@@ -85,11 +87,11 @@ export function AppNavbar() {
               </span>
             </Button>
 
-            {/* Messages */}
+            {/* Desktop: Messages */}
             <Button
               variant="ghost"
               size="icon"
-              className="relative rounded-full"
+              className="relative rounded-full hidden sm:flex"
               aria-label="Messages"
             >
               <MessageCircle className="h-5 w-5" />
@@ -98,13 +100,170 @@ export function AppNavbar() {
               </span>
             </Button>
 
-            {/* Profile Picture */}
-            <Link href="/me" className="flex items-center">
+            {/* Desktop: Profile Picture */}
+            <Link href="/me" className="hidden sm:flex items-center">
               <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                 <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
-                <AvatarFallback>US</AvatarFallback>
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                  US
+                </AvatarFallback>
               </Avatar>
             </Link>
+
+            {/* Mobile Menu */}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <button
+                  className="relative flex items-center justify-center p-2 rounded-md hover:bg-accent transition-colors"
+                  aria-label="Toggle menu"
+                >
+                  <TextAlignEnd className="h-7 w-7" strokeWidth={1.5} />
+                </button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                hideClose
+                title="Navigation menu"
+                className="w-[85vw] sm:w-[400px] border-l-0 p-0 overflow-hidden"
+              >
+                {/* Unique drawer background with gradient */}
+                <div className="relative h-full w-full bg-linear-to-br from-background via-background to-accent/5">
+                  {/* Animated background pattern */}
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.3),transparent_50%)] animate-pulse" />
+                    <div
+                      className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.3),transparent_50%)] animate-pulse"
+                      style={{ animationDelay: "1s" }}
+                    />
+                    <div
+                      className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(139,92,246,0.3),transparent_50%)] animate-pulse"
+                      style={{ animationDelay: "2s" }}
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Header with profile picture and close */}
+                    <div className="flex items-center justify-between p-6 border-b">
+                      <Link href="/me" onClick={() => setIsOpen(false)}>
+                        <Avatar className="h-14 w-14 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                          <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                          <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg font-semibold">
+                            US
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
+                      <SheetClose
+                        className="flex size-10 shrink-0 items-center justify-center rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+                        aria-label="Close menu"
+                      >
+                        <X className="size-5" />
+                      </SheetClose>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <nav className="flex-1 px-6 py-8 space-y-2 overflow-y-auto">
+                      {appNavLinks.map((link, index) => {
+                        const isActive =
+                          pathname === link.href ||
+                          (link.href === "/@me" && pathname === "/@me") ||
+                          (link.href !== "/@me" && pathname?.startsWith(link.href));
+                        return (
+                          <SheetClose key={link.href} asChild>
+                            <Link
+                              href={link.href}
+                              className={cn(
+                                "group block px-4 py-3 text-base font-medium rounded-lg transition-all",
+                                "hover:bg-accent hover:translate-x-2",
+                                "bg-linear-to-r from-transparent to-transparent hover:from-accent/50 hover:to-accent/20",
+                                "border border-transparent hover:border-accent",
+                                isActive && "bg-accent/50 border-accent",
+                              )}
+                              style={{
+                                animationDelay: `${index * 100}ms`,
+                              }}
+                            >
+                              <span className="flex items-center">
+                                <span className="w-2 h-2 rounded-full bg-linear-to-r from-[#10b981] to-[#3b82f6] mr-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {link.label}
+                                {isActive && (
+                                  <span className="ml-auto w-2 h-2 rounded-full bg-primary" />
+                                )}
+                              </span>
+                            </Link>
+                          </SheetClose>
+                        );
+                      })}
+                    </nav>
+
+                    {/* Mobile Actions */}
+                    <div className="p-6 space-y-3 border-t">
+                      {/* Notifications */}
+                      <SheetClose asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                          asChild
+                        >
+                          <Link href="/notifications" className="flex items-center">
+                            <Bell className="h-4 w-4 mr-2" />
+                            Notifications
+                            <Badge
+                              variant="destructive"
+                              className="ml-auto"
+                            >
+                              3
+                            </Badge>
+                          </Link>
+                        </Button>
+                      </SheetClose>
+
+                      {/* Messages */}
+                      <SheetClose asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                          asChild
+                        >
+                          <Link href="/messages" className="flex items-center">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Messages
+                            <Badge
+                              variant="destructive"
+                              className="ml-auto"
+                            >
+                              5
+                            </Badge>
+                          </Link>
+                        </Button>
+                      </SheetClose>
+
+                      {/* Profile */}
+                      <SheetClose asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                          asChild
+                        >
+                          <Link href="/me" className="flex items-center">
+                            <Avatar className="h-6 w-6 mr-2">
+                              <AvatarImage
+                                src="/placeholder-avatar.jpg"
+                                alt="Profile"
+                              />
+                              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-xs">
+                                US
+                              </AvatarFallback>
+                            </Avatar>
+                            Profile
+                          </Link>
+                        </Button>
+                      </SheetClose>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
