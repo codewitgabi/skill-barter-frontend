@@ -22,7 +22,12 @@ const navLinks = [
   { href: "/about", label: "About" },
 ];
 
-const appNavLinks = [{ href: "/@me", label: "Overview" }];
+const appNavLinks = [
+  { href: "/@me", label: "Overview" },
+  { href: "/@me/browse-skills", label: "Browse skills" },
+  { href: "/@me/sessions", label: "Sessions" },
+  { href: "/@me/exchange-requests", label: "Exchange Requests" },
+];
 
 export function AppNavbar() {
   const pathname = usePathname();
@@ -97,9 +102,7 @@ export function AppNavbar() {
             <Link href="/me" className="flex items-center">
               <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                 <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
-                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                  U
-                </AvatarFallback>
+                <AvatarFallback>US</AvatarFallback>
               </Avatar>
             </Link>
           </div>
