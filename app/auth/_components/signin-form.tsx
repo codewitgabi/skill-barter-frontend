@@ -42,11 +42,11 @@ function SignInForm() {
 
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     // Show success and redirect (UI only, no API call)
     setError(null);
     router.push("/dashboard");
-    
+
     setIsLoading(false);
   };
 
@@ -175,8 +175,13 @@ function SignInForm() {
       </Form>
 
       <div className="mt-6 text-center text-sm">
-        <span className="text-muted-foreground">Don&apos;t have an account? </span>
-        <Link href="/auth/register" className="text-primary hover:underline font-medium">
+        <span className="text-muted-foreground">
+          Don&apos;t have an account?{" "}
+        </span>
+        <Link
+          href="/auth/register"
+          className="text-primary hover:underline font-medium"
+        >
           Sign up
         </Link>
       </div>

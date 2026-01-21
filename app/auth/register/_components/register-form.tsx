@@ -70,7 +70,7 @@ function RegisterForm() {
 
     const formData = form.getValues();
     const result = schema.safeParse(formData);
-    
+
     if (!result.success) {
       // Set errors for each field
       // Use issues property which exists on all ZodError instances
@@ -85,7 +85,7 @@ function RegisterForm() {
       });
       return false;
     }
-    
+
     return true;
   };
 
@@ -116,21 +116,20 @@ function RegisterForm() {
     setIsSubmitting(true);
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     // Show success message (UI only, no API call)
     form.setError("root", {
       type: "success",
       message: "Registration successful! Redirecting...",
     });
-    
+
     // Simulate redirect after a delay
     setTimeout(() => {
       router.push("/dashboard");
     }, 2000);
-    
+
     setIsSubmitting(false);
   };
-
 
   const renderStep = () => {
     switch (currentStep) {
@@ -154,9 +153,7 @@ function RegisterForm() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="min-h-[400px]">
-              {renderStep()}
-            </div>
+            <div className="min-h-[400px]">{renderStep()}</div>
 
             {form.formState.errors.root && (
               <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">

@@ -7,7 +7,8 @@ const testimonials = [
     skill: "Learned Web Development",
     avatar: "SC",
     rating: 5,
-    quote: "I learned React and Next.js in exchange for teaching photography. The community is amazing and everyone is so supportive!",
+    quote:
+      "I learned React and Next.js in exchange for teaching photography. The community is amazing and everyone is so supportive!",
     color: "from-blue-500 to-cyan-500",
   },
   {
@@ -15,7 +16,8 @@ const testimonials = [
     skill: "Taught Music Production",
     avatar: "MJ",
     rating: 5,
-    quote: "Best platform for skill exchange! I've taught music production to 5 people and learned Spanish in return. Highly recommend!",
+    quote:
+      "Best platform for skill exchange! I've taught music production to 5 people and learned Spanish in return. Highly recommend!",
     color: "from-purple-500 to-pink-500",
   },
   {
@@ -23,7 +25,8 @@ const testimonials = [
     skill: "Exchanged Design Skills",
     avatar: "ER",
     rating: 5,
-    quote: "As a designer, I've connected with so many talented people. The skill bartering concept is brilliant - learning has never been this accessible.",
+    quote:
+      "As a designer, I've connected with so many talented people. The skill bartering concept is brilliant - learning has never been this accessible.",
     color: "from-green-500 to-emerald-500",
   },
   {
@@ -31,7 +34,8 @@ const testimonials = [
     skill: "Learned Cooking",
     avatar: "DK",
     rating: 5,
-    quote: "I learned authentic Korean cooking while teaching web development. The flexibility and community spirit here is unmatched!",
+    quote:
+      "I learned authentic Korean cooking while teaching web development. The flexibility and community spirit here is unmatched!",
     color: "from-orange-500 to-red-500",
   },
 ];
@@ -46,7 +50,7 @@ function StarRating({ rating }: { rating: number }) {
             "w-4 h-4",
             star <= rating
               ? "fill-yellow-400 text-yellow-400"
-              : "fill-muted text-muted-foreground"
+              : "fill-muted text-muted-foreground",
           )}
         />
       ))}
@@ -65,7 +69,8 @@ function Testimonials() {
               What Our Community Says
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Real stories from members who are building their skills and networks
+              Real stories from members who are building their skills and
+              networks
             </p>
           </div>
 
@@ -78,10 +83,12 @@ function Testimonials() {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Quote Icon */}
-                <div className={cn(
-                  "absolute top-4 right-4 w-10 h-10 rounded-lg bg-linear-to-br opacity-10 group-hover:opacity-20 transition-opacity",
-                  testimonial.color
-                )}>
+                <div
+                  className={cn(
+                    "absolute top-4 right-4 w-10 h-10 rounded-lg bg-linear-to-br opacity-10 group-hover:opacity-20 transition-opacity",
+                    testimonial.color,
+                  )}
+                >
                   <Quote className="w-6 h-6 text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                 </div>
 
@@ -97,23 +104,31 @@ function Testimonials() {
 
                 {/* Author */}
                 <div className="flex items-center gap-3 pt-4 border-t">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-linear-to-br flex items-center justify-center text-white font-bold text-sm",
-                    testimonial.color
-                  )}>
+                  <div
+                    className={cn(
+                      "w-12 h-12 rounded-full bg-linear-to-br flex items-center justify-center text-white font-bold text-sm",
+                      testimonial.color,
+                    )}
+                  >
                     {testimonial.avatar}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm truncate">{testimonial.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{testimonial.skill}</p>
+                    <p className="font-semibold text-sm truncate">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {testimonial.skill}
+                    </p>
                   </div>
                 </div>
 
                 {/* Hover Effect */}
-                <div className={cn(
-                  "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-5 transition-opacity duration-300 -z-10 bg-linear-to-br",
-                  testimonial.color
-                )} />
+                <div
+                  className={cn(
+                    "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-5 transition-opacity duration-300 -z-10 bg-linear-to-br",
+                    testimonial.color,
+                  )}
+                />
               </div>
             ))}
           </div>

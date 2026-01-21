@@ -19,9 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${elmsSans.className} antialiased`}>
-        {children}
-      </body>
+      <body className={`${elmsSans.className} antialiased`}>{children}</body>
     </html>
   );
 }

@@ -41,8 +41,9 @@ function Footer() {
               <Logo />
             </Link>
             <p className="text-sm text-muted-foreground mb-6 max-w-sm">
-              Exchange skills, build community. Learn what you need, teach what you know. 
-              Join thousands of members in the skill bartering revolution.
+              Exchange skills, build community. Learn what you need, teach what
+              you know. Join thousands of members in the skill bartering
+              revolution.
             </p>
             {/* Social Links */}
             <div className="flex gap-4">

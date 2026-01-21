@@ -32,7 +32,14 @@ function StepAccount() {
 
   const password = form.watch("password");
   const strength = password ? calculatePasswordStrength(password) : 0;
-  const strengthLabels = ["Very Weak", "Weak", "Fair", "Good", "Strong", "Very Strong"];
+  const strengthLabels = [
+    "Very Weak",
+    "Weak",
+    "Fair",
+    "Good",
+    "Strong",
+    "Very Strong",
+  ];
   const strengthColors = [
     "bg-red-500",
     "bg-orange-500",

@@ -47,13 +47,19 @@ function StepSkills() {
 
   const removeSkillToTeach = (index: number) => {
     const current = form.getValues("skillsToTeach") || [];
-    form.setValue("skillsToTeach", current.filter((_, i) => i !== index));
+    form.setValue(
+      "skillsToTeach",
+      current.filter((_, i) => i !== index),
+    );
   };
 
   const updateSkillToTeachLevel = (index: number, level: string) => {
     const current = form.getValues("skillsToTeach") || [];
     const updated = [...current];
-    updated[index] = { ...updated[index], level: level as "beginner" | "intermediate" | "advanced" };
+    updated[index] = {
+      ...updated[index],
+      level: level as "beginner" | "intermediate" | "advanced",
+    };
     form.setValue("skillsToTeach", updated);
   };
 
@@ -70,13 +76,19 @@ function StepSkills() {
 
   const removeSkillToLearn = (index: number) => {
     const current = form.getValues("skillsToLearn") || [];
-    form.setValue("skillsToLearn", current.filter((_, i) => i !== index));
+    form.setValue(
+      "skillsToLearn",
+      current.filter((_, i) => i !== index),
+    );
   };
 
   const updateSkillToLearnLevel = (index: number, level: string) => {
     const current = form.getValues("skillsToLearn") || [];
     const updated = [...current];
-    updated[index] = { ...updated[index], level: level as "beginner" | "intermediate" | "advanced" };
+    updated[index] = {
+      ...updated[index],
+      level: level as "beginner" | "intermediate" | "advanced",
+    };
     form.setValue("skillsToLearn", updated);
   };
 
@@ -97,13 +109,18 @@ function StepSkills() {
             <FormLabel>Skills You Can Teach</FormLabel>
             <div className="space-y-3">
               {skillsToTeach.map((skill, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30">
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30"
+                >
                   <div className="flex-1">
                     <p className="font-medium">{skill.skill}</p>
                   </div>
                   <Select
                     value={skill.level}
-                    onValueChange={(value) => updateSkillToTeachLevel(index, value)}
+                    onValueChange={(value) =>
+                      updateSkillToTeachLevel(index, value)
+                    }
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -157,13 +174,18 @@ function StepSkills() {
             <FormLabel>Skills You Want to Learn</FormLabel>
             <div className="space-y-3">
               {skillsToLearn.map((skill, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30">
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30"
+                >
                   <div className="flex-1">
                     <p className="font-medium">{skill.skill}</p>
                   </div>
                   <Select
                     value={skill.level}
-                    onValueChange={(value) => updateSkillToLearnLevel(index, value)}
+                    onValueChange={(value) =>
+                      updateSkillToLearnLevel(index, value)
+                    }
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />

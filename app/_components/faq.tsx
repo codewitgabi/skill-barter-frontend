@@ -19,10 +19,11 @@ function FAQ() {
           <FAQAccordion />
 
           {/* Still have questions */}
-          <div className="text-center mt-12 animate-fade-in-up" style={{ animationDelay: "400ms" }}>
-            <p className="text-muted-foreground mb-4">
-              Still have questions?
-            </p>
+          <div
+            className="text-center mt-12 animate-fade-in-up"
+            style={{ animationDelay: "400ms" }}
+          >
+            <p className="text-muted-foreground mb-4">Still have questions?</p>
             <a
               href="/contact"
               className="inline-flex items-center gap-2 text-primary hover:underline font-medium"

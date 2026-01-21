@@ -5,25 +5,29 @@ const steps = [
   {
     icon: UserPlus,
     title: "Create Your Profile",
-    description: "Sign up and list the skills you can teach. Add your experience, portfolio, and availability.",
+    description:
+      "Sign up and list the skills you can teach. Add your experience, portfolio, and availability.",
     color: "from-[#10b981] to-[#3b82f6]",
   },
   {
     icon: Search,
     title: "Browse & Discover",
-    description: "Explore skills you want to learn. Use filters to find the perfect match for your learning goals.",
+    description:
+      "Explore skills you want to learn. Use filters to find the perfect match for your learning goals.",
     color: "from-[#3b82f6] to-[#8b5cf6]",
   },
   {
     icon: Handshake,
     title: "Connect & Exchange",
-    description: "Message skill providers, discuss your goals, and schedule sessions. Start your skill exchange journey.",
+    description:
+      "Message skill providers, discuss your goals, and schedule sessions. Start your skill exchange journey.",
     color: "from-[#8b5cf6] to-[#10b981]",
   },
   {
     icon: Network,
     title: "Build Your Network",
-    description: "Grow your skill network, earn reviews, and unlock new opportunities for continuous learning.",
+    description:
+      "Grow your skill network, earn reviews, and unlock new opportunities for continuous learning.",
     color: "from-[#10b981] via-[#3b82f6] to-[#8b5cf6]",
   },
 ];
@@ -39,7 +43,8 @@ function HowItWorks() {
               How It Works
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get started in four simple steps and begin your skill exchange journey today
+              Get started in four simple steps and begin your skill exchange
+              journey today
             </p>
           </div>
 
@@ -67,10 +72,12 @@ function HowItWorks() {
                     {/* Step Card */}
                     <div className="relative bg-background border-2 border-border rounded-2xl p-6 lg:p-8 h-full transition-all duration-300 hover:border-primary/50 hover:shadow-lg group-hover:scale-105">
                       {/* Icon */}
-                      <div className={cn(
-                        "w-16 h-16 rounded-2xl bg-linear-to-br mb-6 flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
-                        step.color
-                      )}>
+                      <div
+                        className={cn(
+                          "w-16 h-16 rounded-2xl bg-linear-to-br mb-6 flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
+                          step.color,
+                        )}
+                      >
                         <Icon className="w-8 h-8" />
                       </div>
 
@@ -94,7 +101,10 @@ function HowItWorks() {
           </div>
 
           {/* CTA */}
-          <div className="text-center mt-16 animate-fade-in-up" style={{ animationDelay: "400ms" }}>
+          <div
+            className="text-center mt-16 animate-fade-in-up"
+            style={{ animationDelay: "400ms" }}
+          >
             <p className="text-muted-foreground mb-6">
               Ready to start exchanging skills?
             </p>

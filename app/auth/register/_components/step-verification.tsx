@@ -125,9 +125,7 @@ function StepVerification() {
                   disabled={countdown > 0}
                   className="text-sm"
                 >
-                  {countdown > 0
-                    ? `Resend in ${countdown}s`
-                    : "Resend Code"}
+                  {countdown > 0 ? `Resend in ${countdown}s` : "Resend Code"}
                 </Button>
               </div>
             </>

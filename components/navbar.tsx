@@ -22,9 +22,7 @@ const navLinks = [
   { href: "/about", label: "About" },
 ];
 
-const appNavLinks = [
-  { href: "/@me", label: "Overview" },
-];
+const appNavLinks = [{ href: "/@me", label: "Overview" }];
 
 export function AppNavbar() {
   const pathname = usePathname();
@@ -42,7 +40,10 @@ export function AppNavbar() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
               {appNavLinks.map((link) => {
-                const isActive = pathname === link.href || (link.href === "/dashboard" && pathname?.startsWith("/dashboard"));
+                const isActive =
+                  pathname === link.href ||
+                  (link.href === "/dashboard" &&
+                    pathname?.startsWith("/dashboard"));
                 return (
                   <Link
                     key={link.href}
@@ -51,7 +52,7 @@ export function AppNavbar() {
                       "px-4 py-2 text-sm font-medium transition-colors relative",
                       isActive
                         ? "text-foreground"
-                        : "text-foreground/80 hover:text-foreground"
+                        : "text-foreground/80 hover:text-foreground",
                     )}
                   >
                     {link.label}
@@ -168,13 +169,13 @@ export function LandingNavbar() {
                 {/* Animated background pattern */}
                 <div className="absolute inset-0 opacity-5">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.3),transparent_50%)] animate-pulse" />
-                  <div 
-                    className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.3),transparent_50%)] animate-pulse" 
-                    style={{ animationDelay: '1s' }}
+                  <div
+                    className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.3),transparent_50%)] animate-pulse"
+                    style={{ animationDelay: "1s" }}
                   />
-                  <div 
-                    className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(139,92,246,0.3),transparent_50%)] animate-pulse" 
-                    style={{ animationDelay: '2s' }}
+                  <div
+                    className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(139,92,246,0.3),transparent_50%)] animate-pulse"
+                    style={{ animationDelay: "2s" }}
                   />
                 </div>
 
@@ -201,7 +202,7 @@ export function LandingNavbar() {
                             "group block px-4 py-3 text-base font-medium rounded-lg transition-all",
                             "hover:bg-accent hover:translate-x-2",
                             "bg-linear-to-r from-transparent to-transparent hover:from-accent/50 hover:to-accent/20",
-                            "border border-transparent hover:border-accent"
+                            "border border-transparent hover:border-accent",
                           )}
                           style={{
                             animationDelay: `${index * 100}ms`,

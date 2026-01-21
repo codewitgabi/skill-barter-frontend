@@ -6,10 +6,10 @@ interface LogoProps {
   animated?: boolean;
 }
 
-export default function Logo({ 
-  className = "", 
+export default function Logo({
+  className = "",
   size = 60,
-  animated = true 
+  animated = true,
 }: LogoProps) {
   return (
     <svg
@@ -71,13 +71,7 @@ export default function Logo({
       </defs>
 
       {/* Background circle with subtle animation */}
-      <circle
-        cx="60"
-        cy="60"
-        r="32"
-        fill="url(#glowGradient)"
-        opacity="0.2"
-      >
+      <circle cx="60" cy="60" r="32" fill="url(#glowGradient)" opacity="0.2">
         {animated && (
           <animate
             attributeName="r"

@@ -3,32 +3,40 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { 
-  Code, 
-  Paintbrush, 
-  Music, 
-  Camera, 
-  Languages, 
+import {
+  Code,
+  Paintbrush,
+  Music,
+  Camera,
+  Languages,
   ChefHat,
   ArrowRight,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const skills = [
   { icon: Code, label: "Web Development", color: "from-blue-500 to-cyan-500" },
   { icon: Paintbrush, label: "Design", color: "from-purple-500 to-pink-500" },
-  { icon: Music, label: "Music Production", color: "from-green-500 to-emerald-500" },
+  {
+    icon: Music,
+    label: "Music Production",
+    color: "from-green-500 to-emerald-500",
+  },
   { icon: Camera, label: "Photography", color: "from-orange-500 to-red-500" },
-  { icon: Languages, label: "Language Tutoring", color: "from-indigo-500 to-blue-500" },
+  {
+    icon: Languages,
+    label: "Language Tutoring",
+    color: "from-indigo-500 to-blue-500",
+  },
   { icon: ChefHat, label: "Cooking", color: "from-amber-500 to-orange-500" },
 ];
 
-function AnimatedSkillCard({ 
-  skill, 
-  delay 
-}: { 
-  skill: typeof skills[0]; 
+function AnimatedSkillCard({
+  skill,
+  delay,
+}: {
+  skill: (typeof skills)[0];
   delay: number;
 }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -47,46 +55,52 @@ function AnimatedSkillCard({
         "group relative overflow-hidden rounded-2xl transition-all duration-500 shrink-0",
         "bg-muted/30 backdrop-blur-sm border border-border/50",
         "hover:border-border hover:bg-muted/50 hover:scale-105",
-        isVisible 
-          ? "opacity-100 translate-y-0" 
-          : "opacity-0 translate-y-4"
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {/* Animated gradient border on hover */}
-      <div className={cn(
-        "absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10",
-        "bg-linear-to-br blur-sm",
-        skill.color
-      )} />
+      <div
+        className={cn(
+          "absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10",
+          "bg-linear-to-br blur-sm",
+          skill.color,
+        )}
+      />
 
       {/* Subtle inner glow */}
-      <div className={cn(
-        "absolute inset-px rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500",
-        "bg-linear-to-br",
-        skill.color
-      )} />
+      <div
+        className={cn(
+          "absolute inset-px rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500",
+          "bg-linear-to-br",
+          skill.color,
+        )}
+      />
 
       <div className="relative p-6 flex flex-col items-center text-center space-y-4 z-10 w-[140px]">
         {/* Icon container with glow effect */}
         <div className="relative">
           {/* Glow behind icon */}
-          <div className={cn(
-            "absolute inset-0 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300",
-            "bg-linear-to-br",
-            skill.color
-          )} />
-          
+          <div
+            className={cn(
+              "absolute inset-0 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300",
+              "bg-linear-to-br",
+              skill.color,
+            )}
+          />
+
           {/* Icon */}
-          <div className={cn(
-            "relative p-3.5 rounded-xl bg-linear-to-br transition-all duration-300",
-            "group-hover:scale-110 group-hover:rotate-3",
-            skill.color
-          )}>
+          <div
+            className={cn(
+              "relative p-3.5 rounded-xl bg-linear-to-br transition-all duration-300",
+              "group-hover:scale-110 group-hover:rotate-3",
+              skill.color,
+            )}
+          >
             <Icon className="w-5 h-5 text-white" />
           </div>
         </div>
-        
+
         <p className="font-medium text-xs text-foreground/60 group-hover:text-foreground transition-colors">
           {skill.label}
         </p>
@@ -139,10 +153,10 @@ function HeroSection() {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#10b981] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#3b82f6] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
         <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-[#8b5cf6] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
-        
+
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]" />
-        
+
         {/* Floating Particles */}
         {Array.from({ length: 20 }).map((_, i) => (
           <FloatingParticle key={i} delay={i * 0.3} index={i} />
@@ -154,9 +168,7 @@ function HeroSection() {
           {/* Main Content */}
           <div className="text-center space-y-8 mb-16">
             {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-background/80 backdrop-blur-sm text-sm font-medium animate-fade-in-up"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-background/80 backdrop-blur-sm text-sm font-medium animate-fade-in-up">
               <Sparkles className="w-4 h-4 text-[#10b981]" />
               <span className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent">
                 Exchange Skills, Build Community
@@ -179,8 +191,9 @@ function HeroSection() {
               className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground animate-fade-in-up"
               style={{ animationDelay: "400ms" }}
             >
-              Connect with talented individuals and exchange your expertise. 
-              Teach web development, learn photography, share design skills, or master a new language—all through skill bartering.
+              Connect with talented individuals and exchange your expertise.
+              Teach web development, learn photography, share design skills, or
+              master a new language—all through skill bartering.
             </p>
 
             {/* CTA Buttons */}
@@ -204,9 +217,7 @@ function HeroSection() {
                 className="hover:scale-105 transition-all"
                 asChild
               >
-                <Link href="/explore">
-                  Explore Skills
-                </Link>
+                <Link href="/explore">Explore Skills</Link>
               </Button>
             </div>
           </div>
@@ -216,7 +227,7 @@ function HeroSection() {
             {/* Gradient fade on edges */}
             <div className="absolute left-0 top-0 bottom-0 w-32 bg-linear-to-r from-background to-transparent z-20 pointer-events-none" />
             <div className="absolute right-0 top-0 bottom-0 w-32 bg-linear-to-l from-background to-transparent z-20 pointer-events-none" />
-            
+
             <div className="flex gap-4 animate-scroll">
               {/* First set of cards */}
               {skills.map((skill, index) => (
@@ -252,13 +263,17 @@ function HeroSection() {
               <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent">
                 500+
               </div>
-              <div className="text-sm text-muted-foreground">Skills Available</div>
+              <div className="text-sm text-muted-foreground">
+                Skills Available
+              </div>
             </div>
             <div className="space-y-2">
               <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-[#8b5cf6] to-[#10b981] bg-clip-text text-transparent">
                 2K+
               </div>
-              <div className="text-sm text-muted-foreground">Successful Exchanges</div>
+              <div className="text-sm text-muted-foreground">
+                Successful Exchanges
+              </div>
             </div>
           </div>
         </div>
@@ -266,7 +281,8 @@ function HeroSection() {
 
       <style jsx>{`
         @keyframes blob {
-          0%, 100% {
+          0%,
+          100% {
             transform: translate(0, 0) scale(1);
           }
           33% {
@@ -278,7 +294,8 @@ function HeroSection() {
         }
 
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0) translateX(0);
             opacity: 0.2;
           }
@@ -289,7 +306,8 @@ function HeroSection() {
         }
 
         @keyframes gradient {
-          0%, 100% {
+          0%,
+          100% {
             background-position: 0% 50%;
           }
           50% {

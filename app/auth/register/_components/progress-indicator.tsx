@@ -8,7 +8,10 @@ interface ProgressIndicatorProps {
   totalSteps: number;
 }
 
-function ProgressIndicator({ currentStep, totalSteps }: ProgressIndicatorProps) {
+function ProgressIndicator({
+  currentStep,
+  totalSteps,
+}: ProgressIndicatorProps) {
   const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
 
   return (
@@ -30,19 +33,15 @@ function ProgressIndicator({ currentStep, totalSteps }: ProgressIndicatorProps) 
                     isCurrent &&
                       "bg-linear-to-br from-[#10b981] to-[#3b82f6] text-white ring-4 ring-primary/20",
                     isUpcoming &&
-                      "bg-muted text-muted-foreground border-2 border-border"
+                      "bg-muted text-muted-foreground border-2 border-border",
                   )}
                 >
-                  {isCompleted ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    step
-                  )}
+                  {isCompleted ? <Check className="w-5 h-5" /> : step}
                 </div>
                 <span
                   className={cn(
                     "mt-2 text-xs font-medium",
-                    isCurrent ? "text-foreground" : "text-muted-foreground"
+                    isCurrent ? "text-foreground" : "text-muted-foreground",
                   )}
                 >
                   Step {step}
@@ -54,7 +53,7 @@ function ProgressIndicator({ currentStep, totalSteps }: ProgressIndicatorProps) 
                     "h-0.5 flex-1 mx-2 transition-colors",
                     isCompleted
                       ? "bg-linear-to-r from-[#10b981] to-[#3b82f6]"
-                      : "bg-muted"
+                      : "bg-muted",
                   )}
                 />
               )}

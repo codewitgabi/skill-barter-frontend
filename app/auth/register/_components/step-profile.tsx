@@ -133,7 +133,7 @@ function StepProfile() {
                 <div
                   className={cn(
                     "w-32 h-32 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary transition-colors",
-                    "bg-muted/30"
+                    "bg-muted/30",
                   )}
                   onClick={() => fileInputRef.current?.click()}
                 >

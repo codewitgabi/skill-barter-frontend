@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, Search, MessageCircle, ArrowRight, CheckCircle2 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Search,
+  MessageCircle,
+  ArrowRight,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -9,41 +16,52 @@ const steps = [
   {
     id: 1,
     title: "Search & Browse Skills",
-    description: "Explore thousands of skills available in your area. Use filters to find exactly what you need.",
+    description:
+      "Explore thousands of skills available in your area. Use filters to find exactly what you need.",
     mockup: "search",
     annotation: "Search for any skill you want to learn",
   },
   {
     id: 2,
     title: "Filter & Find Matches",
-    description: "Refine your search by location, skill level, and availability. Find the perfect match for your needs.",
+    description:
+      "Refine your search by location, skill level, and availability. Find the perfect match for your needs.",
     mockup: "filter",
     annotation: "Filter by location, category, and availability",
   },
   {
     id: 3,
     title: "View Provider Profile",
-    description: "Check out detailed profiles with ratings, reviews, and skill portfolios. See what others have learned.",
+    description:
+      "Check out detailed profiles with ratings, reviews, and skill portfolios. See what others have learned.",
     mockup: "profile",
     annotation: "View ratings, reviews, and skill portfolio",
   },
   {
     id: 4,
     title: "Connect & Message",
-    description: "Send a message to start the conversation. Discuss your learning goals and exchange details.",
+    description:
+      "Send a message to start the conversation. Discuss your learning goals and exchange details.",
     mockup: "message",
     annotation: "Start a conversation about skill exchange",
   },
   {
     id: 5,
     title: "Begin Skill Exchange",
-    description: "Schedule your sessions and start learning. Track your progress and build your skill network.",
+    description:
+      "Schedule your sessions and start learning. Track your progress and build your skill network.",
     mockup: "exchange",
     annotation: "Schedule sessions and track your progress",
   },
 ];
 
-function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: boolean }) {
+function MockupFrame({
+  step,
+  isActive,
+}: {
+  step: (typeof steps)[0];
+  isActive: boolean;
+}) {
   const getMockupContent = () => {
     switch (step.mockup) {
       case "search":
@@ -56,8 +74,14 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="bg-muted/30 rounded-lg p-4 space-y-2">
-                  <div className="h-3 bg-muted rounded w-3/4 animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
-                  <div className="h-2 bg-muted rounded w-1/2 animate-pulse" style={{ animationDelay: `${i * 100 + 50}ms` }} />
+                  <div
+                    className="h-3 bg-muted rounded w-3/4 animate-pulse"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  />
+                  <div
+                    className="h-2 bg-muted rounded w-1/2 animate-pulse"
+                    style={{ animationDelay: `${i * 100 + 50}ms` }}
+                  />
                 </div>
               ))}
             </div>
@@ -72,7 +96,9 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
                   key={cat}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs font-medium transition-all",
-                    i === 1 ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
+                    i === 1
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/50 text-muted-foreground",
                   )}
                 >
                   {cat}
@@ -81,11 +107,23 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
             </div>
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-muted/30 rounded-lg p-4 flex items-center gap-3">
-                  <div className="w-12 h-12 bg-muted rounded-full animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
+                <div
+                  key={i}
+                  className="bg-muted/30 rounded-lg p-4 flex items-center gap-3"
+                >
+                  <div
+                    className="w-12 h-12 bg-muted rounded-full animate-pulse"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 bg-muted rounded w-2/3 animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
-                    <div className="h-2 bg-muted rounded w-1/2 animate-pulse" style={{ animationDelay: `${i * 100 + 50}ms` }} />
+                    <div
+                      className="h-3 bg-muted rounded w-2/3 animate-pulse"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    />
+                    <div
+                      className="h-2 bg-muted rounded w-1/2 animate-pulse"
+                      style={{ animationDelay: `${i * 100 + 50}ms` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -101,7 +139,10 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
                 <div className="h-4 bg-muted rounded w-1/2 animate-pulse" />
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-3 h-3 bg-yellow-400 rounded-full" />
+                    <div
+                      key={i}
+                      className="w-3 h-3 bg-yellow-400 rounded-full"
+                    />
                   ))}
                 </div>
               </div>
@@ -112,7 +153,10 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
             </div>
             <div className="grid grid-cols-3 gap-2 pt-2">
               {["Web Dev", "Design", "Photo"].map((skill) => (
-                <div key={skill} className="bg-muted/30 rounded px-2 py-1 text-xs text-center">
+                <div
+                  key={skill}
+                  className="bg-muted/30 rounded px-2 py-1 text-xs text-center"
+                >
                   {skill}
                 </div>
               ))}
@@ -125,12 +169,16 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
             <div className="flex-1 space-y-3">
               <div className="flex gap-2 justify-end">
                 <div className="bg-primary text-primary-foreground rounded-lg px-3 py-2 max-w-[70%]">
-                  <div className="text-sm">Hi! I&apos;d love to learn web development</div>
+                  <div className="text-sm">
+                    Hi! I&apos;d love to learn web development
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2">
                 <div className="bg-muted/50 rounded-lg px-3 py-2 max-w-[70%]">
-                  <div className="text-sm text-muted-foreground">Sure! I can teach you React and Next.js</div>
+                  <div className="text-sm text-muted-foreground">
+                    Sure! I can teach you React and Next.js
+                  </div>
                 </div>
               </div>
             </div>
@@ -180,7 +228,9 @@ function MockupFrame({ step, isActive }: { step: typeof steps[0]; isActive: bool
     <div
       className={cn(
         "relative w-full h-[400px] bg-background border-2 rounded-2xl overflow-hidden transition-all duration-500",
-        isActive ? "opacity-100 scale-100" : "opacity-0 scale-95 absolute inset-0"
+        isActive
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-95 absolute inset-0",
       )}
     >
       <div className="absolute top-3 left-3 right-3 flex items-center gap-2">
@@ -207,7 +257,7 @@ function DemoSection() {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     if (sectionRef.current) {
@@ -233,7 +283,10 @@ function DemoSection() {
   };
 
   return (
-    <section ref={sectionRef} className="relative py-20 overflow-hidden bg-muted/20">
+    <section
+      ref={sectionRef}
+      className="relative py-20 overflow-hidden bg-muted/20"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -282,7 +335,7 @@ function DemoSection() {
                         "h-2 rounded-full transition-all",
                         index === currentStep
                           ? "w-8 bg-primary"
-                          : "w-2 bg-muted hover:bg-muted-foreground/50"
+                          : "w-2 bg-muted hover:bg-muted-foreground/50",
                       )}
                       aria-label={`Go to step ${index + 1}`}
                     />
@@ -301,7 +354,7 @@ function DemoSection() {
                       "absolute inset-0 transition-all duration-500",
                       index === currentStep
                         ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4 pointer-events-none"
+                        : "opacity-0 translate-y-4 pointer-events-none",
                     )}
                   >
                     <div className="flex items-start gap-4 mb-4">
@@ -309,11 +362,17 @@ function DemoSection() {
                         {step.id}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
-                        <p className="text-muted-foreground mb-4">{step.description}</p>
+                        <h3 className="text-2xl font-bold mb-2">
+                          {step.title}
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          {step.description}
+                        </p>
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border">
                           <ArrowRight className="w-4 h-4 text-[#10b981]" />
-                          <span className="text-sm font-medium">{step.annotation}</span>
+                          <span className="text-sm font-medium">
+                            {step.annotation}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -326,7 +385,9 @@ function DemoSection() {
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    setCurrentStep((prev) => (prev - 1 + steps.length) % steps.length);
+                    setCurrentStep(
+                      (prev) => (prev - 1 + steps.length) % steps.length,
+                    );
                     setIsPlaying(false);
                   }}
                   disabled={currentStep === 0}

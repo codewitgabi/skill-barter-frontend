@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/form";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import AuthLayout from "../_components/auth-layout";
-import { forgotPasswordSchema, type ForgotPasswordFormData } from "../_lib/validation";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordFormData,
+} from "../_lib/validation";
 
 function ForgotPasswordPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -35,7 +38,7 @@ function ForgotPasswordPage() {
     setIsLoading(true);
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     // Show success (UI only, no API call)
     setIsSubmitted(true);
     setIsLoading(false);
@@ -60,7 +63,8 @@ function ForgotPasswordPage() {
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-muted/30 border border-border">
                 <p className="text-sm text-muted-foreground">
-                  Didn&apos;t receive the email? Check your spam folder or try again in a few minutes.
+                  Didn&apos;t receive the email? Check your spam folder or try
+                  again in a few minutes.
                 </p>
               </div>
 
@@ -86,7 +90,8 @@ function ForgotPasswordPage() {
             </div>
             <h1 className="text-3xl font-bold mb-2">Forgot Password?</h1>
             <p className="text-muted-foreground">
-              No worries! Enter your email and we&apos;ll send you reset instructions.
+              No worries! Enter your email and we&apos;ll send you reset
+              instructions.
             </p>
           </div>
 
@@ -112,7 +117,7 @@ function ForgotPasswordPage() {
                       />
                     </FormControl>
                     <FormDescription>
-                  Enter the email address associated with your account
+                      Enter the email address associated with your account
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
