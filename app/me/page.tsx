@@ -176,7 +176,7 @@ function Page() {
         <aside className="w-80 shrink-0">
           <div className="sticky top-24 space-y-6">
             {/* Quick Stats */}
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle className="text-lg">Quick Stats</CardTitle>
               </CardHeader>
@@ -223,7 +223,7 @@ function Page() {
             </Card>
 
             {/* Upcoming Sessions */}
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle className="text-lg">Upcoming Sessions</CardTitle>
                 <CardDescription>Your scheduled exchanges</CardDescription>
@@ -236,7 +236,7 @@ function Page() {
                   >
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={session.avatar} alt={session.with} />
-                      <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                      <AvatarFallback>
                         {session.with.split(" ").map(n => n[0]).join("")}
                       </AvatarFallback>
                     </Avatar>
@@ -258,7 +258,7 @@ function Page() {
                     </div>
                   </div>
                 ))}
-                <Button variant="outline" className="w-full" size="sm">
+                <Button variant="outline" className="w-full rounded-full cursor-pointer" size="sm">
                   <Calendar className="h-4 w-4 mr-2" />
                   View All Sessions
                 </Button>
@@ -266,20 +266,20 @@ function Page() {
             </Card>
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" size="sm">
+                <Button variant="outline" className="w-full justify-start rounded-2xl" size="sm">
                   <Plus className="h-4 w-4 mr-2" />
                   New Exchange Request
                 </Button>
-                <Button variant="outline" className="w-full justify-start" size="sm">
+                <Button variant="outline" className="w-full justify-start rounded-2xl" size="sm">
                   <Zap className="h-4 w-4 mr-2" />
                   Find Skills to Learn
                 </Button>
-                <Button variant="outline" className="w-full justify-start" size="sm">
+                <Button variant="outline" className="w-full justify-start rounded-2xl" size="sm">
                   <Target className="h-4 w-4 mr-2" />
                   Update My Skills
                 </Button>
@@ -299,7 +299,7 @@ function Page() {
           </div>
 
           {/* Recent Exchanges */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -360,7 +360,7 @@ function Page() {
           </Card>
 
           {/* Exchange Requests */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -415,7 +415,7 @@ function Page() {
           </Card>
 
           {/* Skill Progress */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <CardTitle>Learning Progress</CardTitle>
               <CardDescription>Track your progress in skills you&apos;re learning</CardDescription>
@@ -444,7 +444,7 @@ function Page() {
           </Card>
 
           {/* Recent Activity */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
               <CardDescription>Your latest updates and notifications</CardDescription>
@@ -482,7 +482,7 @@ function Page() {
           </Card>
 
           {/* Community Highlights */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <CardTitle>Community Highlights</CardTitle>
               <CardDescription>What&apos;s trending in the skill exchange community</CardDescription>
