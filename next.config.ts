@@ -8,6 +8,18 @@ const nextConfig: NextConfig = {
         source: '/@me',
         destination: '/me',
       },
+      {
+        source: '/@me/browse-skills',
+        destination: '/me/browse-skills',
+      },
+      {
+        source: '/@me/sessions',
+        destination: '/me/sessions',
+      },
+      {
+        source: '/@me/exchange-requests',
+        destination: '/me/exchange-requests',
+      },
     ]
   },
 };
