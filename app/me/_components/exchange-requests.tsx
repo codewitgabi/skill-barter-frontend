@@ -36,14 +36,17 @@ function ExchangeRequests() {
   return (
     <Card className="shadow-none">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
           <div>
             <CardTitle>Exchange Requests</CardTitle>
             <CardDescription>
               People interested in exchanging skills with you
             </CardDescription>
           </div>
-          <Badge variant="destructive" className="ml-2">
+          <Badge
+            variant="destructive"
+            className="self-start sm:self-auto sm:ml-2"
+          >
             {exchangeRequests.length} New
           </Badge>
         </div>
@@ -52,9 +55,9 @@ function ExchangeRequests() {
         {exchangeRequests.map((request) => (
           <div
             key={request.id}
-            className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+            className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
-            <Avatar className="h-12 w-12">
+            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0">
               <AvatarImage src={request.avatar} alt={request.from} />
               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
                 {request.from
@@ -63,19 +66,19 @@ function ExchangeRequests() {
                   .join("")}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <span className="font-semibold">{request.from}</span>
-                  <p className="text-sm text-muted-foreground mt-1">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                <div className="min-w-0 flex-1">
+                  <span className="font-semibold block">{request.from}</span>
+                  <p className="text-sm text-muted-foreground mt-1 break-words">
                     {request.message}
                   </p>
                 </div>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground shrink-0 sm:ml-2">
                   {request.time}
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-3">
                 <Badge variant="outline" className="text-xs">
                   Teaching: {request.skill}
                 </Badge>

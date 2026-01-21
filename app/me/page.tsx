@@ -9,11 +9,11 @@ import CommunityHighlights from "./_components/community-highlights";
 
 function Page() {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-      <div className="flex gap-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-4">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
         {/* Left Sidebar - Sticky */}
-        <aside className="w-80 shrink-0">
-          <div className="sticky top-24 space-y-6">
+        <aside className="w-full lg:w-80 shrink-0">
+          <div className="sticky top-20 lg:top-24 space-y-4 sm:space-y-6">
             <QuickStart />
             <UpcomingSessions />
             <QuickActions />
@@ -21,11 +21,13 @@ function Page() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 space-y-6">
+        <main className="flex-1 min-w-0 space-y-4 sm:space-y-6">
           {/* Welcome Section */}
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back!</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+              Welcome back!
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
               Here&apos;s what&apos;s happening with your skill exchanges
             </p>
           </div>

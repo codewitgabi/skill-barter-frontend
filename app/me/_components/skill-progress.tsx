@@ -44,14 +44,14 @@ function SkillProgress() {
       <CardContent className="space-y-6">
         {skillProgress.map((skill, index) => (
           <div key={index}>
-            <div className="flex items-center justify-between mb-2">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="font-semibold">{skill.skill}</span>
-                <Badge variant="secondary" className="ml-2 text-xs">
+                <Badge variant="secondary" className="text-xs shrink-0">
                   {skill.level}
                 </Badge>
               </div>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground shrink-0">
                 {skill.sessionsCompleted}/{skill.totalSessions} sessions
               </span>
             </div>
