@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock } from "lucide-react";
+import type { IUpcomingSession } from "@/types/dashboard";
 
-const upcomingSessions = [
+const upcomingSessions: Array<IUpcomingSession> = [
   {
     id: 1,
     type: "Learning",

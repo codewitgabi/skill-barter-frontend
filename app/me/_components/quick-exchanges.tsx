@@ -10,8 +10,9 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Star, ArrowRight } from "lucide-react";
+import type { IRecentExchange } from "@/types/dashboard";
 
-const recentExchanges = [
+const recentExchanges: Array<IRecentExchange> = [
   {
     id: 1,
     type: "Completed",

@@ -8,8 +8,9 @@ import {
 
 import { MessageSquare, Calendar, Star, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { IRecentActivity } from "@/types/dashboard";
 
-const recentActivity = [
+const recentActivity: Array<IRecentActivity> = [
   {
     id: 1,
     type: "review",

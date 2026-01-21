@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Star, BookOpen, Award, Activity } from "lucide-react";
+import type { IStats } from "@/types/dashboard";
 
-const stats = {
+const stats: IStats = {
   totalExchanges: 24,
   activeSessions: 3,
   rating: 4.8,

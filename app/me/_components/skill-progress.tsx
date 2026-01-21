@@ -7,8 +7,9 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import type { ISkillProgress } from "@/types/dashboard";
 
-const skillProgress = [
+const skillProgress: Array<ISkillProgress> = [
   {
     skill: "Photography",
     level: "Intermediate",
