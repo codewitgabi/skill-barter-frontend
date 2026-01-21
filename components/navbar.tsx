@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "./logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +11,9 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { TextAlignEnd, X } from "lucide-react";
+import { TextAlignEnd, X, Bell, MessageCircle } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -19,6 +21,92 @@ const navLinks = [
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
 ];
+
+const appNavLinks = [
+  { href: "/@me", label: "Overview" },
+];
+
+export function AppNavbar() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="sticky top-0 inset-x-0 z-50 w-full border-b border-border shadow-none bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Left side: Logo and Navigation */}
+          <div className="flex items-center space-x-8">
+            <Link href="/@me" className="flex items-center space-x-2">
+              <Logo />
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              {appNavLinks.map((link) => {
+                const isActive = pathname === link.href || (link.href === "/dashboard" && pathname?.startsWith("/dashboard"));
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors relative",
+                      isActive
+                        ? "text-foreground"
+                        : "text-foreground/80 hover:text-foreground"
+                    )}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute -bottom-3.5 left-0 right-0 h-0.5 bg-primary" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right side: Icons and Profile */}
+          <div className="flex items-center space-x-3">
+            {/* Notifications */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative rounded-full"
+              aria-label="Notifications"
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
+                3
+              </span>
+            </Button>
+
+            {/* Messages */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative rounded-full"
+              aria-label="Messages"
+            >
+              <MessageCircle className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
+                5
+              </span>
+            </Button>
+
+            {/* Profile Picture */}
+            <Link href="/me" className="flex items-center">
+              <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                  U
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
 export function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
