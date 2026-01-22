@@ -14,8 +14,10 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TextAlignEnd, X, Bell, MessageCircle } from "lucide-react";
+import { TextAlignEnd, X, Bell, MessageCircle, User, Settings, BellRing, LogOut, ChevronRight } from "lucide-react";
 import { Notifications } from "@/components/notifications";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -94,15 +96,74 @@ export function AppNavbar() {
               </span>
             </Button></Link>
 
-            {/* Desktop: Profile Picture */}
-            <Link href="/me" className="hidden sm:flex items-center">
-              <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
-                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                  US
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            {/* Desktop: Profile Picture with Popover */}
+            <Popover>
+              <PopoverTrigger asChild className="hidden sm:flex">
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                  <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                    <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                    <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                      US
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-2" align="end" sideOffset={8}>
+                <div className="flex flex-col">
+                  {/* User Info */}
+                  <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                      <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                        US
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate">User Name</p>
+                      <p className="text-xs text-muted-foreground truncate">user@example.com</p>
+                    </div>
+                  </div>
+                  
+                  <Separator className="my-2" />
+                  
+                  {/* Menu Items */}
+                  <div className="space-y-1">
+                    <Link
+                      href="/me/settings/profile"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
+                    >
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span>Profile Settings</span>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </Link>
+                    <Link
+                      href="/me/settings/notifications"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
+                    >
+                      <BellRing className="h-4 w-4 text-muted-foreground" />
+                      <span>Notification Settings</span>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </Link>
+                    <Link
+                      href="/me/settings"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
+                    >
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                      <span>Settings</span>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </Link>
+                  </div>
+                  
+                  <Separator className="my-2" />
+                  
+                  {/* Logout */}
+                  <button className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm text-destructive w-full">
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
