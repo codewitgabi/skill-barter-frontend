@@ -15,6 +15,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TextAlignEnd, X, Bell, MessageCircle } from "lucide-react";
+import { Notifications } from "@/components/notifications";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -33,6 +34,7 @@ const appNavLinks = [
 export function AppNavbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 w-full border-b border-border shadow-none bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -75,17 +77,9 @@ export function AppNavbar() {
           {/* Right side: Icons and Profile */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Desktop: Notifications */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative rounded-full hidden sm:flex"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
-                3
-              </span>
-            </Button>
+            <div className="hidden sm:flex">
+              <Notifications />
+            </div>
 
             {/* Desktop: Messages */}
             <Button
@@ -200,24 +194,28 @@ export function AppNavbar() {
                     {/* Mobile Actions */}
                     <div className="p-6 space-y-3 border-t">
                       {/* Notifications */}
-                      <SheetClose asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start"
-                          asChild
-                        >
-                          <Link href="/notifications" className="flex items-center">
+                      <Notifications
+                        variant="mobile"
+                        onUnreadCountChange={setNotificationCount}
+                        onNotificationClick={() => setIsOpen(false)}
+                        trigger={
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start"
+                          >
                             <Bell className="h-4 w-4 mr-2" />
                             Notifications
-                            <Badge
-                              variant="destructive"
-                              className="ml-auto"
-                            >
-                              3
-                            </Badge>
-                          </Link>
-                        </Button>
-                      </SheetClose>
+                            {notificationCount > 0 && (
+                              <Badge
+                                variant="destructive"
+                                className="ml-auto"
+                              >
+                                {notificationCount > 9 ? "9+" : notificationCount}
+                              </Badge>
+                            )}
+                          </Button>
+                        }
+                      />
 
                       {/* Messages */}
                       <SheetClose asChild>
