@@ -82,7 +82,7 @@ export function AppNavbar() {
             </div>
 
             {/* Desktop: Messages */}
-            <Button
+           <Link href="/@me/chat"> <Button
               variant="ghost"
               size="icon"
               className="relative rounded-full hidden sm:flex"
@@ -92,7 +92,7 @@ export function AppNavbar() {
               <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
                 5
               </span>
-            </Button>
+            </Button></Link>
 
             {/* Desktop: Profile Picture */}
             <Link href="/me" className="hidden sm:flex items-center">

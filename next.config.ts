@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         source: '/@me/exchange-requests',
         destination: '/me/exchange-requests',
       },
+      {
+        source: '/@me/chat',
+        destination: '/me/chat',
+      },
     ]
   },
 };
