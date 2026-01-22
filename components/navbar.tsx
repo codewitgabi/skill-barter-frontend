@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,17 @@ import { TextAlignEnd, X, Bell, MessageCircle, User, Settings, BellRing, LogOut,
 import { Notifications } from "@/components/notifications";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -35,8 +46,17 @@ const appNavLinks = [
 
 export function AppNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+
+  const handleLogout = () => {
+    // Handle logout logic (clear tokens, session, etc.)
+    // For now, just redirect to login
+    setIsLogoutOpen(false);
+    router.push("/auth/signin");
+  };
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 w-full border-b border-border shadow-none bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -157,10 +177,31 @@ export function AppNavbar() {
                   <Separator className="my-2" />
                   
                   {/* Logout */}
-                  <button className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm text-destructive w-full">
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </button>
+                  <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+                    <AlertDialogTrigger asChild>
+                      <button className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm text-destructive w-full">
+                        <LogOut className="h-4 w-4" />
+                        <span>Logout</span>
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You will be redirected to the login page. You can sign in again anytime.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleLogout}
+                          className="bg-destructive text-white hover:bg-destructive/90"
+                        >
+                          Logout
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </PopoverContent>
             </Popover>
@@ -319,6 +360,38 @@ export function AppNavbar() {
                           </Link>
                         </Button>
                       </SheetClose>
+
+                      {/* Logout */}
+                      <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+                        <AlertDialogTrigger asChild>
+                          <SheetClose asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start text-destructive hover:text-destructive"
+                            >
+                              <LogOut className="h-4 w-4 mr-2" />
+                              Logout
+                            </Button>
+                          </SheetClose>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              You will be redirected to the login page. You can sign in again anytime.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleLogout}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Logout
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </div>
@@ -359,14 +432,14 @@ export function LandingNavbar() {
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-3">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/auth/login">Sign In</Link>
+              <Link href="/auth/signin">Sign In</Link>
             </Button>
             <Button
               size="sm"
               className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white hover:opacity-90"
               asChild
             >
-              <Link href="/auth/signup">Get Started</Link>
+              <Link href="/auth/register">Get Started</Link>
             </Button>
           </div>
 
@@ -451,7 +524,7 @@ export function LandingNavbar() {
                         className="w-full bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white hover:opacity-90"
                         asChild
                       >
-                        <Link href="/auth/signup">Get Started</Link>
+                        <Link href="/auth/register">Get Started</Link>
                       </Button>
                     </SheetClose>
                   </div>
