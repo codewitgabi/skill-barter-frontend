@@ -17,7 +17,9 @@ interface UseSessionsReturn {
   setActiveFilter: (filter: string) => void;
 }
 
-export function useSessions({ sessions }: UseSessionsOptions): UseSessionsReturn {
+export function useSessions({
+  sessions,
+}: UseSessionsOptions): UseSessionsReturn {
   const [activeFilter, setActiveFilter] = useState("all");
 
   const stats = useMemo(() => {
@@ -32,7 +34,7 @@ export function useSessions({ sessions }: UseSessionsOptions): UseSessionsReturn
   const filteredSessions = useMemo(() => {
     // Filter out cancelled sessions unless specifically viewing cancelled
     const activeSessions = sessions.filter((s) => s.status !== "cancelled");
-    
+
     if (activeFilter === "all") {
       return activeSessions;
     }

@@ -14,7 +14,8 @@ function ExchangeRequestHeader({
           Exchange Requests
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground">
-          People who want to exchange skills with you. Accept to start a session.
+          People who want to exchange skills with you. Accept to start a
+          session.
         </p>
       </div>
 
@@ -26,9 +27,7 @@ function ExchangeRequestHeader({
             </span>{" "}
             {displayedCount === 1 ? "request" : "requests"} pending
             {totalCount && totalCount > displayedCount && (
-              <span className="text-muted-foreground/70">
-                {" "}of {totalCount}
-              </span>
+              <span className="text-muted-foreground/70"> of {totalCount}</span>
             )}
           </p>
         </div>

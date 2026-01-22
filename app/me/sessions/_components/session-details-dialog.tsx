@@ -93,7 +93,9 @@ function SessionDetailsDialog({
           {/* Description */}
           <div>
             <h4 className="text-sm font-semibold mb-1">Description</h4>
-            <p className="text-sm text-muted-foreground">{session.description}</p>
+            <p className="text-sm text-muted-foreground">
+              {session.description}
+            </p>
           </div>
 
           {/* Details */}
@@ -135,7 +137,9 @@ function SessionDetailsDialog({
           {/* Objectives */}
           {session.objectives.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold mb-2">Learning Objectives</h4>
+              <h4 className="text-sm font-semibold mb-2">
+                Learning Objectives
+              </h4>
               <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
                 {session.objectives.map((objective, idx) => (
                   <li key={idx}>{objective}</li>

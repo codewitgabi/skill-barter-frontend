@@ -18,22 +18,26 @@ function SessionEmpty({ filter }: SessionEmptyProps) {
       case "active":
         return {
           title: "No active sessions",
-          description: "You don't have any active sessions right now. Check your scheduled sessions to get started.",
+          description:
+            "You don't have any active sessions right now. Check your scheduled sessions to get started.",
         };
       case "scheduled":
         return {
           title: "No scheduled sessions",
-          description: "You don't have any upcoming sessions scheduled. Accept exchange requests to start new sessions.",
+          description:
+            "You don't have any upcoming sessions scheduled. Accept exchange requests to start new sessions.",
         };
       case "completed":
         return {
           title: "No completed sessions",
-          description: "You haven't completed any sessions yet. Complete your active sessions to see them here.",
+          description:
+            "You haven't completed any sessions yet. Complete your active sessions to see them here.",
         };
       default:
         return {
           title: "No sessions",
-          description: "You don't have any sessions yet. Accept exchange requests to start learning and teaching.",
+          description:
+            "You don't have any sessions yet. Accept exchange requests to start learning and teaching.",
         };
     }
   };

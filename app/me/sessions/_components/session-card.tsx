@@ -22,7 +22,12 @@ interface SessionCardProps {
   onCancel?: (id: number) => void;
 }
 
-function SessionCard({ session, onJoin, onViewDetails, onCancel }: SessionCardProps) {
+function SessionCard({
+  session,
+  onJoin,
+  onViewDetails,
+  onCancel,
+}: SessionCardProps) {
   const getStatusColor = () => {
     switch (session.status) {
       case "active":
@@ -51,7 +56,10 @@ function SessionCard({ session, onJoin, onViewDetails, onCancel }: SessionCardPr
           {/* Avatar */}
           <div className="shrink-0">
             <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-              <AvatarImage src={session.partner.avatar} alt={session.partner.name} />
+              <AvatarImage
+                src={session.partner.avatar}
+                alt={session.partner.name}
+              />
               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
                 {session.partner.name
                   .split(" ")
@@ -77,7 +85,8 @@ function SessionCard({ session, onJoin, onViewDetails, onCancel }: SessionCardPr
                     variant="outline"
                     className={`text-xs font-medium border ${getStatusColor()}`}
                   >
-                    {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                    {session.status.charAt(0).toUpperCase() +
+                      session.status.slice(1)}
                   </Badge>
                   <h3 className="text-base sm:text-lg font-semibold truncate">
                     {session.skill}
@@ -98,8 +107,12 @@ function SessionCard({ session, onJoin, onViewDetails, onCancel }: SessionCardPr
             {session.status === "active" && session.progress !== undefined && (
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-muted-foreground">Progress</span>
-                  <span className="text-xs font-medium">{session.progress}%</span>
+                  <span className="text-xs text-muted-foreground">
+                    Progress
+                  </span>
+                  <span className="text-xs font-medium">
+                    {session.progress}%
+                  </span>
                 </div>
                 <Progress value={session.progress} className="h-2" />
               </div>

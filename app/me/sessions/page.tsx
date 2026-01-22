@@ -11,16 +11,14 @@ import SessionDetailsDialog from "./_components/session-details-dialog";
 import type { ISession } from "./_components/types";
 
 function Page() {
-  const [sessions, setSessions] = useState<Array<ISession>>(generateMockSessions());
+  const [sessions, setSessions] = useState<Array<ISession>>(
+    generateMockSessions(),
+  );
   const [selectedSession, setSelectedSession] = useState<ISession | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const {
-    filteredSessions,
-    stats,
-    activeFilter,
-    setActiveFilter,
-  } = useSessions({ sessions });
+  const { filteredSessions, stats, activeFilter, setActiveFilter } =
+    useSessions({ sessions });
 
   const handleJoin = (id: number) => {
     const session = sessions.find((s) => s.id === id);
@@ -57,8 +55,8 @@ function Page() {
     // Update the session status to cancelled
     setSessions((prev) =>
       prev.map((s) =>
-        s.id === id ? { ...s, status: "cancelled" as const } : s
-      )
+        s.id === id ? { ...s, status: "cancelled" as const } : s,
+      ),
     );
 
     toast.success("Session cancelled", {

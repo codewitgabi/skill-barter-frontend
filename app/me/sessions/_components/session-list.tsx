@@ -8,7 +8,12 @@ interface SessionListProps {
   onCancel?: (id: number) => void;
 }
 
-function SessionList({ sessions, onJoin, onViewDetails, onCancel }: SessionListProps) {
+function SessionList({
+  sessions,
+  onJoin,
+  onViewDetails,
+  onCancel,
+}: SessionListProps) {
   if (sessions.length === 0) {
     return null;
   }
