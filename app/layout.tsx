@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Elms_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const elmsSans = Elms_Sans({
   weight: ["400", "500", "600", "700"],
@@ -19,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${elmsSans.className} antialiased`}>{children}</body>
+      <body className={`${elmsSans.className} antialiased`}>
+        {children}
+        <Toaster closeButton />
+      </body>
     </html>
   );
 }

@@ -17,14 +17,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import OAuthButtons from "./oauth-buttons";
 import { loginSchema, type LoginFormData } from "../_lib/validation";
+import { apiPost } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import type { User } from "@/stores/auth/auth.types";
+
+interface LoginResponseData {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
 
 function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { login } = useAuthStore();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -36,18 +47,30 @@ function SignInForm() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log({ data });
     setIsLoading(true);
     setError(null);
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await apiPost<LoginResponseData>("/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
 
-    // Show success and redirect (UI only, no API call)
-    setError(null);
-    router.push("/dashboard");
-
-    setIsLoading(false);
+      if (response.status === "success" && response.data) {
+        login(response.data.accessToken, response.data.user);
+        toast.success("Login successful", {
+          description: `Welcome back, ${response.data.user.first_name}!`,
+        });
+        router.push("/@me");
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        setError(errorResponse.error?.message || "Login failed");
+      }
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
