@@ -6,9 +6,10 @@ const API_BASE_URL = process.env.V1_API_BASE_URL;
 
 export async function POST(
   _request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
@@ -28,7 +29,7 @@ export async function POST(
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/exchange-requests/${params.id}/decline`,
+      `${API_BASE_URL}/exchange-requests/${id}/decline`,
       {
         method: "POST",
         headers: {
