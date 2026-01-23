@@ -11,14 +11,63 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { apiPatch } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import type { User } from "@/stores/auth/auth.types";
+
+interface UserResponseData {
+  id: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  about: string;
+  city: string;
+  country: string;
+  location: string;
+  profile_picture: string;
+  weekly_availability: number;
+  skills: unknown[];
+  interests: unknown[];
+  language: string;
+  timezone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function mapUserResponseToUser(data: UserResponseData): User {
+  return {
+    _id: data.id,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    username: data.username,
+    email: data.email,
+    about: data.about,
+    city: data.city,
+    country: data.country,
+    profile_picture: data.profile_picture,
+    weekly_availability: data.weekly_availability,
+    skills: data.skills,
+    interests: data.interests,
+    language: data.language,
+    timezone: data.timezone,
+    deletedAt: null,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+  };
+}
 
 function GeneralSettings() {
   const { user } = useAuth();
+  const { setUser } = useAuthStore();
+  const [isSaving, setIsSaving] = useState(false);
   
   const defaultSettings = useMemo(() => ({
     language: user?.language || "en",
-    timezone: user?.timezone || "utc",
+    timezone: user?.timezone || "UTC",
   }), [user?.language, user?.timezone]);
 
   const [language, setLanguage] = useState(() => defaultSettings.language);
@@ -39,9 +88,31 @@ function GeneralSettings() {
     }
   }, [user?._id, defaultSettings, user]);
 
-  const handleSave = () => {
-    // Handle save logic
-    console.log("General settings saved:", { language, timezone });
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const response = await apiPatch<UserResponseData>("/users/me", {
+        language,
+        timezone,
+      });
+
+      if (response.status === "success" && response.data) {
+        const updatedUser = mapUserResponseToUser(response.data);
+        setUser(updatedUser);
+        toast.success("General settings saved successfully");
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        toast.error("Failed to save settings", {
+          description: errorResponse.error?.message || "Please try again.",
+        });
+      }
+    } catch {
+      toast.error("Failed to save settings", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -140,7 +211,16 @@ function GeneralSettings() {
         <Separator />
 
         <div className="flex justify-end">
-          <Button onClick={handleSave}>Save Changes</Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
         </div>
       </CardContent>
     </Card>
