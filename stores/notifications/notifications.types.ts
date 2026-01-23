@@ -1,4 +1,8 @@
-export type NotificationType = "review" | "exchange" | "session" | "achievement";
+export type NotificationType =
+  | "review"
+  | "exchange"
+  | "session"
+  | "achievement";
 
 export interface INotification {
   id: string;

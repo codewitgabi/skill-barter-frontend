@@ -24,4 +24,5 @@ export interface ExchangeRequestsActions {
   setLoading: (loading: boolean) => void;
 }
 
-export type ExchangeRequestsStore = ExchangeRequestsState & ExchangeRequestsActions;
+export type ExchangeRequestsStore = ExchangeRequestsState &
+  ExchangeRequestsActions;

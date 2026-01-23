@@ -4,12 +4,21 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, BellRing, Settings as SettingsIcon, ChevronRight } from "lucide-react";
+import {
+  User,
+  BellRing,
+  Settings as SettingsIcon,
+  ChevronRight,
+} from "lucide-react";
 
 const settingsNavItems = [
   { href: "/me/settings", label: "General", icon: SettingsIcon },
   { href: "/me/settings/profile", label: "Profile", icon: User },
-  { href: "/me/settings/notifications", label: "Notifications", icon: BellRing },
+  {
+    href: "/me/settings/notifications",
+    label: "Notifications",
+    icon: BellRing,
+  },
 ];
 
 function SettingsLayout({ children }: { children: ReactNode }) {
@@ -41,7 +50,7 @@ function SettingsLayout({ children }: { children: ReactNode }) {
                       "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium",
                       isActive
                         ? "bg-accent text-foreground"
-                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground",
                     )}
                   >
                     <item.icon className="h-4 w-4" />

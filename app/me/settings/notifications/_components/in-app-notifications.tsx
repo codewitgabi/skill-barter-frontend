@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Bell, MessageSquare, Calendar, Star } from "lucide-react";
 import NotificationItem from "./notification-item";
@@ -8,7 +14,11 @@ import type { NotificationSettings } from "./types";
 
 interface InAppNotificationsProps {
   settings: NotificationSettings["inApp"];
-  onUpdate: (category: keyof NotificationSettings, settingKey: string, value: boolean) => void;
+  onUpdate: (
+    category: keyof NotificationSettings,
+    settingKey: string,
+    value: boolean,
+  ) => void;
 }
 
 function InAppNotifications({ settings, onUpdate }: InAppNotificationsProps) {

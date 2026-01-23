@@ -1,14 +1,31 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Mail, MessageSquare, Calendar, Star, Bell, Shield } from "lucide-react";
+import {
+  Mail,
+  MessageSquare,
+  Calendar,
+  Star,
+  Bell,
+  Shield,
+} from "lucide-react";
 import NotificationItem from "./notification-item";
 import type { NotificationSettings } from "./types";
 
 interface EmailNotificationsProps {
   settings: NotificationSettings["email"];
-  onUpdate: (category: keyof NotificationSettings, settingKey: string, value: boolean) => void;
+  onUpdate: (
+    category: keyof NotificationSettings,
+    settingKey: string,
+    value: boolean,
+  ) => void;
 }
 
 function EmailNotifications({ settings, onUpdate }: EmailNotificationsProps) {
@@ -19,9 +36,7 @@ function EmailNotifications({ settings, onUpdate }: EmailNotificationsProps) {
           <Mail className="h-5 w-5" />
           <CardTitle>Email Notifications</CardTitle>
         </div>
-        <CardDescription>
-          Receive notifications via email
-        </CardDescription>
+        <CardDescription>Receive notifications via email</CardDescription>
       </CardHeader>
       <CardContent className="space-y-0">
         <NotificationItem

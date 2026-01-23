@@ -6,12 +6,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, Star, MessageSquare, Calendar, Award, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export type NotificationType = "review" | "exchange" | "session" | "achievement";
+export type NotificationType =
+  | "review"
+  | "exchange"
+  | "session"
+  | "achievement";
 
 export interface INotification {
   id: string;
@@ -125,9 +133,9 @@ export function Notifications({
 }: NotificationsProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [localNotifications, setLocalNotifications] = useState<Array<INotification>>(
-    notifications || generateMockNotifications(),
-  );
+  const [localNotifications, setLocalNotifications] = useState<
+    Array<INotification>
+  >(notifications || generateMockNotifications());
 
   const unreadCount = localNotifications.filter((n) => !n.isRead).length;
 
@@ -154,11 +162,17 @@ export function Notifications({
       case "review":
         return <Star className="h-4 w-4 text-green-600 dark:text-green-400" />;
       case "exchange":
-        return <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />;
+        return (
+          <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        );
       case "session":
-        return <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />;
+        return (
+          <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+        );
       case "achievement":
-        return <Award className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />;
+        return (
+          <Award className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+        );
     }
   };
 
@@ -193,14 +207,8 @@ export function Notifications({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        {trigger || defaultTrigger}
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-80 sm:w-96 p-0"
-        align="end"
-        sideOffset={8}
-      >
+      <PopoverTrigger asChild>{trigger || defaultTrigger}</PopoverTrigger>
+      <PopoverContent className="w-80 sm:w-96 p-0" align="end" sideOffset={8}>
         <div className="flex flex-col h-[500px]">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b shrink-0">
@@ -227,65 +235,68 @@ export function Notifications({
           <div className="flex-1 min-h-0">
             <ScrollArea className="h-full">
               <div className="p-2">
-              {localNotifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Bell className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                  <p className="text-sm text-muted-foreground">No notifications</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    You're all caught up!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  {localNotifications.map((notification) => (
-                    <button
-                      key={notification.id}
-                      onClick={() => handleNotificationClick(notification)}
-                      className={cn(
-                        "w-full flex items-start gap-3 p-3 rounded-lg border transition-colors text-left",
-                        "hover:bg-accent hover:border-accent-foreground/20",
-                        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                        !notification.isRead && "bg-accent/50 border-primary/20",
-                      )}
-                    >
-                      {/* Icon */}
-                      <div
+                {localNotifications.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <Bell className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                    <p className="text-sm text-muted-foreground">
+                      No notifications
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      You're all caught up!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {localNotifications.map((notification) => (
+                      <button
+                        key={notification.id}
+                        onClick={() => handleNotificationClick(notification)}
                         className={cn(
-                          "h-9 w-9 rounded-full flex items-center justify-center shrink-0",
-                          getNotificationBgColor(notification.type),
+                          "w-full flex items-start gap-3 p-3 rounded-lg border transition-colors text-left",
+                          "hover:bg-accent hover:border-accent-foreground/20",
+                          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                          !notification.isRead &&
+                            "bg-accent/50 border-primary/20",
                         )}
                       >
-                        {getNotificationIcon(notification.type)}
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium leading-tight">
-                              {notification.title}
-                            </p>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            {notification.skill && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {notification.skill}
-                              </p>
-                            )}
-                            <p className="text-xs text-muted-foreground mt-1.5">
-                              {notification.time}
-                            </p>
-                          </div>
-                          {!notification.isRead && (
-                            <div className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" />
+                        {/* Icon */}
+                        <div
+                          className={cn(
+                            "h-9 w-9 rounded-full flex items-center justify-center shrink-0",
+                            getNotificationBgColor(notification.type),
                           )}
+                        >
+                          {getNotificationIcon(notification.type)}
                         </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium leading-tight">
+                                {notification.title}
+                              </p>
+                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                {notification.message}
+                              </p>
+                              {notification.skill && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {notification.skill}
+                                </p>
+                              )}
+                              <p className="text-xs text-muted-foreground mt-1.5">
+                                {notification.time}
+                              </p>
+                            </div>
+                            {!notification.isRead && (
+                              <div className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" />
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </div>

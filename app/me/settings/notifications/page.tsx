@@ -36,7 +36,7 @@ function Page() {
   const updateSetting = (
     category: keyof NotificationSettings,
     settingKey: string,
-    value: boolean
+    value: boolean,
   ) => {
     setSettings((prev) => ({
       ...prev,
@@ -54,18 +54,9 @@ function Page() {
 
   return (
     <div className="space-y-6">
-      <EmailNotifications
-        settings={settings.email}
-        onUpdate={updateSetting}
-      />
-      <PushNotifications
-        settings={settings.push}
-        onUpdate={updateSetting}
-      />
-      <InAppNotifications
-        settings={settings.inApp}
-        onUpdate={updateSetting}
-      />
+      <EmailNotifications settings={settings.email} onUpdate={updateSetting} />
+      <PushNotifications settings={settings.push} onUpdate={updateSetting} />
+      <InAppNotifications settings={settings.inApp} onUpdate={updateSetting} />
       <div className="flex justify-end">
         <Button onClick={handleSave}>Save Notification Preferences</Button>
       </div>

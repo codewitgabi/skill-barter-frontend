@@ -34,7 +34,6 @@ export const useChatStore = create<ChatStore>((set) => ({
         conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv,
       ),
     })),
-  clearChat: () =>
-    set({ conversations: [], activeConversationId: null }),
+  clearChat: () => set({ conversations: [], activeConversationId: null }),
   setLoading: (loading) => set({ isLoading: loading }),
 }));

@@ -40,7 +40,7 @@ export async function GET() {
             details: [],
           },
         } as ErrorResponse,
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -52,13 +52,16 @@ export async function GET() {
       },
     });
 
-    const data: SuccessResponse<UserData> | ErrorResponse = await response.json();
+    const data: SuccessResponse<UserData> | ErrorResponse =
+      await response.json();
 
     if (response.ok && "status" in data && data.status === "success") {
       return NextResponse.json(data, { status: data.httpStatus || 200 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -70,7 +73,7 @@ export async function GET() {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -91,7 +94,7 @@ export async function PATCH(request: NextRequest) {
             details: [],
           },
         } as ErrorResponse,
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -106,13 +109,16 @@ export async function PATCH(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data: SuccessResponse<UserData> | ErrorResponse = await response.json();
+    const data: SuccessResponse<UserData> | ErrorResponse =
+      await response.json();
 
     if (response.ok && "status" in data && data.status === "success") {
       return NextResponse.json(data, { status: data.httpStatus || 200 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -124,7 +130,7 @@ export async function PATCH(request: NextRequest) {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -145,7 +151,7 @@ export async function DELETE() {
             details: [],
           },
         } as ErrorResponse,
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -166,7 +172,9 @@ export async function DELETE() {
       return NextResponse.json(data, { status: data.httpStatus || 200 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -178,7 +186,7 @@ export async function DELETE() {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -9,7 +9,11 @@ interface NotificationItemProps {
   category: keyof NotificationSettings;
   settingKey: string;
   value: boolean;
-  onUpdate: (category: keyof NotificationSettings, settingKey: string, value: boolean) => void;
+  onUpdate: (
+    category: keyof NotificationSettings,
+    settingKey: string,
+    value: boolean,
+  ) => void;
 }
 
 function NotificationItem({
@@ -28,7 +32,10 @@ function NotificationItem({
           <Icon className="h-4 w-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <Label htmlFor={`${category}-${settingKey}`} className="font-medium cursor-pointer">
+          <Label
+            htmlFor={`${category}-${settingKey}`}
+            className="font-medium cursor-pointer"
+          >
             {label}
           </Label>
           <p className="text-sm text-muted-foreground mt-1">{description}</p>

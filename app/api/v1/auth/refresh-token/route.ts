@@ -21,11 +21,17 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data: SuccessResponse<RefreshTokenResponseData> | ErrorResponse = await response.json();
+    const data: SuccessResponse<RefreshTokenResponseData> | ErrorResponse =
+      await response.json();
 
-    if (response.ok && "status" in data && data.status === "success" && data.data) {
+    if (
+      response.ok &&
+      "status" in data &&
+      data.status === "success" &&
+      data.data
+    ) {
       const cookieStore = await cookies();
-      
+
       cookieStore.set("accessToken", data.data.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -43,7 +49,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: data.httpStatus || 200 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -55,7 +63,7 @@ export async function POST(request: NextRequest) {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

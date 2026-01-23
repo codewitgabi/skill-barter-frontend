@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Camera } from "lucide-react";
@@ -20,9 +26,7 @@ function ProfilePicture() {
     <Card>
       <CardHeader>
         <CardTitle>Profile Picture</CardTitle>
-        <CardDescription>
-          Update your profile picture
-        </CardDescription>
+        <CardDescription>Update your profile picture</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-6">

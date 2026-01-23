@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -12,7 +18,11 @@ function AccountActions() {
 
   const handleDelete = () => {
     // Handle delete logic - should show confirmation dialog
-    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete your account? This action cannot be undone.",
+      )
+    ) {
       console.log("Deleting account...");
     }
   };
@@ -21,9 +31,7 @@ function AccountActions() {
     <Card>
       <CardHeader>
         <CardTitle>Account Actions</CardTitle>
-        <CardDescription>
-          Manage your account actions and data
-        </CardDescription>
+        <CardDescription>Manage your account actions and data</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">

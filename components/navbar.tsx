@@ -14,9 +14,23 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TextAlignEnd, X, Bell, MessageCircle, User, Settings, BellRing, LogOut, ChevronRight } from "lucide-react";
+import {
+  TextAlignEnd,
+  X,
+  Bell,
+  MessageCircle,
+  User,
+  Settings,
+  BellRing,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
 import { Notifications } from "@/components/notifications";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
@@ -104,17 +118,20 @@ export function AppNavbar() {
             </div>
 
             {/* Desktop: Messages */}
-           <Link href="/@me/chat"> <Button
-              variant="ghost"
-              size="icon"
-              className="relative rounded-full hidden sm:flex"
-              aria-label="Messages"
-            >
-              <MessageCircle className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
-                5
-              </span>
-            </Button></Link>
+            <Link href="/@me/chat">
+              {" "}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative rounded-full hidden sm:flex"
+                aria-label="Messages"
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
+                  5
+                </span>
+              </Button>
+            </Link>
 
             {/* Desktop: Profile Picture with Popover */}
             <Popover>
@@ -133,19 +150,26 @@ export function AppNavbar() {
                   {/* User Info */}
                   <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                      <AvatarImage
+                        src="/placeholder-avatar.jpg"
+                        alt="Profile"
+                      />
                       <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
                         US
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate">User Name</p>
-                      <p className="text-xs text-muted-foreground truncate">user@example.com</p>
+                      <p className="text-sm font-semibold truncate">
+                        User Name
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        user@example.com
+                      </p>
                     </div>
                   </div>
-                  
+
                   <Separator className="my-2" />
-                  
+
                   {/* Menu Items */}
                   <div className="space-y-1">
                     <Link
@@ -173,11 +197,14 @@ export function AppNavbar() {
                       <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
                     </Link>
                   </div>
-                  
+
                   <Separator className="my-2" />
-                  
+
                   {/* Logout */}
-                  <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+                  <AlertDialog
+                    open={isLogoutOpen}
+                    onOpenChange={setIsLogoutOpen}
+                  >
                     <AlertDialogTrigger asChild>
                       <button className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm text-destructive w-full">
                         <LogOut className="h-4 w-4" />
@@ -186,9 +213,12 @@ export function AppNavbar() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                          Are you sure you want to logout?
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                          You will be redirected to the login page. You can sign in again anytime.
+                          You will be redirected to the login page. You can sign
+                          in again anytime.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -244,7 +274,10 @@ export function AppNavbar() {
                     <div className="flex items-center justify-between p-6 border-b">
                       <Link href="/me" onClick={() => setIsOpen(false)}>
                         <Avatar className="h-14 w-14 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                          <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                          <AvatarImage
+                            src="/placeholder-avatar.jpg"
+                            alt="Profile"
+                          />
                           <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg font-semibold">
                             US
                           </AvatarFallback>
@@ -264,7 +297,8 @@ export function AppNavbar() {
                         const isActive =
                           pathname === link.href ||
                           (link.href === "/@me" && pathname === "/@me") ||
-                          (link.href !== "/@me" && pathname?.startsWith(link.href));
+                          (link.href !== "/@me" &&
+                            pathname?.startsWith(link.href));
                         return (
                           <SheetClose key={link.href} asChild>
                             <Link
@@ -308,11 +342,10 @@ export function AppNavbar() {
                             <Bell className="h-4 w-4 mr-2" />
                             Notifications
                             {notificationCount > 0 && (
-                              <Badge
-                                variant="destructive"
-                                className="ml-auto"
-                              >
-                                {notificationCount > 9 ? "9+" : notificationCount}
+                              <Badge variant="destructive" className="ml-auto">
+                                {notificationCount > 9
+                                  ? "9+"
+                                  : notificationCount}
                               </Badge>
                             )}
                           </Button>
@@ -329,10 +362,7 @@ export function AppNavbar() {
                           <Link href="/messages" className="flex items-center">
                             <MessageCircle className="h-4 w-4 mr-2" />
                             Messages
-                            <Badge
-                              variant="destructive"
-                              className="ml-auto"
-                            >
+                            <Badge variant="destructive" className="ml-auto">
                               5
                             </Badge>
                           </Link>
@@ -362,7 +392,10 @@ export function AppNavbar() {
                       </SheetClose>
 
                       {/* Logout */}
-                      <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+                      <AlertDialog
+                        open={isLogoutOpen}
+                        onOpenChange={setIsLogoutOpen}
+                      >
                         <AlertDialogTrigger asChild>
                           <SheetClose asChild>
                             <Button
@@ -376,9 +409,12 @@ export function AppNavbar() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Are you sure you want to logout?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              You will be redirected to the login page. You can sign in again anytime.
+                              You will be redirected to the login page. You can
+                              sign in again anytime.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

@@ -1,6 +1,5 @@
 function Page() {
-    return <></>
+  return <></>;
 }
-
 
 export default Page;

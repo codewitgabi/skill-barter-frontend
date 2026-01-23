@@ -5,26 +5,26 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/@me',
-        destination: '/me',
+        source: "/@me",
+        destination: "/me",
       },
       {
-        source: '/@me/browse-skills',
-        destination: '/me/browse-skills',
+        source: "/@me/browse-skills",
+        destination: "/me/browse-skills",
       },
       {
-        source: '/@me/sessions',
-        destination: '/me/sessions',
+        source: "/@me/sessions",
+        destination: "/me/sessions",
       },
       {
-        source: '/@me/exchange-requests',
-        destination: '/me/exchange-requests',
+        source: "/@me/exchange-requests",
+        destination: "/me/exchange-requests",
       },
       {
-        source: '/@me/chat',
-        destination: '/me/chat',
+        source: "/@me/chat",
+        destination: "/me/chat",
       },
-    ]
+    ];
   },
 };
 

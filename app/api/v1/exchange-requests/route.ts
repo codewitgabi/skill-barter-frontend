@@ -51,13 +51,13 @@ export async function GET(request: NextRequest) {
             details: [],
           },
         } as ErrorResponse,
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     const { searchParams } = new URL(request.url);
     const queryParams = new URLSearchParams();
-    
+
     if (searchParams.get("page")) {
       queryParams.append("page", searchParams.get("page")!);
     }
@@ -81,13 +81,16 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const data: SuccessResponse<ExchangeRequestsResponseData> | ErrorResponse = await response.json();
+    const data: SuccessResponse<ExchangeRequestsResponseData> | ErrorResponse =
+      await response.json();
 
     if (response.ok && "status" in data && data.status === "success") {
       return NextResponse.json(data, { status: data.httpStatus || 200 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -99,7 +102,7 @@ export async function GET(request: NextRequest) {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -120,7 +123,7 @@ export async function POST(request: NextRequest) {
             details: [],
           },
         } as ErrorResponse,
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -135,13 +138,16 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data: SuccessResponse<ExchangeRequest> | ErrorResponse = await response.json();
+    const data: SuccessResponse<ExchangeRequest> | ErrorResponse =
+      await response.json();
 
     if (response.ok && "status" in data && data.status === "success") {
       return NextResponse.json(data, { status: data.httpStatus || 201 });
     }
 
-    return NextResponse.json(data, { status: "statusCode" in data ? data.statusCode : 500 });
+    return NextResponse.json(data, {
+      status: "statusCode" in data ? data.statusCode : 500,
+    });
   } catch {
     return NextResponse.json(
       {
@@ -153,7 +159,7 @@ export async function POST(request: NextRequest) {
           details: [],
         },
       } as ErrorResponse,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
