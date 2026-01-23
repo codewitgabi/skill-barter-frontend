@@ -13,6 +13,7 @@ export interface User {
   interests: unknown[];
   language: string;
   timezone: string;
+  website: string;
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;

@@ -20,6 +20,7 @@ interface UserData {
   interests: unknown[];
   language: string;
   timezone: string;
+  website: string;
   createdAt: string;
   updatedAt: string;
 }

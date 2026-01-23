@@ -35,6 +35,7 @@ interface UserResponseData {
   interests: unknown[];
   language: string;
   timezone: string;
+  website: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -55,6 +56,7 @@ function mapUserResponseToUser(data: UserResponseData): User {
     interests: data.interests,
     language: data.language,
     timezone: data.timezone,
+    website: data.website || "",
     deletedAt: null,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
@@ -88,7 +90,7 @@ function PersonalInformation() {
       username: user.username || "",
       bio: user.about || "",
       location,
-      website: "",
+      website: user.website || "",
     };
   }, [user]);
 
@@ -145,6 +147,7 @@ function PersonalInformation() {
         about: formData.bio,
         city,
         country,
+        website: formData.website || "",
       };
 
       const response = await apiPatch<UserResponseData>("/users/me", updateData);

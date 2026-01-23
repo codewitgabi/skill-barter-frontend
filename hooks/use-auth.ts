@@ -21,6 +21,7 @@ interface UserResponseData {
   interests: unknown[];
   language: string;
   timezone: string;
+  website: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,6 +42,7 @@ function mapUserResponseToUser(data: UserResponseData): User {
     interests: data.interests,
     language: data.language,
     timezone: data.timezone,
+    website: data.website || "",
     deletedAt: null,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
