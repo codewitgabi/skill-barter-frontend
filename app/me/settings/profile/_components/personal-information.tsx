@@ -12,10 +12,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { apiPatch } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import type { User } from "@/stores/auth/auth.types";
+
+interface UserResponseData {
+  id: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  about: string;
+  city: string;
+  country: string;
+  location: string;
+  profile_picture: string;
+  weekly_availability: number;
+  skills: unknown[];
+  interests: unknown[];
+  language: string;
+  timezone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function mapUserResponseToUser(data: UserResponseData): User {
+  return {
+    _id: data.id,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    username: data.username,
+    email: data.email,
+    about: data.about,
+    city: data.city,
+    country: data.country,
+    profile_picture: data.profile_picture,
+    weekly_availability: data.weekly_availability,
+    skills: data.skills,
+    interests: data.interests,
+    language: data.language,
+    timezone: data.timezone,
+    deletedAt: null,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+  };
+}
 
 function PersonalInformation() {
   const { user } = useAuth();
+  const { setUser } = useAuthStore();
+  const [isSaving, setIsSaving] = useState(false);
   
   const defaultFormData = useMemo(() => {
     if (!user) {
@@ -69,10 +118,54 @@ function PersonalInformation() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Profile updated:", formData);
+    setIsSaving(true);
+
+    try {
+      // Parse location into city and country
+      // If location contains a comma, split it; otherwise use the whole value as city
+      let city = "";
+      let country = "";
+      if (formData.location) {
+        if (formData.location.includes(",")) {
+          const locationParts = formData.location.split(",").map((part) => part.trim());
+          city = locationParts[0] || "";
+          country = locationParts[1] || "";
+        } else {
+          city = formData.location.trim();
+        }
+      }
+
+      const updateData: Record<string, string> = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        username: formData.username,
+        email: formData.email,
+        about: formData.bio,
+        city,
+        country,
+      };
+
+      const response = await apiPatch<UserResponseData>("/users/me", updateData);
+
+      if (response.status === "success" && response.data) {
+        const updatedUser = mapUserResponseToUser(response.data);
+        setUser(updatedUser);
+        toast.success("Personal information updated successfully");
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        toast.error("Failed to update personal information", {
+          description: errorResponse.error?.message || "Please try again.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to update personal information", {
+        description: error instanceof Error ? error.message : "An unexpected error occurred.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -177,7 +270,16 @@ function PersonalInformation() {
           <Separator />
 
           <div className="flex justify-end">
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={isSaving}>
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
           </div>
         </form>
       </CardContent>
