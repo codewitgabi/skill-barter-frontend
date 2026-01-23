@@ -10,8 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Camera } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 function ProfilePicture() {
+  const { user } = useAuth();
+
   const handleUpload = () => {
     // Handle upload logic
     console.log("Uploading new profile picture...");
@@ -20,6 +23,11 @@ function ProfilePicture() {
   const handleRemove = () => {
     // Handle remove logic
     console.log("Removing profile picture...");
+  };
+
+  const getUserInitials = () => {
+    if (!user) return "JD";
+    return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
   };
 
   return (
@@ -32,9 +40,9 @@ function ProfilePicture() {
         <div className="flex items-center gap-6">
           <div className="relative">
             <Avatar className="h-24 w-24">
-              <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+              <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-2xl">
-                JD
+                {getUserInitials()}
               </AvatarFallback>
             </Avatar>
             <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">

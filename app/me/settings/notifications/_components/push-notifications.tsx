@@ -69,8 +69,8 @@ function PushNotifications({ settings, onUpdate }: PushNotificationsProps) {
           label="Reviews & Ratings"
           description="When someone leaves you a review or rating"
           category="push"
-          settingKey="reviews"
-          value={settings.reviews}
+          settingKey="reviewsAndRatings"
+          value={settings.reviewsAndRatings}
           onUpdate={onUpdate}
         />
         <Separator />

@@ -1,13 +1,8 @@
 import { ReactNode } from "react";
-import { AppNavbar } from "@/components/navbar";
+import { AuthLayout } from "./_components/auth-layout";
 
 function Layout({ children }: { children: ReactNode }) {
-  return (
-    <>
-      <AppNavbar />
-      {children}
-    </>
-  );
+  return <AuthLayout>{children}</AuthLayout>;
 }
 
 export default Layout;

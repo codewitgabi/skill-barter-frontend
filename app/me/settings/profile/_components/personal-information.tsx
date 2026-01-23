@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect, startTransition } from "react";
 import {
   Card,
   CardContent,
@@ -12,17 +12,53 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/use-auth";
 
 function PersonalInformation() {
-  const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "user@example.com",
-    username: "johndoe",
-    bio: "Passionate about learning and sharing skills!",
-    location: "New York, NY",
-    website: "https://example.com",
-  });
+  const { user } = useAuth();
+  
+  const defaultFormData = useMemo(() => {
+    if (!user) {
+      return {
+        firstName: "",
+        lastName: "",
+        email: "",
+        username: "",
+        bio: "",
+        location: "",
+        website: "",
+      };
+    }
+    const location = user.city && user.country 
+      ? `${user.city}, ${user.country}` 
+      : user.city || user.country || "";
+    return {
+      firstName: user.first_name || "",
+      lastName: user.last_name || "",
+      email: user.email || "",
+      username: user.username || "",
+      bio: user.about || "",
+      location,
+      website: "",
+    };
+  }, [user]);
+
+  // Use key-based reset pattern: reset state when user._id changes
+  const [formData, setFormData] = useState(() => defaultFormData);
+  const previousUserIdRef = useRef<string | null>(null);
+  
+  // Reset form when user data changes
+  // Note: We use an effect here because React recommends using a key prop for this pattern,
+  // but we can't control the key from inside the component. Using startTransition to
+  // mark this as a non-urgent update, minimizing render blocking.
+  useEffect(() => {
+    if (user && previousUserIdRef.current !== user._id) {
+      previousUserIdRef.current = user._id;
+      startTransition(() => {
+        setFormData(defaultFormData);
+      });
+    }
+  }, [user?._id, defaultFormData, user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

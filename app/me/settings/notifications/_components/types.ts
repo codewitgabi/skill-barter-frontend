@@ -3,22 +3,22 @@ export interface NotificationSettings {
     exchangeRequests: boolean;
     sessionReminders: boolean;
     messages: boolean;
-    reviews: boolean;
+    reviewsAndRatings: boolean;
     achievements: boolean;
-    security: boolean;
+    securityAlerts: boolean;
   };
   push: {
     exchangeRequests: boolean;
     sessionReminders: boolean;
     messages: boolean;
-    reviews: boolean;
+    reviewsAndRatings: boolean;
     achievements: boolean;
   };
   inApp: {
     exchangeRequests: boolean;
     sessionReminders: boolean;
     messages: boolean;
-    reviews: boolean;
+    reviewsAndRatings: boolean;
     achievements: boolean;
   };
 }

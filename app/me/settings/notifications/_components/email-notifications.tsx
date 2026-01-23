@@ -74,8 +74,8 @@ function EmailNotifications({ settings, onUpdate }: EmailNotificationsProps) {
           label="Reviews & Ratings"
           description="When someone leaves you a review or rating"
           category="email"
-          settingKey="reviews"
-          value={settings.reviews}
+          settingKey="reviewsAndRatings"
+          value={settings.reviewsAndRatings}
           onUpdate={onUpdate}
         />
         <Separator />
@@ -94,8 +94,8 @@ function EmailNotifications({ settings, onUpdate }: EmailNotificationsProps) {
           label="Security Alerts"
           description="Important security and account updates"
           category="email"
-          settingKey="security"
-          value={settings.security}
+          settingKey="securityAlerts"
+          value={settings.securityAlerts}
           onUpdate={onUpdate}
         />
       </CardContent>

@@ -10,8 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/use-auth";
 
 function SkillsAndInterests() {
+  const { user } = useAuth();
+
   const handleAddSkill = () => {
     // Handle add skill logic
     console.log("Adding new skill...");
@@ -21,6 +24,9 @@ function SkillsAndInterests() {
     // Handle add interest logic
     console.log("Adding new interest...");
   };
+
+  const skills = (user?.skills as Array<{ name?: string; skill?: string }>) || [];
+  const interests = (user?.interests as Array<{ name?: string; skill?: string }>) || [];
 
   return (
     <Card>
@@ -38,15 +44,18 @@ function SkillsAndInterests() {
               Skills you can teach to others
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1 bg-accent rounded-full text-sm">
-                JavaScript
-              </span>
-              <span className="px-3 py-1 bg-accent rounded-full text-sm">
-                React
-              </span>
-              <span className="px-3 py-1 bg-accent rounded-full text-sm">
-                TypeScript
-              </span>
+              {skills.length > 0 ? (
+                skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-accent rounded-full text-sm"
+                  >
+                    {skill.name || skill.skill || "Unknown"}
+                  </span>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No skills added yet</p>
+              )}
               <Button variant="outline" size="sm" onClick={handleAddSkill}>
                 + Add Skill
               </Button>
@@ -61,12 +70,18 @@ function SkillsAndInterests() {
               Skills you want to learn
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1 bg-accent rounded-full text-sm">
-                Python
-              </span>
-              <span className="px-3 py-1 bg-accent rounded-full text-sm">
-                Machine Learning
-              </span>
+              {interests.length > 0 ? (
+                interests.map((interest, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-accent rounded-full text-sm"
+                  >
+                    {interest.name || interest.skill || "Unknown"}
+                  </span>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No interests added yet</p>
+              )}
               <Button variant="outline" size="sm" onClick={handleAddInterest}>
                 + Add Interest
               </Button>

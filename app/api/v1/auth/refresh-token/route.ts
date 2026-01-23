@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import type { SuccessResponse, ErrorResponse } from "@/types/api-response";
 
@@ -9,16 +9,32 @@ interface RefreshTokenResponseData {
   refreshToken: string;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const body = await request.json();
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refreshToken")?.value;
+
+    if (!refreshToken) {
+      return NextResponse.json(
+        {
+          statusCode: 401,
+          status: "error",
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Refresh token not found",
+            details: [],
+          },
+        } as ErrorResponse,
+        { status: 401 },
+      );
+    }
 
     const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ refreshToken }),
     });
 
     const data: SuccessResponse<RefreshTokenResponseData> | ErrorResponse =

@@ -16,9 +16,26 @@ async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
   return data as SuccessResponse<T>;
 }
 
+async function refreshToken(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {},
+  retryCount = 0,
 ): Promise<ApiResponse<T>> {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -30,6 +47,13 @@ export async function apiRequest<T>(
     },
     credentials: "include",
   });
+
+  if (response.status === 401 && retryCount === 0) {
+    const refreshed = await refreshToken();
+    if (refreshed) {
+      return apiRequest<T>(endpoint, options, 1);
+    }
+  }
 
   return handleResponse<T>(response);
 }

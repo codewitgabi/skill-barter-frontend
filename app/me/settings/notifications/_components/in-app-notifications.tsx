@@ -69,8 +69,8 @@ function InAppNotifications({ settings, onUpdate }: InAppNotificationsProps) {
           label="Reviews & Ratings"
           description="When someone leaves you a review or rating"
           category="inApp"
-          settingKey="reviews"
-          value={settings.reviews}
+          settingKey="reviewsAndRatings"
+          value={settings.reviewsAndRatings}
           onUpdate={onUpdate}
         />
         <Separator />

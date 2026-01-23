@@ -3,7 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Logo from "./logo";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { apiPost } from "@/lib/api-client";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -64,12 +68,31 @@ export function AppNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const { user } = useAuth();
+  const { logout } = useAuthStore();
 
-  const handleLogout = () => {
-    // Handle logout logic (clear tokens, session, etc.)
-    // For now, just redirect to login
-    setIsLogoutOpen(false);
-    router.push("/auth/signin");
+  const handleLogout = async () => {
+    try {
+      await apiPost("/auth/logout", {});
+      logout();
+      toast.success("Logged out successfully");
+      router.push("/auth/signin");
+    } catch {
+      logout();
+      router.push("/auth/signin");
+    } finally {
+      setIsLogoutOpen(false);
+    }
+  };
+
+  const getUserInitials = () => {
+    if (!user) return "US";
+    return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
+  };
+
+  const getUserName = () => {
+    if (!user) return "User Name";
+    return `${user.first_name} ${user.last_name}`;
   };
 
   return (
@@ -138,9 +161,9 @@ export function AppNavbar() {
               <PopoverTrigger asChild className="hidden sm:flex">
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                   <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                    <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
                     <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                      US
+                      {getUserInitials()}
                     </AvatarFallback>
                   </Avatar>
                 </button>
@@ -151,19 +174,19 @@ export function AppNavbar() {
                   <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
                     <Avatar className="h-10 w-10">
                       <AvatarImage
-                        src="/placeholder-avatar.jpg"
+                        src={user?.profile_picture || "/placeholder-avatar.jpg"}
                         alt="Profile"
                       />
                       <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                        US
+                        {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">
-                        User Name
+                        {getUserName()}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        user@example.com
+                        {user?.email || "user@example.com"}
                       </p>
                     </div>
                   </div>
@@ -275,11 +298,11 @@ export function AppNavbar() {
                       <Link href="/me" onClick={() => setIsOpen(false)}>
                         <Avatar className="h-14 w-14 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                           <AvatarImage
-                            src="/placeholder-avatar.jpg"
+                            src={user?.profile_picture || "/placeholder-avatar.jpg"}
                             alt="Profile"
                           />
                           <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg font-semibold">
-                            US
+                            {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
                       </Link>
@@ -379,11 +402,11 @@ export function AppNavbar() {
                           <Link href="/me" className="flex items-center">
                             <Avatar className="h-6 w-6 mr-2">
                               <AvatarImage
-                                src="/placeholder-avatar.jpg"
+                                src={user?.profile_picture || "/placeholder-avatar.jpg"}
                                 alt="Profile"
                               />
                               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-xs">
-                                US
+                                {getUserInitials()}
                               </AvatarFallback>
                             </Avatar>
                             Profile
