@@ -295,7 +295,7 @@ export function AppNavbar() {
                   <div className="relative z-10 flex flex-col h-full">
                     {/* Header with profile picture and close */}
                     <div className="flex items-center justify-between p-6 border-b">
-                      <Link href="/me" onClick={() => setIsOpen(false)}>
+                      <Link href="/@me" onClick={() => setIsOpen(false)}>
                         <Avatar className="h-14 w-14 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                           <AvatarImage
                             src={user?.profile_picture || "/placeholder-avatar.jpg"}
@@ -399,7 +399,7 @@ export function AppNavbar() {
                           className="w-full justify-start"
                           asChild
                         >
-                          <Link href="/me" className="flex items-center">
+                          <Link href="/me/settings/profile" className="flex items-center">
                             <Avatar className="h-6 w-6 mr-2">
                               <AvatarImage
                                 src={user?.profile_picture || "/placeholder-avatar.jpg"}
@@ -575,7 +575,7 @@ export function LandingNavbar() {
                   <div className="p-6 space-y-3 border-t">
                     <SheetClose asChild>
                       <Button variant="outline" className="w-full" asChild>
-                        <Link href="/auth/login">Sign In</Link>
+                        <Link href="/auth/signin">Sign In</Link>
                       </Button>
                     </SheetClose>
                     <SheetClose asChild>
