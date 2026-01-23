@@ -174,7 +174,7 @@ function ProfilePicture() {
         <CardDescription>Update your profile picture</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center max-sm:flex-col gap-6">
           <div className="relative">
             <Avatar className="h-24 w-24">
               <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
@@ -195,7 +195,7 @@ function ProfilePicture() {
               )}
             </button>
           </div>
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 space-y-2 max-sm:flex max-sm:flex-col max-sm:items-center">
             <p className="text-sm text-muted-foreground">
               JPG, PNG or GIF. Max size of 2MB.
             </p>
