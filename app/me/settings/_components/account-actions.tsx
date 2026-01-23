@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -9,21 +11,58 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { apiDelete } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 function AccountActions() {
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const { logout } = useAuthStore();
+
   const handleExport = () => {
     // Handle export logic
     console.log("Exporting data...");
   };
 
-  const handleDelete = () => {
-    // Handle delete logic - should show confirmation dialog
-    if (
-      confirm(
-        "Are you sure you want to delete your account? This action cannot be undone.",
-      )
-    ) {
-      console.log("Deleting account...");
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await apiDelete("/users/me");
+
+      if (response.status === "success") {
+        logout();
+        toast.success("Account deleted successfully", {
+          description: "Your account has been permanently deleted.",
+        });
+        router.push("/auth/signin");
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        toast.error("Failed to delete account", {
+          description: errorResponse.error?.message || "Please try again.",
+        });
+        setIsDeleteOpen(false);
+      }
+    } catch {
+      toast.error("Failed to delete account", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+      setIsDeleteOpen(false);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -55,9 +94,38 @@ function AccountActions() {
               Permanently delete your account and all data
             </p>
           </div>
-          <Button variant="destructive" onClick={handleDelete}>
-            Delete
-          </Button>
+          <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your
+                  account and remove all your data from our servers. You will be
+                  logged out and redirected to the sign-in page.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete Account"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </CardContent>
     </Card>
