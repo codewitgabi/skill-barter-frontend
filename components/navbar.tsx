@@ -517,6 +517,7 @@ export function LandingNavbar() {
               hideClose
               title="Navigation menu"
               className="w-[85vw] sm:w-[400px] border-l-0 p-0 overflow-hidden"
+              suppressHydrationWarning
             >
               {/* Unique drawer background with gradient */}
               <div className="relative h-full w-full bg-linear-to-br from-background via-background to-accent/5">
