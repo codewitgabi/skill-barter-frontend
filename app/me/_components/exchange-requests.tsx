@@ -13,6 +13,7 @@ import type { IExchangeRequest } from "@/types/dashboard";
 const exchangeRequests: Array<IExchangeRequest> = [
   {
     id: 1,
+    originalId: "1",
     from: "John Smith",
     skill: "Graphic Design",
     wantsToLearn: "React Development",
@@ -23,6 +24,7 @@ const exchangeRequests: Array<IExchangeRequest> = [
   },
   {
     id: 2,
+    originalId: "2",
     from: "Lisa Park",
     skill: "Korean Language",
     wantsToLearn: "Cooking",

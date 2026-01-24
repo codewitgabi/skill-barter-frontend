@@ -98,6 +98,7 @@ export function generateMockRequests(count: number): Array<IExchangeRequest> {
 
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
+    originalId: String(i + 1),
     from:
       names[i % names.length] +
       (i >= names.length ? ` ${Math.floor(i / names.length) + 1}` : ""),
