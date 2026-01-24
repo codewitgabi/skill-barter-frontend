@@ -355,11 +355,11 @@ export function AppNavbar() {
                     <div className="p-6 space-y-3 border-t">
                       {/* Notifications */}
                       <Notifications
-                        variant="mobile"
                         onUnreadCountChange={setNotificationCount}
                         onNotificationClick={() => setIsOpen(false)}
                         trigger={
                           <Button
+                            suppressHydrationWarning
                             variant="outline"
                             className="w-full justify-start"
                           >

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import * as React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, Star, MessageSquare, Calendar, Award, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -119,7 +118,6 @@ const generateMockNotifications = (): Array<INotification> => [
 interface NotificationsProps {
   notifications?: Array<INotification>;
   trigger?: React.ReactNode;
-  variant?: "default" | "mobile";
   onUnreadCountChange?: (count: number) => void;
   onNotificationClick?: () => void; // Callback when notification is clicked (e.g., to close mobile menu)
 }
@@ -127,7 +125,6 @@ interface NotificationsProps {
 export function Notifications({
   notifications,
   trigger,
-  variant = "default",
   onUnreadCountChange,
   onNotificationClick,
 }: NotificationsProps) {
@@ -195,6 +192,7 @@ export function Notifications({
       size="icon"
       className="relative rounded-full"
       aria-label="Notifications"
+      suppressHydrationWarning
     >
       <Bell className="h-5 w-5" />
       {unreadCount > 0 && (
@@ -207,8 +205,15 @@ export function Notifications({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>{trigger || defaultTrigger}</PopoverTrigger>
-      <PopoverContent className="w-80 sm:w-96 p-0" align="end" sideOffset={8}>
+      <PopoverTrigger asChild suppressHydrationWarning>
+        {trigger || defaultTrigger}
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-80 sm:w-96 p-0"
+        align="end"
+        sideOffset={8}
+        suppressHydrationWarning
+      >
         <div className="flex flex-col h-[500px]">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b shrink-0">
@@ -242,7 +247,7 @@ export function Notifications({
                       No notifications
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      You're all caught up!
+                      You&apos;re all caught up!
                     </p>
                   </div>
                 ) : (
