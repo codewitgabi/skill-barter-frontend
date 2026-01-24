@@ -29,6 +29,7 @@ export interface IRecentExchange {
 
 export interface IExchangeRequest {
   id: number;
+  originalId: string;
   from: string;
   skill: string;
   wantsToLearn: string;

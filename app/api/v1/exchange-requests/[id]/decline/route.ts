@@ -4,7 +4,7 @@ import type { SuccessResponse, ErrorResponse } from "@/types/api-response";
 
 const API_BASE_URL = process.env.V1_API_BASE_URL;
 
-export async function POST(
+export async function PATCH(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -31,7 +31,7 @@ export async function POST(
     const response = await fetch(
       `${API_BASE_URL}/exchange-requests/${id}/decline`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
