@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "sonner";
+import { apiGet } from "@/lib/api-client";
 import {
   Users,
   Code,
@@ -35,179 +37,246 @@ const categories = [
   { id: "wellness", label: "Wellness", icon: Heart },
 ];
 
-// Mock data for people with skills
-const people = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    location: "New York, NY",
-    rating: 4.9,
-    reviews: 24,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Web Development", category: "tech", level: "advanced" },
-      { name: "React", category: "tech", level: "advanced" },
-      { name: "TypeScript", category: "tech", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Photography", category: "photography", level: "beginner" },
-      { name: "Spanish", category: "languages", level: "beginner" },
-    ],
-    bio: "Full-stack developer passionate about teaching React and modern web development.",
-  },
-  {
-    id: 2,
-    name: "Mike Chen",
-    location: "San Francisco, CA",
-    rating: 4.8,
-    reviews: 18,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "UI/UX Design", category: "design", level: "advanced" },
-      { name: "Figma", category: "design", level: "advanced" },
-    ],
-    skillsToLearn: [
-      { name: "Web Development", category: "tech", level: "beginner" },
-      { name: "Guitar", category: "music", level: "beginner" },
-    ],
-    bio: "Designer with 5+ years of experience. Love sharing design principles and tools.",
-  },
-  {
-    id: 3,
-    name: "Emma Wilson",
-    location: "London, UK",
-    rating: 5.0,
-    reviews: 32,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Photography", category: "photography", level: "advanced" },
-      { name: "Photo Editing", category: "photography", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Data Science", category: "tech", level: "beginner" },
-      { name: "Yoga", category: "wellness", level: "beginner" },
-    ],
-    bio: "Professional photographer specializing in portrait and landscape photography.",
-  },
-  {
-    id: 4,
-    name: "David Lee",
-    location: "Tokyo, Japan",
-    rating: 4.7,
-    reviews: 15,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Guitar", category: "music", level: "advanced" },
-      { name: "Music Theory", category: "music", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Japanese Cooking", category: "cooking", level: "beginner" },
-      { name: "Web Development", category: "tech", level: "beginner" },
-    ],
-    bio: "Guitarist and music teacher. Can teach from beginner to advanced levels.",
-  },
-  {
-    id: 5,
-    name: "Maria Garcia",
-    location: "Madrid, Spain",
-    rating: 4.9,
-    reviews: 28,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Spanish", category: "languages", level: "advanced" },
-      { name: "English", category: "languages", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Photography", category: "photography", level: "beginner" },
-      { name: "Web Development", category: "tech", level: "beginner" },
-    ],
-    bio: "Native Spanish speaker offering language exchange and tutoring services.",
-  },
-  {
-    id: 6,
-    name: "Alex Thompson",
-    location: "Toronto, Canada",
-    rating: 4.6,
-    reviews: 12,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Cooking", category: "cooking", level: "advanced" },
-      { name: "Baking", category: "cooking", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "French", category: "languages", level: "beginner" },
-      { name: "Photography", category: "photography", level: "beginner" },
-    ],
-    bio: "Chef with expertise in Italian and French cuisine. Love teaching cooking basics.",
-  },
-  {
-    id: 7,
-    name: "Lisa Park",
-    location: "Seoul, South Korea",
-    rating: 4.8,
-    reviews: 21,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Korean", category: "languages", level: "advanced" },
-      { name: "K-Pop Dance", category: "arts", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Web Development", category: "tech", level: "beginner" },
-      { name: "Cooking", category: "cooking", level: "beginner" },
-    ],
-    bio: "Korean language tutor and dance instructor. Passionate about cultural exchange.",
-  },
-  {
-    id: 8,
-    name: "James Brown",
-    location: "Sydney, Australia",
-    rating: 4.7,
-    reviews: 19,
-    avatar: "/placeholder-avatar.jpg",
-    skillsToTeach: [
-      { name: "Fitness Training", category: "fitness", level: "advanced" },
-      { name: "Yoga", category: "wellness", level: "intermediate" },
-    ],
-    skillsToLearn: [
-      { name: "Spanish", category: "languages", level: "beginner" },
-      { name: "Photography", category: "photography", level: "beginner" },
-    ],
-    bio: "Certified fitness trainer and yoga instructor. Focus on strength and flexibility.",
-  },
-];
+interface ConnectionResponse {
+  id: string;
+  avatarUrl: string;
+  initials: string;
+  name: string;
+  location: string;
+  rating: number;
+  numberOfReviews: number;
+  bio: string;
+  teachingSkills: string[];
+  learningSkills: string[];
+}
+
+interface ConnectionsData {
+  connections: ConnectionResponse[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface Person {
+  id: number;
+  originalId: string;
+  name: string;
+  location: string;
+  rating: number;
+  reviews: number;
+  avatar: string;
+  skillsToTeach: {
+    name: string;
+    category: string;
+    level: string;
+  }[];
+  skillsToLearn: {
+    name: string;
+    category: string;
+    level: string;
+  }[];
+  bio: string;
+}
 
 function Page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [people, setPeople] = useState<Person[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
 
-  // Filter people based on search and category
+  // Helper function to determine category from skill name
+  const getCategoryFromSkill = (skillName: string): string => {
+    const lowerSkill = skillName.toLowerCase();
+    if (
+      lowerSkill.includes("web") ||
+      lowerSkill.includes("react") ||
+      lowerSkill.includes("javascript") ||
+      lowerSkill.includes("typescript") ||
+      lowerSkill.includes("python") ||
+      lowerSkill.includes("code") ||
+      lowerSkill.includes("programming") ||
+      lowerSkill.includes("development")
+    ) {
+      return "tech";
+    }
+    if (
+      lowerSkill.includes("design") ||
+      lowerSkill.includes("ui") ||
+      lowerSkill.includes("ux") ||
+      lowerSkill.includes("figma")
+    ) {
+      return "design";
+    }
+    if (
+      lowerSkill.includes("music") ||
+      lowerSkill.includes("guitar") ||
+      lowerSkill.includes("piano") ||
+      lowerSkill.includes("dance")
+    ) {
+      return "music";
+    }
+    if (
+      lowerSkill.includes("photo") ||
+      lowerSkill.includes("camera")
+    ) {
+      return "photography";
+    }
+    if (
+      lowerSkill.includes("spanish") ||
+      lowerSkill.includes("english") ||
+      lowerSkill.includes("korean") ||
+      lowerSkill.includes("french") ||
+      lowerSkill.includes("language")
+    ) {
+      return "languages";
+    }
+    if (
+      lowerSkill.includes("cook") ||
+      lowerSkill.includes("baking") ||
+      lowerSkill.includes("chef")
+    ) {
+      return "cooking";
+    }
+    if (
+      lowerSkill.includes("fitness") ||
+      lowerSkill.includes("training") ||
+      lowerSkill.includes("workout")
+    ) {
+      return "fitness";
+    }
+    if (
+      lowerSkill.includes("yoga") ||
+      lowerSkill.includes("wellness") ||
+      lowerSkill.includes("meditation")
+    ) {
+      return "wellness";
+    }
+    if (
+      lowerSkill.includes("art") ||
+      lowerSkill.includes("drawing") ||
+      lowerSkill.includes("painting")
+    ) {
+      return "arts";
+    }
+    if (
+      lowerSkill.includes("business") ||
+      lowerSkill.includes("marketing")
+    ) {
+      return "business";
+    }
+    if (
+      lowerSkill.includes("education") ||
+      lowerSkill.includes("teaching") ||
+      lowerSkill.includes("tutor")
+    ) {
+      return "education";
+    }
+    return "all";
+  };
+
+  // Reset page when search or category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
+
+  // Fetch connections from API
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        setIsLoading(true);
+        const queryParams = new URLSearchParams();
+        
+        if (searchQuery) {
+          queryParams.append("search", searchQuery);
+        }
+        if (selectedCategory !== "all") {
+          // For now, we'll use search for category filtering
+          // The backend might need to support category filtering
+        }
+        queryParams.append("page", currentPage.toString());
+        queryParams.append("limit", "20");
+
+        const queryString = queryParams.toString();
+        const response = await apiGet<ConnectionsData>(
+          `/connections${queryString ? `?${queryString}` : ""}`,
+        );
+
+        if (response.status === "success" && response.data) {
+          const mappedPeople: Person[] = response.data.connections.map(
+            (conn, index) => {
+              const numericId = parseInt(conn.id, 10);
+              const id = isNaN(numericId) ? index + 1 : numericId;
+
+              return {
+                id,
+                originalId: conn.id,
+                name: conn.name,
+                location: conn.location,
+                rating: conn.rating,
+                reviews: conn.numberOfReviews,
+                avatar: conn.avatarUrl || "/placeholder-avatar.jpg",
+                skillsToTeach: conn.teachingSkills.map((skill) => ({
+                  name: skill,
+                  category: getCategoryFromSkill(skill),
+                  level: "intermediate", // API doesn't provide level, defaulting
+                })),
+                skillsToLearn: conn.learningSkills.map((skill) => ({
+                  name: skill,
+                  category: getCategoryFromSkill(skill),
+                  level: "beginner", // API doesn't provide level, defaulting
+                })),
+                bio: conn.bio || "",
+              };
+            },
+          );
+          setPeople(mappedPeople);
+          setPagination(response.data.pagination);
+        } else {
+          toast.error("Failed to load connections", {
+            description: "Please try again later.",
+          });
+        }
+      } catch (error) {
+        toast.error("Failed to load connections", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchConnections();
+  }, [searchQuery, selectedCategory, currentPage]);
+
+  // Filter people based on category (client-side since API might not support it)
   const filteredPeople = useMemo(() => {
+    if (selectedCategory === "all") {
+      return people;
+    }
     return people.filter((person) => {
-      // Search filter
-      const matchesSearch =
-        searchQuery === "" ||
-        person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        person.skillsToTeach.some((skill) =>
-          skill.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ) ||
-        person.skillsToLearn.some((skill) =>
-          skill.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ) ||
-        person.bio.toLowerCase().includes(searchQuery.toLowerCase());
-
-      // Category filter
-      const matchesCategory =
-        selectedCategory === "all" ||
+      return (
         person.skillsToTeach.some(
           (skill) => skill.category === selectedCategory,
         ) ||
         person.skillsToLearn.some(
           (skill) => skill.category === selectedCategory,
-        );
-
-      return matchesSearch && matchesCategory;
+        )
+      );
     });
-  }, [searchQuery, selectedCategory]);
+  }, [people, selectedCategory]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -229,15 +298,29 @@ function Page() {
       {/* Results Count */}
       <div className="mb-4 sm:mb-6">
         <p className="text-sm text-muted-foreground">
-          Found{" "}
-          <span className="font-semibold text-foreground">
-            {filteredPeople.length}
-          </span>{" "}
-          {filteredPeople.length === 1 ? "person" : "people"}
+          {isLoading ? (
+            "Loading..."
+          ) : (
+            <>
+              Found{" "}
+              <span className="font-semibold text-foreground">
+                {pagination.total || filteredPeople.length}
+              </span>{" "}
+              {(pagination.total || filteredPeople.length) === 1
+                ? "person"
+                : "people"}
+            </>
+          )}
         </p>
       </div>
 
-      <PeopleGrid filteredPeople={filteredPeople} />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-muted-foreground">Loading connections...</p>
+        </div>
+      ) : (
+        <PeopleGrid filteredPeople={filteredPeople} />
+      )}
     </div>
   );
 }
