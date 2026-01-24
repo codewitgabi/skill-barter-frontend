@@ -35,6 +35,7 @@ export interface IExchangeRequest {
   message: string;
   avatar: string;
   time: string;
+  website?: string;
 }
 
 export interface ISkillProgress {

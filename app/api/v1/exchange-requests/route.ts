@@ -9,6 +9,7 @@ interface UserInfo {
   name: string;
   username: string;
   avatarUrl: string;
+  website: string;
   initials: string;
 }
 

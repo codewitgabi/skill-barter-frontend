@@ -265,6 +265,7 @@ export function AppNavbar() {
                 <button
                   className="relative flex items-center justify-center p-2 rounded-md hover:bg-accent transition-colors"
                   aria-label="Toggle menu"
+                  suppressHydrationWarning
                 >
                   <TextAlignEnd className="h-7 w-7" strokeWidth={1.5} />
                 </button>
@@ -508,6 +509,7 @@ export function LandingNavbar() {
               <button
                 className="relative flex items-center justify-center p-2 rounded-md hover:bg-accent transition-colors"
                 aria-label="Toggle menu"
+                suppressHydrationWarning
               >
                 <TextAlignEnd className="h-7 w-7" strokeWidth={1.5} />
               </button>

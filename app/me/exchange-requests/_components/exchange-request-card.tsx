@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Clock } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Clock, ExternalLink } from "lucide-react";
 import type { IExchangeRequest } from "@/types/dashboard";
 import ExchangeRequestActions from "./exchange-request-actions";
 
@@ -39,9 +40,29 @@ function ExchangeRequestCard({
           <div className="flex-1 min-w-0">
             {/* Header with name and time */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-2">
-              <h3 className="text-base sm:text-lg font-semibold">
-                {request.from}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-semibold">
+                  {request.from}
+                </h3>
+                {request.website && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={request.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{request.website}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 <span>{request.time}</span>
