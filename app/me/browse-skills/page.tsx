@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/api-client";
 import {
@@ -83,6 +84,7 @@ interface Person {
 
 function Page() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [people, setPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,6 +95,11 @@ function Page() {
     total: 0,
     totalPages: 0,
   });
+
+  // Debounce search query updates
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setDebouncedSearchQuery(value);
+  }, 500);
 
   // Helper function to determine category from skill name
   const getCategoryFromSkill = (skillName: string): string => {
@@ -184,10 +191,15 @@ function Page() {
     return "all";
   };
 
-  // Reset page when search or category changes
+  // Update debounced search when searchQuery changes
+  useEffect(() => {
+    debouncedSetSearch(searchQuery);
+  }, [searchQuery, debouncedSetSearch]);
+
+  // Reset page when debounced search or category changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedCategory]);
+  }, [debouncedSearchQuery, selectedCategory]);
 
   // Fetch connections from API
   useEffect(() => {
@@ -196,8 +208,8 @@ function Page() {
         setIsLoading(true);
         const queryParams = new URLSearchParams();
         
-        if (searchQuery) {
-          queryParams.append("search", searchQuery);
+        if (debouncedSearchQuery) {
+          queryParams.append("search", debouncedSearchQuery);
         }
         if (selectedCategory !== "all") {
           // For now, we'll use search for category filtering
@@ -259,7 +271,7 @@ function Page() {
     };
 
     fetchConnections();
-  }, [searchQuery, selectedCategory, currentPage]);
+  }, [debouncedSearchQuery, selectedCategory, currentPage]);
 
   // Filter people based on category (client-side since API might not support it)
   const filteredPeople = useMemo(() => {
