@@ -11,6 +11,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiPatch } from "@/lib/api-client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface SessionBooking {
   id: string;
@@ -85,6 +95,8 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
   const [message, setMessage] = useState(booking.message || "");
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useState(false);
 
   // Update form state when booking changes
   useEffect(() => {
@@ -192,6 +204,42 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleAccept = async () => {
+    try {
+      setIsAccepting(true);
+      setIsAcceptDialogOpen(false);
+
+      const response = await apiPatch<SessionBooking>(
+        `/session-bookings/${booking.id}/accept`,
+        {},
+      );
+
+      if (response.status === "success" && response.data) {
+        toast.success("Session booking accepted successfully", {
+          description: "Sessions have been created based on the booking details.",
+        });
+
+        // Update parent component with new data
+        if (onBookingUpdate) {
+          onBookingUpdate(response.data);
+        }
+      } else {
+        toast.error("Failed to accept session booking", {
+          description: "Please try again later.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to accept session booking", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+      });
+    } finally {
+      setIsAccepting(false);
     }
   };
 
@@ -493,19 +541,78 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
 
       {/* Recipient Accept Button */}
       {isRecipient && (
-        <Card>
-          <CardContent className="pt-6">
-            <Button
-              className="w-full sm:w-auto"
-              onClick={() => {
-                // TODO: Implement accept logic
-                console.log("Accept clicked");
-              }}
-            >
-              Accept Session Booking
-            </Button>
-          </CardContent>
-        </Card>
+        <>
+          <Card>
+            <CardContent className="pt-6">
+              <Button
+                className="w-full sm:w-auto"
+                onClick={() => setIsAcceptDialogOpen(true)}
+                disabled={isAccepting}
+              >
+                {isAccepting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Accept Session Booking
+              </Button>
+            </CardContent>
+          </Card>
+
+          <AlertDialog open={isAcceptDialogOpen} onOpenChange={setIsAcceptDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Accept Session Booking?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div className="space-y-2">
+                    <div>
+                      By accepting this session booking, sessions will be automatically created based on the following details:
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-sm mt-2">
+                      <li>
+                        <strong>{booking.totalSessions}</strong> {booking.totalSessions === 1 ? "session" : "sessions"} total
+                      </li>
+                      <li>
+                        <strong>{booking.daysPerWeek}</strong> {booking.daysPerWeek === 1 ? "day" : "days"} per week
+                      </li>
+                      <li>
+                        Days: <strong>{booking.daysOfWeek.join(", ")}</strong>
+                      </li>
+                      <li>
+                        Time: <strong>
+                          {new Date(`2000-01-01T${booking.startTime}`).toLocaleTimeString(
+                            "en-US",
+                            { hour: "numeric", minute: "2-digit", hour12: true },
+                          )}
+                        </strong>
+                      </li>
+                      <li>
+                        Duration: <strong>{booking.duration} minutes</strong>
+                      </li>
+                    </ul>
+                    <div className="mt-3 font-medium">
+                      Are you sure you want to proceed?
+                    </div>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isAccepting}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleAccept}
+                  disabled={isAccepting}
+                >
+                  {isAccepting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Accepting...
+                    </>
+                  ) : (
+                    "Accept & Create Sessions"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )}
 
       {/* Non-editable fields for recipient (when not pending) */}
