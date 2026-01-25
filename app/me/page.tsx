@@ -2,7 +2,6 @@ import QuickStart from "./_components/quick-start";
 import UpcomingSessions from "./_components/upcoming-sessions";
 import QuickActions from "./_components/quick-actions";
 import QuickExchanges from "./_components/quick-exchanges";
-import ExchangeRequests from "./_components/exchange-requests";
 import SkillProgress from "./_components/skill-progress";
 import RecentActivity from "./_components/recent-activity";
 import CommunityHighlights from "./_components/community-highlights";
@@ -33,7 +32,6 @@ function Page() {
           </div>
 
           <QuickExchanges />
-          <ExchangeRequests />
           <SkillProgress />
           <RecentActivity />
           <CommunityHighlights />

@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -6,79 +10,168 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Star, ArrowRight } from "lucide-react";
-import type { IRecentExchange } from "@/types/dashboard";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { apiGet } from "@/lib/api-client";
+import { timeSince } from "@/lib/helpers";
 
-const recentExchanges: Array<IRecentExchange> = [
-  {
-    id: 1,
-    type: "Completed",
-    skill: "UI/UX Design",
-    partner: "Alex Thompson",
-    date: "2 days ago",
-    rating: 5,
-    avatar: "/placeholder-avatar.jpg",
-    status: "completed",
-  },
-  {
-    id: 2,
-    type: "Completed",
-    skill: "Guitar Lessons",
-    partner: "David Lee",
-    date: "5 days ago",
-    rating: 5,
-    avatar: "/placeholder-avatar.jpg",
-    status: "completed",
-  },
-  {
-    id: 3,
-    type: "In Progress",
-    skill: "Data Science",
-    partner: "Emma Wilson",
-    date: "Started 1 week ago",
-    rating: null,
-    avatar: "/placeholder-avatar.jpg",
-    status: "active",
-    progress: 65,
-  },
-];
+interface ExchangeRequestResponse {
+  id: string;
+  requester: {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl: string;
+    website: string;
+    initials: string;
+  };
+  receiver: {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl: string;
+    website: string;
+    initials: string;
+  };
+  message: string | null;
+  teachingSkill: string;
+  learningSkill: string;
+  status: string;
+  createdAt: string;
+}
+
+interface ExchangeRequestsData {
+  exchangeRequests: ExchangeRequestResponse[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 function QuickExchanges() {
+  const router = useRouter();
+  const [exchangeRequests, setExchangeRequests] = useState<ExchangeRequestResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExchangeRequests = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiGet<ExchangeRequestsData>(
+          "/exchange-requests?limit=3",
+        );
+
+        if (response.status === "success" && response.data) {
+          setExchangeRequests(response.data.exchangeRequests.slice(0, 3));
+        }
+      } catch {
+        // Silently fail for dashboard component
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchExchangeRequests();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+            <div>
+              <CardTitle>Quick Exchanges</CardTitle>
+              <CardDescription>
+                People interested in exchanging skills with you
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (exchangeRequests.length === 0) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+            <div>
+              <CardTitle>Quick Exchanges</CardTitle>
+              <CardDescription>
+                People interested in exchanging skills with you
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No exchange requests
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const pendingCount = exchangeRequests.filter(
+    (req) => req.status === "pending",
+  ).length;
+
   return (
     <Card className="shadow-none">
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
           <div>
-            <CardTitle>Recent Exchanges</CardTitle>
+            <CardTitle>Quick Exchanges</CardTitle>
             <CardDescription>
-              Your latest skill exchange activities
+              People interested in exchanging skills with you
             </CardDescription>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-full self-start sm:self-auto"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {pendingCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="self-start sm:self-auto"
+              >
+                {pendingCount} New
+              </Badge>
+            )}
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full self-start sm:self-auto"
+              onClick={() => router.push("/@me/exchange-requests")}
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {recentExchanges.map((exchange) => (
+        {exchangeRequests.map((request) => (
           <div
-            key={exchange.id}
+            key={request.id}
             className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
             <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0">
-              <AvatarImage src={exchange.avatar} alt={exchange.partner} />
+              <AvatarImage
+                src={request.requester.avatarUrl || "/placeholder-avatar.jpg"}
+                alt={request.requester.name}
+              />
               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                {exchange.partner
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+                {request.requester.initials ||
+                  request.requester.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
@@ -86,45 +179,39 @@ function QuickExchanges() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span className="font-semibold truncate">
-                      {exchange.partner}
+                      {request.requester.name}
                     </span>
                     <Badge
                       variant={
-                        exchange.status === "completed"
+                        request.status === "accepted"
                           ? "default"
-                          : "secondary"
+                          : request.status === "pending"
+                          ? "secondary"
+                          : "outline"
                       }
-                      className="shrink-0"
+                      className="shrink-0 text-xs"
                     >
-                      {exchange.status === "completed"
-                        ? "Completed"
-                        : "In Progress"}
+                      {request.status.charAt(0).toUpperCase() +
+                        request.status.slice(1)}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {exchange.skill}
-                  </p>
-                </div>
-                {exchange.rating && (
-                  <div className="flex items-center gap-1 shrink-0">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">
-                      {exchange.rating}
-                    </span>
+                  {request.message && (
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                      {request.message}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      Teaching: {request.teachingSkill}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      Learning: {request.learningSkill}
+                    </Badge>
                   </div>
-                )}
+                </div>
               </div>
-              {exchange.progress && (
-                <div className="mt-3">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                    <span>Progress</span>
-                    <span>{exchange.progress}%</span>
-                  </div>
-                  <Progress value={exchange.progress} className="h-2" />
-                </div>
-              )}
               <p className="text-xs text-muted-foreground mt-2">
-                {exchange.date}
+                {timeSince(request.createdAt)}
               </p>
             </div>
           </div>
