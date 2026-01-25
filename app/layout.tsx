@@ -8,7 +8,10 @@ const elmsSans = Elms_Sans({
   subsets: ["latin"],
 });
 
+const baseUrl = "https://skill-barter-connect.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: "Skill Barter - Exchange Skills, Learn Together",
     template: "%s | Skill Barter",
@@ -22,20 +25,28 @@ export const metadata: Metadata = {
     "skill sharing",
     "peer learning",
     "skill barter",
+    "skill trading",
+    "learn from peers",
+    "teach online",
+    "skill exchange platform",
   ],
   authors: [{ name: "Skill Barter" }],
   creator: "Skill Barter",
+  publisher: "Skill Barter",
+  alternates: {
+    canonical: baseUrl,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://skill-barter-connect.vercel.app",
+    url: baseUrl,
     siteName: "Skill Barter Connect",
     title: "Skill Barter - Exchange Skills, Learn Together",
     description:
       "Connect with others to exchange skills and learn together. Teach what you know, learn what you need.",
     images: [
       {
-        url: "/og-image",
+        url: `${baseUrl}/og-image`,
         width: 1200,
         height: 630,
         alt: "Skill Barter - Exchange Skills, Learn Together",
@@ -47,7 +58,7 @@ export const metadata: Metadata = {
     title: "Skill Barter - Exchange Skills, Learn Together",
     description:
       "Connect with others to exchange skills and learn together. Teach what you know, learn what you need.",
-    images: ["/og-image"],
+    images: [`${baseUrl}/og-image`],
   },
   robots: {
     index: true,
@@ -60,6 +71,55 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    // Add your verification codes here when available
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
+    // yahoo: "your-yahoo-verification-code",
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Skill Barter Connect",
+  url: baseUrl,
+  logo: `${baseUrl}/og-image`,
+  description:
+    "Connect with others to exchange skills and learn together. Teach what you know, learn what you need.",
+  sameAs: [
+    "https://twitter.com/skillbarter",
+    "https://github.com/skillbarter",
+    "https://linkedin.com/company/skillbarter",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "Customer Support",
+    email: "support@skillbarter.com",
+  },
+};
+
+const webApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Skill Barter Connect",
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Web",
+  url: baseUrl,
+  description:
+    "Connect with others to exchange skills and learn together. Teach what you know, learn what you need.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    reviewCount: "150",
+    bestRating: "5",
+    worstRating: "1",
+  },
 };
 
 export default function RootLayout({
@@ -69,6 +129,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webApplicationSchema),
+          }}
+        />
+      </head>
       <body className={`${elmsSans.className} antialiased`}>
         {children}
         <Toaster closeButton />

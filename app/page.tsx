@@ -9,17 +9,23 @@ import FAQ from "@/app/_components/faq";
 import CTASection from "@/app/_components/cta-section";
 import Footer from "@/app/_components/footer";
 
+const baseUrl = "https://skill-barter-connect.vercel.app";
+
 export const metadata: Metadata = {
   title: "Home",
   description:
     "Join Skill Barter to exchange skills with others. Teach what you know, learn what you need. Connect with a community of learners and teachers.",
+  alternates: {
+    canonical: baseUrl,
+  },
   openGraph: {
     title: "Skill Barter - Exchange Skills, Learn Together",
     description:
       "Join Skill Barter to exchange skills with others. Teach what you know, learn what you need. Connect with a community of learners and teachers.",
+    url: baseUrl,
     images: [
       {
-        url: "/og-image",
+        url: `${baseUrl}/og-image`,
         width: 1200,
         height: 630,
         alt: "Skill Barter - Exchange Skills, Learn Together",
@@ -31,7 +37,7 @@ export const metadata: Metadata = {
     title: "Skill Barter - Exchange Skills, Learn Together",
     description:
       "Join Skill Barter to exchange skills with others. Teach what you know, learn what you need.",
-    images: ["/og-image"],
+    images: [`${baseUrl}/og-image`],
   },
 };
 
