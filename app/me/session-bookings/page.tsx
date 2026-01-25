@@ -49,6 +49,7 @@ interface SessionBookingsData {
   draftBookings: SessionBooking[];
   pendingBookings: SessionBooking[];
   changesRequestedBookings: SessionBooking[];
+  changesMadeBookings: SessionBooking[];
   pagination: {
     page: number;
     limit: number;
@@ -75,6 +76,7 @@ function Page() {
             ...response.data.draftBookings,
             ...response.data.pendingBookings,
             ...response.data.changesRequestedBookings,
+            ...(response.data.changesMadeBookings || []),
           ];
           setAllBookings(combined);
         } else {

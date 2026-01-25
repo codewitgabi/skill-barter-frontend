@@ -80,7 +80,7 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
     isProposer &&
     (booking.status === "draft" || booking.status === "changes_requested");
   const isEditableForRecipient =
-    isRecipient && booking.status === "pending";
+    isRecipient && (booking.status === "pending" || booking.status === "changes_made");
 
   // Form state for proposer (draft/changes_requested)
   const [daysPerWeek, setDaysPerWeek] = useState(booking.daysPerWeek);
@@ -417,6 +417,8 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
               <p className="text-sm text-muted-foreground">
                 {booking.status === "pending"
                   ? "Your session proposal has been sent. You are currently waiting for the recipient to review and respond to your proposal."
+                  : booking.status === "changes_made"
+                  ? "You have made the requested changes. The recipient will review and respond to your updated proposal."
                   : "Your session proposal details are shown below."}
               </p>
             </CardHeader>
@@ -459,13 +461,15 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         </>
       )}
 
-      {/* Recipient: Current Session Details (pending) */}
+      {/* Recipient: Current Session Details (pending/changes_made) */}
       {isEditableForRecipient && (
         <Card>
           <CardHeader>
             <CardTitle>Current Session Proposal</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Review the proposed session details below before requesting adjustments.
+              {booking.status === "changes_made"
+                ? "The proposer has made the requested changes. Review the updated session details below."
+                : "Review the proposed session details below before requesting adjustments."}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -506,13 +510,93 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         </Card>
       )}
 
-      {/* Recipient Editable Field (pending) */}
+      {/* Recipient Accept Button (for changes_made status) */}
+      {isRecipient && booking.status === "changes_made" && (
+        <>
+          <Card>
+            <CardContent className="pt-6">
+              <Button
+                className="w-full sm:w-auto"
+                onClick={() => setIsAcceptDialogOpen(true)}
+                disabled={isAccepting}
+              >
+                {isAccepting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Accept Session Booking
+              </Button>
+            </CardContent>
+          </Card>
+
+          <AlertDialog open={isAcceptDialogOpen} onOpenChange={setIsAcceptDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Accept Session Booking?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div className="space-y-2">
+                    <div>
+                      By accepting this session booking, sessions will be automatically created based on the following details:
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-sm mt-2">
+                      <li>
+                        <strong>{booking.totalSessions}</strong> {booking.totalSessions === 1 ? "session" : "sessions"} total
+                      </li>
+                      <li>
+                        <strong>{booking.daysPerWeek}</strong> {booking.daysPerWeek === 1 ? "day" : "days"} per week
+                      </li>
+                      <li>
+                        Days: <strong>{booking.daysOfWeek.join(", ")}</strong>
+                      </li>
+                      <li>
+                        Time: <strong>
+                          {new Date(`2000-01-01T${booking.startTime}`).toLocaleTimeString(
+                            "en-US",
+                            { hour: "numeric", minute: "2-digit", hour12: true },
+                          )}
+                        </strong>
+                      </li>
+                      <li>
+                        Duration: <strong>{booking.duration} minutes</strong>
+                      </li>
+                    </ul>
+                    <div className="mt-3 font-medium">
+                      Are you sure you want to proceed?
+                    </div>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isAccepting}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleAccept}
+                  disabled={isAccepting}
+                >
+                  {isAccepting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Accepting...
+                    </>
+                  ) : (
+                    "Accept & Create Sessions"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
+
+      {/* Recipient Editable Field (pending/changes_made) */}
       {isEditableForRecipient && (
         <Card>
           <CardHeader>
-            <CardTitle>Request Adjustments</CardTitle>
+            <CardTitle>
+              {booking.status === "changes_made" ? "Request More Adjustments" : "Request Adjustments"}
+            </CardTitle>
             <p className="text-sm text-muted-foreground">
-              You can suggest changes to the session proposal here.
+              {booking.status === "changes_made"
+                ? "If you need additional changes, you can request them here. Otherwise, you can accept the updated proposal."
+                : "You can suggest changes to the session proposal here."}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -539,8 +623,8 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         </Card>
       )}
 
-      {/* Recipient Accept Button */}
-      {isRecipient && (
+      {/* Recipient Accept Button (for pending status) */}
+      {isRecipient && booking.status === "pending" && (
         <>
           <Card>
             <CardContent className="pt-6">

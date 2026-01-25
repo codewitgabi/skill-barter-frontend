@@ -51,6 +51,7 @@ interface SessionBookingsResponseData {
   draftBookings: SessionBooking[];
   pendingBookings: SessionBooking[];
   changesRequestedBookings: SessionBooking[];
+  changesMadeBookings: SessionBooking[];
   pagination: Pagination;
 }
 

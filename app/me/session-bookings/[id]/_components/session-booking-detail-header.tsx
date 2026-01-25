@@ -58,6 +58,8 @@ function SessionBookingDetailHeader({
         return "outline";
       case "changes_requested":
         return "destructive";
+      case "changes_made":
+        return "default";
       default:
         return "default";
     }
@@ -104,6 +106,8 @@ function SessionBookingDetailHeader({
                 >
                   {booking.status === "changes_requested"
                     ? "Changes Requested"
+                    : booking.status === "changes_made"
+                    ? "Changes Made"
                     : booking.status.charAt(0).toUpperCase() +
                       booking.status.slice(1)}
                 </Badge>

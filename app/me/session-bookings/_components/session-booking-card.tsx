@@ -57,6 +57,8 @@ function SessionBookingCard({ booking, onClick }: SessionBookingCardProps) {
         return "outline";
       case "changes_requested":
         return "destructive";
+      case "changes_made":
+        return "default";
       default:
         return "default";
     }
@@ -108,6 +110,8 @@ function SessionBookingCard({ booking, onClick }: SessionBookingCardProps) {
                 <Badge variant={getStatusVariant(booking.status)} className="text-xs">
                   {booking.status === "changes_requested"
                     ? "Changes Requested"
+                    : booking.status === "changes_made"
+                    ? "Changes Made"
                     : booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                 </Badge>
               </div>
