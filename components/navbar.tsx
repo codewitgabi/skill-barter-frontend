@@ -59,6 +59,7 @@ const appNavLinks = [
   { href: "/@me", label: "Overview" },
   { href: "/@me/browse-skills", label: "Browse skills" },
   { href: "/@me/sessions", label: "Sessions" },
+  { href: "/@me/session-bookings", label: "Session Bookings" },
   { href: "/@me/exchange-requests", label: "Exchange Requests" },
 ];
 
@@ -158,8 +159,11 @@ export function AppNavbar() {
 
             {/* Desktop: Profile Picture with Popover */}
             <Popover>
-              <PopoverTrigger asChild className="hidden sm:flex">
-                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+              <PopoverTrigger asChild className="hidden sm:flex" suppressHydrationWarning>
+                <button 
+                  className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  suppressHydrationWarning
+                >
                   <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                     <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
                     <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
@@ -168,7 +172,7 @@ export function AppNavbar() {
                   </Avatar>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-64 p-2" align="end" sideOffset={8}>
+              <PopoverContent className="w-64 p-2" align="end" sideOffset={8} suppressHydrationWarning>
                 <div className="flex flex-col">
                   {/* User Info */}
                   <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">

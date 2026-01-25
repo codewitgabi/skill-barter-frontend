@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         source: "/@me/chat",
         destination: "/me/chat",
       },
+      {
+        source: "/@me/session-bookings",
+        destination: "/me/session-bookings",
+      },
     ];
   },
 };

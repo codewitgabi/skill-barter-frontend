@@ -1,5 +1,7 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, CheckCircle2, Play } from "lucide-react";
+import { Calendar, Clock, CheckCircle2, Play, BookOpen } from "lucide-react";
 
 interface SessionHeaderProps {
   activeTab: string;
@@ -16,10 +18,20 @@ function SessionHeader({ activeTab, onTabChange, stats }: SessionHeaderProps) {
   return (
     <>
       <div className="mb-4 sm:mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">My Sessions</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Manage your learning and teaching sessions
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">My Sessions</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Manage your learning and teaching sessions
+            </p>
+          </div>
+          <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
+            <Link href="/me/session-bookings" className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              <span>Session Bookings</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
