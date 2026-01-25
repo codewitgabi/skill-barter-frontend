@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { apiPatch } from "@/lib/api-client";
 
 interface SessionBooking {
   id: string;
@@ -48,6 +50,7 @@ interface SessionBooking {
 
 interface SessionBookingFormProps {
   booking: SessionBooking;
+  onBookingUpdate?: (updatedBooking: SessionBooking) => void;
 }
 
 const DAYS_OF_WEEK = [
@@ -60,7 +63,7 @@ const DAYS_OF_WEEK = [
   "Sunday",
 ];
 
-function SessionBookingForm({ booking }: SessionBookingFormProps) {
+function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProps) {
   const isProposer = booking.userRole === "proposer";
   const isRecipient = booking.userRole === "recipient";
   const isEditableForProposer =
@@ -83,6 +86,16 @@ function SessionBookingForm({ booking }: SessionBookingFormProps) {
 
   const [isSaving, setIsSaving] = useState(false);
 
+  // Update form state when booking changes
+  useEffect(() => {
+    setDaysPerWeek(booking.daysPerWeek);
+    setSelectedDays(booking.daysOfWeek);
+    setStartTime(booking.startTime);
+    setDuration(booking.duration);
+    setTotalSessions(booking.totalSessions);
+    setMessage(booking.message || "");
+  }, [booking]);
+
   const handleDayToggle = (day: string) => {
     if (!isEditableForProposer) return;
 
@@ -96,15 +109,84 @@ function SessionBookingForm({ booking }: SessionBookingFormProps) {
   };
 
   const handleSave = async () => {
-    // TODO: Implement save logic
-    console.log("Save clicked", {
-      daysPerWeek,
-      selectedDays,
-      startTime,
-      duration,
-      totalSessions,
-      message,
-    });
+    try {
+      setIsSaving(true);
+
+      // Validation
+      if (isEditableForProposer) {
+        if (selectedDays.length === 0) {
+          toast.error("Please select at least one day of the week");
+          setIsSaving(false);
+          return;
+        }
+        if (daysPerWeek < 1 || daysPerWeek > 7) {
+          toast.error("Days per week must be between 1 and 7");
+          setIsSaving(false);
+          return;
+        }
+        if (duration < 15) {
+          toast.error("Duration must be at least 15 minutes");
+          setIsSaving(false);
+          return;
+        }
+        if (totalSessions < 1) {
+          toast.error("Total sessions must be at least 1");
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      // Build request body based on user role
+      const requestBody: {
+        daysPerWeek?: number;
+        daysOfWeek?: string[];
+        startTime?: string;
+        duration?: number;
+        totalSessions?: number;
+        message?: string | null;
+      } = {};
+
+      if (isEditableForProposer) {
+        // Proposer: send all fields except message
+        requestBody.daysPerWeek = daysPerWeek;
+        requestBody.daysOfWeek = selectedDays;
+        requestBody.startTime = startTime;
+        requestBody.duration = duration;
+        requestBody.totalSessions = totalSessions;
+      } else if (isEditableForRecipient) {
+        // Recipient: only send message
+        requestBody.message = message || null;
+      }
+
+      const response = await apiPatch<SessionBooking>(
+        `/session-bookings/${booking.id}`,
+        requestBody,
+      );
+
+      if (response.status === "success" && response.data) {
+        toast.success("Session booking updated successfully", {
+          description: "Your changes have been saved.",
+        });
+        
+        // Update parent component with new data
+        if (onBookingUpdate) {
+          onBookingUpdate(response.data);
+        }
+      } else {
+        toast.error("Failed to update session booking", {
+          description: "Please try again later.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to update session booking", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (

@@ -123,7 +123,12 @@ function Page() {
         <SessionBookingDetailHeader booking={booking} />
 
         {/* Form */}
-        <SessionBookingForm booking={booking} />
+        <SessionBookingForm
+          booking={booking}
+          onBookingUpdate={(updatedBooking) => {
+            setBooking(updatedBooking);
+          }}
+        />
       </div>
     </div>
   );
