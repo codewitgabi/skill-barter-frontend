@@ -134,6 +134,12 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
           setIsSaving(false);
           return;
         }
+      } else if (isEditableForRecipient) {
+        if (!message || message.trim().length === 0) {
+          toast.error("Please enter a message before submitting");
+          setIsSaving(false);
+          return;
+        }
       }
 
       // Build request body based on user role
@@ -351,6 +357,53 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         </Card>
       )}
 
+      {/* Recipient: Current Session Details (pending) */}
+      {isEditableForRecipient && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Current Session Proposal</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Review the proposed session details below before requesting adjustments.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-muted-foreground">Days Per Week</Label>
+                <p className="text-sm font-medium mt-1">{booking.daysPerWeek}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Duration</Label>
+                <p className="text-sm font-medium mt-1">{booking.duration} mins</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Start Time</Label>
+                <p className="text-sm font-medium mt-1">
+                  {new Date(`2000-01-01T${booking.startTime}`).toLocaleTimeString(
+                    "en-US",
+                    { hour: "numeric", minute: "2-digit", hour12: true },
+                  )}
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Total Sessions</Label>
+                <p className="text-sm font-medium mt-1">{booking.totalSessions}</p>
+              </div>
+            </div>
+            <div>
+              <Label className="text-muted-foreground">Days of Week</Label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {booking.daysOfWeek.map((day) => (
+                  <Badge key={day} variant="secondary">
+                    {day}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Recipient Editable Field (pending) */}
       {isEditableForRecipient && (
         <Card>
@@ -372,7 +425,11 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
                 disabled={!isEditableForRecipient}
               />
             </div>
-            <Button onClick={handleSave} disabled={isSaving} className="w-full sm:w-auto">
+            <Button 
+              onClick={handleSave} 
+              disabled={isSaving || !message || message.trim().length === 0} 
+              className="w-full sm:w-auto"
+            >
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Save Changes
             </Button>
