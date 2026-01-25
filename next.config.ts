@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
         source: "/@me/session-bookings",
         destination: "/me/session-bookings",
       },
+      {
+        source: "/@me/session-bookings/:id",
+        destination: "/me/session-bookings/:id",
+      },
     ];
   },
 };
