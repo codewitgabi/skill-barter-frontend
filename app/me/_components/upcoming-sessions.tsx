@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -8,37 +12,157 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Loader2 } from "lucide-react";
+import { apiGet } from "@/lib/api-client";
+import { formatSessionDate } from "@/lib/helpers";
+import { useAuth } from "@/hooks/use-auth";
 import type { IUpcomingSession } from "@/types/dashboard";
 
-const upcomingSessions: Array<IUpcomingSession> = [
-  {
-    id: 1,
-    type: "Learning",
-    skill: "Photography",
-    with: "Sarah Johnson",
-    time: "Today, 2:00 PM",
-    avatar: "/placeholder-avatar.jpg",
-  },
-  {
-    id: 2,
-    type: "Teaching",
-    skill: "Web Development",
-    with: "Mike Chen",
-    time: "Tomorrow, 10:00 AM",
-    avatar: "/placeholder-avatar.jpg",
-  },
-  {
-    id: 3,
-    type: "Learning",
-    skill: "Spanish",
-    with: "Maria Garcia",
-    time: "Dec 28, 4:00 PM",
-    avatar: "/placeholder-avatar.jpg",
-  },
-];
+interface SessionResponse {
+  id: string;
+  userRole: string;
+  instructor: {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl: string;
+    initials: string;
+  };
+  learner: {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl: string;
+    initials: string;
+  };
+  skill: string;
+  type: string;
+  status: string;
+  scheduledDate: string;
+  duration: number;
+  description: string | null;
+  location: string;
+  meetingLink: string | null;
+  address: string | null;
+  completedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface SessionsData {
+  sessions: SessionResponse[];
+  dashboard: {
+    total: number;
+    active: number;
+    scheduled: number;
+    completed: number;
+  };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 function UpcomingSessions() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const [upcomingSessions, setUpcomingSessions] = useState<IUpcomingSession[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUpcomingSessions = async () => {
+      if (!user?._id) return;
+
+      try {
+        setIsLoading(true);
+        const response = await apiGet<SessionsData>("/sessions?limit=3");
+
+        if (response.status === "success" && response.data) {
+          // Filter for scheduled/active sessions and map to IUpcomingSession
+          const mappedSessions: IUpcomingSession[] = response.data.sessions
+            .filter(
+              (session) =>
+                session.status === "scheduled" || session.status === "active",
+            )
+            .slice(0, 3)
+            .map((session, index) => {
+              // Determine if current user is the instructor
+              const isInstructor = session.instructor.id === user._id;
+              const partner = isInstructor ? session.learner : session.instructor;
+
+              // If user is instructor, it's Teaching; otherwise Learning
+              const type: "Learning" | "Teaching" = isInstructor
+                ? "Teaching"
+                : "Learning";
+
+              // Convert hex string ID to number
+              const idNumber = parseInt(session.id.slice(-8), 16) || index + 1;
+
+              return {
+                id: idNumber,
+                type,
+                skill: session.skill,
+                with: partner.name,
+                time: formatSessionDate(session.scheduledDate),
+                avatar: partner.avatarUrl || "/placeholder-avatar.jpg",
+              };
+            });
+
+          setUpcomingSessions(mappedSessions);
+        }
+      } catch {
+        // Silently fail for dashboard component
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUpcomingSessions();
+  }, [user?._id]);
+
+  if (isLoading) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg">Upcoming Sessions</CardTitle>
+          <CardDescription>Your scheduled exchanges</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (upcomingSessions.length === 0) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg">Upcoming Sessions</CardTitle>
+          <CardDescription>Your scheduled exchanges</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No upcoming sessions
+          </p>
+          <Button
+            variant="outline"
+            className="w-full rounded-full cursor-pointer"
+            size="sm"
+            onClick={() => router.push("/@me/sessions")}
+          >
+            <Calendar className="h-4 w-4 mr-2" />
+            View All Sessions
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="shadow-none">
       <CardHeader>
@@ -63,10 +187,12 @@ function UpcomingSessions() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <Badge
-                  variant={
-                    session.type === "Learning" ? "default" : "secondary"
-                  }
-                  className="text-xs"
+                  variant="outline"
+                  className={`text-xs ${
+                    session.type === "Learning"
+                      ? "bg-purple-500/10 text-purple-700 dark:text-purple-400"
+                      : "bg-orange-500/10 text-orange-700 dark:text-orange-400"
+                  }`}
                 >
                   {session.type}
                 </Badge>
@@ -90,6 +216,7 @@ function UpcomingSessions() {
           variant="outline"
           className="w-full rounded-full cursor-pointer"
           size="sm"
+          onClick={() => router.push("/@me/sessions")}
         >
           <Calendar className="h-4 w-4 mr-2" />
           View All Sessions

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/api-client";
 import { formatSessionDate } from "@/lib/helpers";
+import { useAuth } from "@/hooks/use-auth";
 import { useSessions } from "./_components/use-sessions";
 import SessionHeader from "./_components/session-header";
 import SessionList from "./_components/session-list";
@@ -61,16 +62,14 @@ interface SessionsData {
 
 function mapSessionResponseToISession(
   session: SessionResponse,
+  currentUserId: string,
 ): ISession {
-  // Determine partner based on userRole
-  const partner =
-    session.userRole === "learner"
-      ? session.instructor
-      : session.learner;
+  // Determine if current user is the instructor
+  const isInstructor = session.instructor.id === currentUserId;
+  const partner = isInstructor ? session.learner : session.instructor;
 
-  // Map type: "teaching" -> "Teaching", "learning" -> "Learning"
-  const type: "Learning" | "Teaching" =
-    session.type === "teaching" ? "Teaching" : "Learning";
+  // If user is instructor, it's Teaching; otherwise Learning
+  const type: "Learning" | "Teaching" = isInstructor ? "Teaching" : "Learning";
 
   // Map status - API returns "scheduled", "active", "completed", etc.
   let status: "active" | "scheduled" | "completed" | "cancelled" = "scheduled";
@@ -111,6 +110,7 @@ function mapSessionResponseToISession(
 }
 
 function Page() {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<Array<ISession>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedSession, setSelectedSession] = useState<ISession | null>(null);
@@ -124,13 +124,15 @@ function Page() {
 
   useEffect(() => {
     const fetchSessions = async () => {
+      if (!user?._id) return;
+
       try {
         setIsLoading(true);
         const response = await apiGet<SessionsData>("/sessions");
 
         if (response.status === "success" && response.data) {
-          const mappedSessions = response.data.sessions.map(
-            mapSessionResponseToISession,
+          const mappedSessions = response.data.sessions.map((session) =>
+            mapSessionResponseToISession(session, user!._id),
           );
           setSessions(mappedSessions);
           setDashboardStats(response.data.dashboard);
@@ -152,7 +154,7 @@ function Page() {
     };
 
     fetchSessions();
-  }, []);
+  }, [user?._id]);
 
   const { filteredSessions, stats: calculatedStats, activeFilter, setActiveFilter } =
     useSessions({ sessions });
