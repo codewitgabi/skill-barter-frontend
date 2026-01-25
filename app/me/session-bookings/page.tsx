@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/api-client";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SessionBookingHeader from "./_components/session-booking-header";
 import SessionBookingEmpty from "./_components/session-booking-empty";
 import SessionBookingList from "./_components/session-booking-list";
@@ -60,6 +61,7 @@ function Page() {
   const router = useRouter();
   const [allBookings, setAllBookings] = useState<SessionBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<"all" | "proposer" | "recipient">("all");
 
   useEffect(() => {
     const fetchSessionBookings = async () => {
@@ -99,6 +101,31 @@ function Page() {
     router.push(`/@me/session-bookings/${bookingId}`);
   };
 
+  // Filter bookings by role
+  const filteredBookings = useMemo(() => {
+    if (activeFilter === "all") {
+      return allBookings;
+    }
+    return allBookings.filter(
+      (booking) => booking.userRole === activeFilter,
+    );
+  }, [allBookings, activeFilter]);
+
+  // Calculate stats
+  const stats = useMemo(() => {
+    const proposerCount = allBookings.filter(
+      (b) => b.userRole === "proposer",
+    ).length;
+    const recipientCount = allBookings.filter(
+      (b) => b.userRole === "recipient",
+    ).length;
+    return {
+      total: allBookings.length,
+      proposer: proposerCount,
+      recipient: recipientCount,
+    };
+  }, [allBookings]);
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -116,11 +143,34 @@ function Page() {
       <div className="max-w-4xl mx-auto">
         <SessionBookingHeader totalCount={allBookings.length} />
 
-        {allBookings.length === 0 ? (
+        {/* Tabs */}
+        {allBookings.length > 0 && (
+          <Tabs
+            value={activeFilter}
+            onValueChange={(value) =>
+              setActiveFilter(value as "all" | "proposer" | "recipient")
+            }
+            className="mb-4 sm:mb-6"
+          >
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="all" className="flex-1 sm:flex-initial">
+                All ({stats.total})
+              </TabsTrigger>
+              <TabsTrigger value="proposer" className="flex-1 sm:flex-initial">
+                Proposing ({stats.proposer})
+              </TabsTrigger>
+              <TabsTrigger value="recipient" className="flex-1 sm:flex-initial">
+                Recipient ({stats.recipient})
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
+
+        {filteredBookings.length === 0 ? (
           <SessionBookingEmpty />
         ) : (
           <SessionBookingList
-            bookings={allBookings}
+            bookings={filteredBookings}
             onBookingClick={handleBookingClick}
           />
         )}

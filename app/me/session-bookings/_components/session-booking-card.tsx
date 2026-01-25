@@ -95,10 +95,16 @@ function SessionBookingCard({ booking, onClick }: SessionBookingCardProps) {
           <div className="flex-1 min-w-0">
             {/* Header with name and status */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-2">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base sm:text-lg font-semibold">
                   {partner.name}
                 </h3>
+                <Badge 
+                  variant={booking.userRole === "proposer" ? "default" : "outline"} 
+                  className="text-xs"
+                >
+                  {booking.userRole === "proposer" ? "You're Proposing" : "You're Recipient"}
+                </Badge>
                 <Badge variant={getStatusVariant(booking.status)} className="text-xs">
                   {booking.status === "changes_requested"
                     ? "Changes Requested"
