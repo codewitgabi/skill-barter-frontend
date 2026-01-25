@@ -5,7 +5,6 @@ interface SessionListProps {
   sessions: Array<ISession>;
   onJoin?: (id: number) => void;
   onViewDetails?: (id: number) => void;
-  onCancel?: (id: number) => void;
 }
 
 function SessionList({
@@ -26,7 +25,6 @@ function SessionList({
           session={session}
           onJoin={onJoin}
           onViewDetails={onViewDetails}
-          onCancel={onCancel}
         />
       ))}
     </div>

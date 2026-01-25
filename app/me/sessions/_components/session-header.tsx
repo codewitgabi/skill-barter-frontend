@@ -26,7 +26,7 @@ function SessionHeader({ activeTab, onTabChange, stats }: SessionHeaderProps) {
             </p>
           </div>
           <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
-            <Link href="/me/session-bookings" className="flex items-center gap-2">
+            <Link href="/@me/session-bookings" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               <span>Session Bookings</span>
             </Link>

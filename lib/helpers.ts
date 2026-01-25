@@ -35,3 +35,48 @@ export function timeSince(dateString: string): string {
   const diffInYears = Math.floor(diffInDays / 365);
   return `${diffInYears} ${diffInYears === 1 ? "year" : "years"} ago`;
 }
+
+export function formatSessionDate(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const sessionDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  const diffInDays = Math.floor(
+    (sessionDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  // Format time
+  const time = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  // Format date based on relative position
+  if (diffInDays === 0) {
+    return `Today, ${time}`;
+  } else if (diffInDays === 1) {
+    return `Tomorrow, ${time}`;
+  } else if (diffInDays === -1) {
+    return `Yesterday, ${time}`;
+  } else if (diffInDays > 1 && diffInDays < 7) {
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } else {
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+}

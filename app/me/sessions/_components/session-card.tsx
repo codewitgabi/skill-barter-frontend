@@ -11,7 +11,6 @@ import {
   Calendar,
   Star,
   Play,
-  X,
 } from "lucide-react";
 import type { ISession } from "./types";
 
@@ -26,7 +25,6 @@ function SessionCard({
   session,
   onJoin,
   onViewDetails,
-  onCancel,
 }: SessionCardProps) {
   const getStatusColor = () => {
     switch (session.status) {
@@ -193,26 +191,15 @@ function SessionCard({
                 </Button>
               )}
               {session.status === "scheduled" && (
-                <>
-                  <Button
-                    onClick={() => onViewDetails?.(session.id)}
-                    variant="outline"
-                    className="flex-1 sm:flex-initial rounded-full font-medium text-sm py-3 sm:py-0"
-                    size="sm"
-                  >
-                    <Video className="h-3.5 w-3.5 mr-1.5" />
-                    View Details
-                  </Button>
-                  <Button
-                    onClick={() => onCancel?.(session.id)}
-                    variant="outline"
-                    className="flex-1 sm:flex-initial rounded-full font-medium text-sm py-3 sm:py-0"
-                    size="sm"
-                  >
-                    <X className="h-3.5 w-3.5 mr-1.5" />
-                    Cancel
-                  </Button>
-                </>
+                <Button
+                  onClick={() => onViewDetails?.(session.id)}
+                  variant="outline"
+                  className="flex-1 sm:flex-initial rounded-full font-medium text-sm py-3 sm:py-0"
+                  size="sm"
+                >
+                  <Video className="h-3.5 w-3.5 mr-1.5" />
+                  View Details
+                </Button>
               )}
               {session.status === "completed" && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">

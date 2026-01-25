@@ -121,12 +121,12 @@ function SessionDetailsDialog({
             </div>
             {session.meetingLink && (
               <div className="flex items-center gap-2 text-sm">
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                <ExternalLink className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <a
                   href={session.meetingLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline font-medium"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline font-semibold"
                 >
                   Meeting Link
                 </a>
