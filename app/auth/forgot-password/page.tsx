@@ -22,6 +22,9 @@ import {
   type ForgotPasswordFormData,
 } from "../_lib/validation";
 
+// Note: Metadata cannot be exported from client components in Next.js
+// Consider creating a layout.tsx file for this route to add metadata
+
 function ForgotPasswordPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
