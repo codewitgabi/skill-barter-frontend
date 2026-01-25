@@ -11,7 +11,6 @@ function SessionList({
   sessions,
   onJoin,
   onViewDetails,
-  onCancel,
 }: SessionListProps) {
   if (sessions.length === 0) {
     return null;

@@ -18,7 +18,6 @@ interface SessionCardProps {
   session: ISession;
   onJoin?: (id: number) => void;
   onViewDetails?: (id: number) => void;
-  onCancel?: (id: number) => void;
 }
 
 function SessionCard({
