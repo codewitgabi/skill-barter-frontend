@@ -218,11 +218,41 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
 
       {/* Proposer Editable Fields (draft/changes_requested) */}
       {isEditableForProposer && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Session Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <>
+          {/* Show recipient's message prominently when changes are requested */}
+          {booking.status === "changes_requested" && booking.message && (
+            <Card className="border-destructive/50 bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="text-destructive">Changes Requested</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  The recipient has requested changes to your session proposal. Please review their message below and update the session details accordingly.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold">Recipient&apos;s Message:</Label>
+                  <div className="bg-background border border-destructive/20 rounded-md p-4">
+                    <p className="text-sm whitespace-pre-wrap">{booking.message}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          <Card>
+            <CardHeader>
+              <CardTitle>Session Details</CardTitle>
+              {booking.status === "draft" && (
+                <p className="text-sm text-muted-foreground">
+                  Configure your session details below.
+                </p>
+              )}
+              {booking.status === "changes_requested" && (
+                <p className="text-sm text-muted-foreground">
+                  Update the session details based on the recipient&apos;s feedback above.
+                </p>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-6">
             {/* Days Per Week */}
             <div className="space-y-2">
               <Label htmlFor="daysPerWeek">Days Per Week</Label>
@@ -307,18 +337,41 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
 
             <Button onClick={handleSave} disabled={isSaving} className="w-full sm:w-auto">
               {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Save Changes
+              {booking.status === "changes_requested" ? "Update Proposal" : "Save Changes"}
             </Button>
           </CardContent>
         </Card>
+        </>
       )}
 
       {/* Non-editable fields for proposer */}
       {isProposer && !isEditableForProposer && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Session Details</CardTitle>
-          </CardHeader>
+        <>
+          {/* Show recipient's message if status is pending and message exists */}
+          {booking.status === "pending" && booking.message && (
+            <Card className="border-blue-500/50 bg-blue-500/5">
+              <CardHeader>
+                <CardTitle className="text-blue-600 dark:text-blue-400">Recipient&apos;s Feedback</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  The recipient has sent a message regarding your proposal.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-background border border-blue-500/20 rounded-md p-4">
+                  <p className="text-sm whitespace-pre-wrap">{booking.message}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          <Card>
+            <CardHeader>
+              <CardTitle>Session Details</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {booking.status === "pending"
+                  ? "Your session proposal has been sent. You are currently waiting for the recipient to review and respond to your proposal."
+                  : "Your session proposal details are shown below."}
+              </p>
+            </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -355,6 +408,7 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
             </div>
           </CardContent>
         </Card>
+        </>
       )}
 
       {/* Recipient: Current Session Details (pending) */}
