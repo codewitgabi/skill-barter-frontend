@@ -69,6 +69,7 @@ export function AppNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isProfilePopoverOpen, setIsProfilePopoverOpen] = useState(false);
   const { user } = useAuth();
   const { logout } = useAuthStore();
 
@@ -158,7 +159,7 @@ export function AppNavbar() {
             </Link>
 
             {/* Desktop: Profile Picture with Popover */}
-            <Popover>
+            <Popover open={isProfilePopoverOpen} onOpenChange={setIsProfilePopoverOpen}>
               <PopoverTrigger asChild className="hidden sm:flex" suppressHydrationWarning>
                 <button 
                   className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -201,6 +202,7 @@ export function AppNavbar() {
                   <div className="space-y-1">
                     <Link
                       href="/me/settings/profile"
+                      onClick={() => setIsProfilePopoverOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
                     >
                       <User className="h-4 w-4 text-muted-foreground" />
@@ -209,6 +211,7 @@ export function AppNavbar() {
                     </Link>
                     <Link
                       href="/me/settings/notifications"
+                      onClick={() => setIsProfilePopoverOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
                     >
                       <BellRing className="h-4 w-4 text-muted-foreground" />
@@ -217,6 +220,7 @@ export function AppNavbar() {
                     </Link>
                     <Link
                       href="/me/settings"
+                      onClick={() => setIsProfilePopoverOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-sm"
                     >
                       <Settings className="h-4 w-4 text-muted-foreground" />
@@ -420,47 +424,49 @@ export function AppNavbar() {
                       </SheetClose>
 
                       {/* Logout */}
-                      <AlertDialog
-                        open={isLogoutOpen}
-                        onOpenChange={setIsLogoutOpen}
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-destructive hover:text-destructive"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsLogoutOpen(true);
+                        }}
                       >
-                        <AlertDialogTrigger asChild>
-                          <SheetClose asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start text-destructive hover:text-destructive"
-                            >
-                              <LogOut className="h-4 w-4 mr-2" />
-                              Logout
-                            </Button>
-                          </SheetClose>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Are you sure you want to logout?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              You will be redirected to the login page. You can
-                              sign in again anytime.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={handleLogout}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                              Logout
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </Button>
                     </div>
                   </div>
                 </div>
               </SheetContent>
             </Sheet>
+
+            {/* Logout AlertDialog - Outside Sheet so it doesn't unmount */}
+            <AlertDialog
+              open={isLogoutOpen}
+              onOpenChange={setIsLogoutOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure you want to logout?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You will be redirected to the login page. You can
+                    sign in again anytime.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleLogout}
+                    className="bg-destructive text-white hover:bg-destructive/90"
+                  >
+                    Logout
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
