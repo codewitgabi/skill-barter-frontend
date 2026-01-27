@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +12,16 @@ import {
   Users,
   BookOpen,
   MessageCircle,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
+import { apiPost } from "@/lib/api-client";
+import { useAuth } from "@/hooks/use-auth";
 
 interface PeopleGridProps {
   filteredPeople: {
     id: number;
+    originalId: string;
     name: string;
     location: string;
     rating: number;
@@ -36,6 +42,99 @@ interface PeopleGridProps {
 }
 
 function PeopleGrid({ filteredPeople }: PeopleGridProps) {
+  const { user } = useAuth();
+  const [connectingIds, setConnectingIds] = useState<Set<string>>(new Set());
+
+  const handleConnect = async (person: PeopleGridProps["filteredPeople"][0]) => {
+    if (!user) {
+      toast.error("Please sign in to connect");
+      return;
+    }
+
+    // Get user's skills (teaching skills)
+    const userSkills = Array.isArray(user.skills)
+      ? user.skills.map((skill: unknown) => {
+          if (typeof skill === "string") return skill;
+          if (typeof skill === "object" && skill !== null) {
+            const obj = skill as { name?: string; skill?: string };
+            return obj.name || obj.skill || "";
+          }
+          return "";
+        }).filter(Boolean)
+      : [];
+
+    // Get user's interests (learning skills)
+    const userInterests = Array.isArray(user.interests)
+      ? user.interests.map((interest: unknown) => {
+          if (typeof interest === "string") return interest;
+          if (typeof interest === "object" && interest !== null) {
+            const obj = interest as { name?: string; skill?: string };
+            return obj.name || obj.skill || "";
+          }
+          return "";
+        }).filter(Boolean)
+      : [];
+
+    // Find a skill the user can teach that the person wants to learn
+    const teachingSkill = person.skillsToLearn
+      .map((s) => s.name)
+      .find((skillName) => userSkills.includes(skillName));
+
+    // Find a skill the person can teach that the user wants to learn
+    const learningSkill = person.skillsToTeach
+      .map((s) => s.name)
+      .find((skillName) => userInterests.includes(skillName));
+
+    if (!teachingSkill || !learningSkill) {
+      toast.error("No matching skills found for exchange", {
+        description: "Make sure you have skills that match what this person is looking for.",
+      });
+      return;
+    }
+
+    try {
+      setConnectingIds((prev) => new Set(prev).add(person.originalId));
+
+      const response = await apiPost<{
+        id: string;
+        requester: unknown;
+        receiver: unknown;
+        message: string | null;
+        teachingSkill: string;
+        learningSkill: string;
+        status: string;
+        createdAt: string;
+      }>("/exchange-requests", {
+        receiverId: person.originalId,
+        teachingSkill,
+        learningSkill,
+        message: null,
+      });
+
+      if (response.status === "success") {
+        toast.success("Connection request sent!", {
+          description: `Your exchange request has been sent to ${person.name}.`,
+        });
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        toast.error("Failed to send connection request", {
+          description: errorResponse.error?.message || "Please try again later.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to send connection request", {
+        description:
+          error instanceof Error ? error.message : "An unexpected error occurred.",
+      });
+    } finally {
+      setConnectingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(person.originalId);
+        return next;
+      });
+    }
+  };
+
   return (
     <>
       {filteredPeople.length > 0 ? (
@@ -127,9 +226,26 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
                 </div>
 
                 {/* Action Button */}
-                <Button className="w-full rounded-full" size="sm">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Connect
+                <Button
+                  className="w-full rounded-full"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleConnect(person);
+                  }}
+                  disabled={connectingIds.has(person.originalId)}
+                >
+                  {connectingIds.has(person.originalId) ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Connect
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>

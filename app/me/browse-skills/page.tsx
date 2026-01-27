@@ -248,7 +248,7 @@ function Page() {
                   level: "beginner", // API doesn't provide level, defaulting
                 })),
                 bio: conn.bio || "",
-              };
+              } as Person;
             },
           );
           setPeople(mappedPeople);
