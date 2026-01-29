@@ -2,14 +2,16 @@
 
 import ProfilePicture from "./_components/profile-picture";
 import PersonalInformation from "./_components/personal-information";
-import SkillsAndInterests from "./_components/skills-and-interests";
+import SkillsToTeach from "./_components/skills-to-teach";
+import SkillsToLearn from "./_components/skills-to-learn";
 
 function Page() {
   return (
     <div className="space-y-6">
       <ProfilePicture />
       <PersonalInformation />
-      <SkillsAndInterests />
+      <SkillsToTeach />
+      <SkillsToLearn />
     </div>
   );
 }
