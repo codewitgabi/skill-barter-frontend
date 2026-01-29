@@ -45,49 +45,38 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
   const { user } = useAuth();
   const [connectingIds, setConnectingIds] = useState<Set<string>>(new Set());
 
-  const handleConnect = async (person: PeopleGridProps["filteredPeople"][0]) => {
+  const handleConnect = async (
+    person: PeopleGridProps["filteredPeople"][0],
+  ) => {
     if (!user) {
       toast.error("Please sign in to connect");
       return;
     }
 
-    // Get user's skills (teaching skills)
-    const userSkills = Array.isArray(user.skills)
-      ? user.skills.map((skill: unknown) => {
-          if (typeof skill === "string") return skill;
-          if (typeof skill === "object" && skill !== null) {
-            const obj = skill as { name?: string; skill?: string };
-            return obj.name || obj.skill || "";
-          }
-          return "";
-        }).filter(Boolean)
+    // Get user's teaching skills (skills the user can teach)
+    const userTeachingSkills = Array.isArray(user.skillsToTeach)
+      ? user.skillsToTeach.map((skill) => skill.name).filter(Boolean)
       : [];
 
-    // Get user's interests (learning skills)
-    const userInterests = Array.isArray(user.interests)
-      ? user.interests.map((interest: unknown) => {
-          if (typeof interest === "string") return interest;
-          if (typeof interest === "object" && interest !== null) {
-            const obj = interest as { name?: string; skill?: string };
-            return obj.name || obj.skill || "";
-          }
-          return "";
-        }).filter(Boolean)
+    // Get user's learning skills (skills the user wants to learn)
+    const userLearningSkills = Array.isArray(user.skillsToLearn)
+      ? user.skillsToLearn.map((skill) => skill.name).filter(Boolean)
       : [];
 
     // Find a skill the user can teach that the person wants to learn
     const teachingSkill = person.skillsToLearn
       .map((s) => s.name)
-      .find((skillName) => userSkills.includes(skillName));
+      .find((skillName) => userTeachingSkills.includes(skillName));
 
     // Find a skill the person can teach that the user wants to learn
     const learningSkill = person.skillsToTeach
       .map((s) => s.name)
-      .find((skillName) => userInterests.includes(skillName));
+      .find((skillName) => userLearningSkills.includes(skillName));
 
     if (!teachingSkill || !learningSkill) {
       toast.error("No matching skills found for exchange", {
-        description: "Make sure you have skills that match what this person is looking for.",
+        description:
+          "Make sure you have skills that match what this person is looking for.",
       });
       return;
     }
@@ -118,13 +107,16 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
       } else {
         const errorResponse = response as { error: { message: string } };
         toast.error("Failed to send connection request", {
-          description: errorResponse.error?.message || "Please try again later.",
+          description:
+            errorResponse.error?.message || "Please try again later.",
         });
       }
     } catch (error) {
       toast.error("Failed to send connection request", {
         description:
-          error instanceof Error ? error.message : "An unexpected error occurred.",
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
       });
     } finally {
       setConnectingIds((prev) => {
