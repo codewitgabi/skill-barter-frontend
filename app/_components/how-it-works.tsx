@@ -54,7 +54,7 @@ function HowItWorks() {
           {/* Steps */}
           <div className="relative">
             {/* Connection Line (Desktop) */}
-            <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-linear-to-r from-[#10b981] via-[#3b82f6] via-[#8b5cf6] to-[#10b981] opacity-20" />
+            <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] opacity-20" />
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
               {steps.map((step, index) => {
