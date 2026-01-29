@@ -206,7 +206,7 @@ function HeroSection() {
                 className="group bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white hover:opacity-90 hover:scale-105 transition-all shadow-lg hover:shadow-xl"
                 asChild
               >
-                <Link href="/signup">
+                <Link href="/auth/register">
                   Get Started Free
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -217,7 +217,7 @@ function HeroSection() {
                 className="hover:scale-105 transition-all"
                 asChild
               >
-                <Link href="/explore">Explore Skills</Link>
+                <Link href="/#how-it-works">How It Works</Link>
               </Button>
             </div>
           </div>

@@ -50,9 +50,9 @@ import {
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/explore", label: "Explore" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/about", label: "About" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 const appNavLinks = [
@@ -159,21 +159,36 @@ export function AppNavbar() {
             </Link>
 
             {/* Desktop: Profile Picture with Popover */}
-            <Popover open={isProfilePopoverOpen} onOpenChange={setIsProfilePopoverOpen}>
-              <PopoverTrigger asChild className="hidden sm:flex" suppressHydrationWarning>
-                <button 
+            <Popover
+              open={isProfilePopoverOpen}
+              onOpenChange={setIsProfilePopoverOpen}
+            >
+              <PopoverTrigger
+                asChild
+                className="hidden sm:flex"
+                suppressHydrationWarning
+              >
+                <button
                   className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   suppressHydrationWarning
                 >
                   <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
+                    <AvatarImage
+                      src={user?.profile_picture || "/placeholder-avatar.jpg"}
+                      alt="Profile"
+                    />
                     <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
                       {getUserInitials()}
                     </AvatarFallback>
                   </Avatar>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-64 p-2" align="end" sideOffset={8} suppressHydrationWarning>
+              <PopoverContent
+                className="w-64 p-2"
+                align="end"
+                sideOffset={8}
+                suppressHydrationWarning
+              >
                 <div className="flex flex-col">
                   {/* User Info */}
                   <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
@@ -307,7 +322,9 @@ export function AppNavbar() {
                       <Link href="/@me" onClick={() => setIsOpen(false)}>
                         <Avatar className="h-14 w-14 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
                           <AvatarImage
-                            src={user?.profile_picture || "/placeholder-avatar.jpg"}
+                            src={
+                              user?.profile_picture || "/placeholder-avatar.jpg"
+                            }
                             alt="Profile"
                           />
                           <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg font-semibold">
@@ -408,10 +425,16 @@ export function AppNavbar() {
                           className="w-full justify-start"
                           asChild
                         >
-                          <Link href="/me/settings/profile" className="flex items-center">
+                          <Link
+                            href="/me/settings/profile"
+                            className="flex items-center"
+                          >
                             <Avatar className="h-6 w-6 mr-2">
                               <AvatarImage
-                                src={user?.profile_picture || "/placeholder-avatar.jpg"}
+                                src={
+                                  user?.profile_picture ||
+                                  "/placeholder-avatar.jpg"
+                                }
                                 alt="Profile"
                               />
                               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-xs">
@@ -442,18 +465,15 @@ export function AppNavbar() {
             </Sheet>
 
             {/* Logout AlertDialog - Outside Sheet so it doesn't unmount */}
-            <AlertDialog
-              open={isLogoutOpen}
-              onOpenChange={setIsLogoutOpen}
-            >
+            <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
                     Are you sure you want to logout?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    You will be redirected to the login page. You can
-                    sign in again anytime.
+                    You will be redirected to the login page. You can sign in
+                    again anytime.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

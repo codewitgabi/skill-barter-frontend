@@ -4,26 +4,32 @@ import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const footerLinks = {
   product: [
-    { href: "/explore", label: "Explore Skills" },
-    { href: "/how-it-works", label: "How It Works" },
-    { href: "/features", label: "Features" },
-    { href: "/pricing", label: "Pricing" },
+    { href: "/#how-it-works", label: "How It Works" },
+    { href: "/#features", label: "Features" },
+    { href: "/#testimonials", label: "Testimonials" },
+    { href: "/#faq", label: "FAQ" },
   ],
-  company: [
-    { href: "/about", label: "About Us" },
-    { href: "/blog", label: "Blog" },
-    { href: "/careers", label: "Careers" },
-    { href: "/contact", label: "Contact" },
+  resources: [
+    { href: "/auth/register", label: "Get Started" },
+    { href: "/auth/signin", label: "Sign In" },
+    { href: "/auth/forgot-password", label: "Reset Password" },
   ],
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
     { href: "/terms", label: "Terms of Service" },
-    { href: "/cookies", label: "Cookie Policy" },
   ],
   social: [
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: Github, href: "https://github.com", label: "GitHub" },
-    { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+    {
+      icon: Twitter,
+      href: "https://twitter.com/skillbarter",
+      label: "Twitter",
+    },
+    { icon: Github, href: "https://github.com/skillbarter", label: "GitHub" },
+    {
+      icon: Linkedin,
+      href: "https://linkedin.com/company/skillbarter",
+      label: "LinkedIn",
+    },
     { icon: Mail, href: "mailto:support@skillbarter.com", label: "Email" },
   ],
 };
@@ -82,11 +88,11 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Resources Links */}
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
+            <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

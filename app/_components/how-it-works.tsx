@@ -34,7 +34,10 @@ const steps = [
 
 function HowItWorks() {
   return (
-    <section className="relative py-20 overflow-hidden">
+    <section
+      id="how-it-works"
+      className="relative py-20 overflow-hidden scroll-mt-20"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -109,7 +112,7 @@ function HowItWorks() {
               Ready to start exchanging skills?
             </p>
             <a
-              href="/signup"
+              href="/auth/register"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white font-medium hover:opacity-90 transition-opacity"
             >
               Get Started Free

@@ -60,7 +60,7 @@ function CTASection() {
                   className="bg-white text-primary hover:bg-white/90 text-base px-8 py-6 h-auto"
                   asChild
                 >
-                  <Link href="/signup">
+                  <Link href="/auth/register">
                     Get Started Free
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
@@ -71,7 +71,7 @@ function CTASection() {
                   className="border-white/30 bg-white/10 text-white hover:bg-white/20 text-base px-8 py-6 h-auto backdrop-blur-sm"
                   asChild
                 >
-                  <Link href="/explore">Explore Skills</Link>
+                  <Link href="/auth/signin">Sign In</Link>
                 </Button>
               </div>
             </div>

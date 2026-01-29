@@ -58,7 +58,10 @@ const faqSchema = {
 
 function FAQ() {
   return (
-    <section className="relative py-20 overflow-hidden bg-muted/20">
+    <section
+      id="faq"
+      className="relative py-20 overflow-hidden bg-muted/20 scroll-mt-20"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -87,7 +90,7 @@ function FAQ() {
           >
             <p className="text-muted-foreground mb-4">Still have questions?</p>
             <a
-              href="/contact"
+              href="mailto:support@skillbarter.com"
               className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
             >
               Contact our support team
