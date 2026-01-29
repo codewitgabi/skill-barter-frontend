@@ -10,7 +10,8 @@ export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <AppNavbar />
-      {children}
+      {/* Add bottom padding on mobile to account for bottom navigation */}
+      <div className="pb-20 md:pb-0">{children}</div>
     </>
   );
 }
