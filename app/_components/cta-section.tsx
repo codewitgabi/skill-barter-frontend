@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { PWAInstallButton } from "@/components/pwa-install-button";
 
 function CTASection() {
   return (
@@ -73,6 +76,7 @@ function CTASection() {
                 >
                   <Link href="/auth/signin">Sign In</Link>
                 </Button>
+                <PWAInstallButton variant="cta" />
               </div>
             </div>
           </div>
