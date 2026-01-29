@@ -114,7 +114,7 @@ function RegisterForm() {
     if (currentStep === 1) {
       const formData = form.getValues();
       const emailChanged = verifiedEmail !== formData.email;
-      
+
       // Only send if not sent before, or if email changed
       if (!emailVerificationSent || emailChanged) {
         try {
@@ -124,7 +124,8 @@ function RegisterForm() {
           if (response.status !== "success") {
             form.setError("email", {
               type: "manual",
-              message: response.error?.message || "Failed to send verification email",
+              message:
+                response.error?.message || "Failed to send verification email",
             });
             return;
           }
@@ -187,7 +188,10 @@ function RegisterForm() {
           }
         } catch (error) {
           form.setError("root", {
-            message: error instanceof Error ? error.message : "Failed to upload profile picture",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Failed to upload profile picture",
           });
           setIsSubmitting(false);
           return;
@@ -219,7 +223,10 @@ function RegisterForm() {
         otp: data.code,
       };
 
-      const response = await apiPost<RegisterResponseData>("/auth/register", registerData);
+      const response = await apiPost<RegisterResponseData>(
+        "/auth/register",
+        registerData,
+      );
 
       if (response.status === "success" && response.data) {
         login(response.data.accessToken, response.data.user);
@@ -230,12 +237,17 @@ function RegisterForm() {
       } else {
         const errorResponse = response as { error: { message: string } };
         form.setError("root", {
-          message: errorResponse.error?.message || "Registration failed. Please try again.",
+          message:
+            errorResponse.error?.message ||
+            "Registration failed. Please try again.",
         });
       }
     } catch (error) {
       form.setError("root", {
-        message: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -306,11 +318,17 @@ function RegisterForm() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Creating Account...
+                      <span className="hidden sm:inline">
+                        Creating Account...
+                      </span>
+                      <span className="sm:hidden">Creating...</span>
                     </>
                   ) : (
                     <>
-                      Complete Registration
+                      <span className="hidden sm:inline">
+                        Complete Registration
+                      </span>
+                      <span className="sm:hidden">Register</span>
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </>
                   )}

@@ -52,7 +52,21 @@ export const profileSchema = z.object({
     city: z.string().min(1, "City is required"),
     country: z.string().min(1, "Country is required"),
   }),
-  profilePicture: z.instanceof(File).optional(),
+  profilePicture: z
+    .instanceof(File, { message: "Profile picture is required" })
+    .refine((file) => file.size <= 5 * 1024 * 1024, {
+      message: "Profile picture must be less than 5MB",
+    })
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(
+          file.type,
+        ),
+      {
+        message:
+          "Profile picture must be a valid image (JPEG, PNG, WebP, or GIF)",
+      },
+    ),
   availability: z
     .number()
     .min(1)

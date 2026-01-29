@@ -107,9 +107,11 @@ function StepProfile() {
       <FormField
         control={form.control}
         name="profilePicture"
-        render={() => (
+        render={({ fieldState }) => (
           <FormItem>
-            <FormLabel>Profile Picture</FormLabel>
+            <FormLabel>
+              Profile Picture <span className="text-destructive">*</span>
+            </FormLabel>
             <div className="space-y-4">
               {preview ? (
                 <div className="relative inline-block">
@@ -132,18 +134,26 @@ function StepProfile() {
               ) : (
                 <div
                   className={cn(
-                    "w-32 h-32 rounded-full border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary transition-colors",
+                    "w-32 h-32 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer hover:border-primary transition-colors",
                     "bg-muted/30",
+                    fieldState.error ? "border-destructive" : "border-border",
                   )}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <Upload
+                    className={cn(
+                      "h-8 w-8",
+                      fieldState.error
+                        ? "text-destructive"
+                        : "text-muted-foreground",
+                    )}
+                  />
                 </div>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/gif"
                 onChange={handleFileChange}
                 className="hidden"
               />
@@ -159,7 +169,7 @@ function StepProfile() {
               )}
             </div>
             <FormDescription>
-              Optional: Add a profile picture to help others recognize you
+              Add a profile picture to help others recognize you (max 5MB)
             </FormDescription>
             <FormMessage />
           </FormItem>
