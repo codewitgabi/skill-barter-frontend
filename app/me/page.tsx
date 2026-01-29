@@ -5,6 +5,7 @@ import QuickExchanges from "./_components/quick-exchanges";
 import SkillProgress from "./_components/skill-progress";
 import RecentActivity from "./_components/recent-activity";
 import CommunityHighlights from "./_components/community-highlights";
+import { NotificationPrompt } from "@/components/notification-prompt";
 
 function Page() {
   return (
@@ -30,6 +31,9 @@ function Page() {
               Here&apos;s what&apos;s happening with your skill exchanges
             </p>
           </div>
+
+          {/* Notification Prompt */}
+          <NotificationPrompt variant="card" />
 
           <QuickExchanges />
           <SkillProgress />
