@@ -36,7 +36,7 @@ function StepProfile() {
   };
 
   const removePicture = () => {
-    form.setValue("profilePicture", undefined);
+    form.resetField("profilePicture");
     setPreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
