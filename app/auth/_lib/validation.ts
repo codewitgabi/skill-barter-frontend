@@ -96,6 +96,29 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
 });
 
+// Password reset OTP verification schema (5 digits)
+export const passwordResetOtpSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  otp: z.string().length(5, "Verification code must be 5 digits"),
+});
+
+// Reset password schema
+export const resetPasswordSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
 // Type exports
 export type AccountFormData = z.infer<typeof accountSchema>;
 export type SkillsFormData = z.infer<typeof skillsSchema>;
@@ -104,3 +127,5 @@ export type VerificationFormData = z.infer<typeof verificationSchema>;
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type PasswordResetOtpFormData = z.infer<typeof passwordResetOtpSchema>;
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
