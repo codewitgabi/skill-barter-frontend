@@ -9,11 +9,13 @@ import {
   BellRing,
   Settings as SettingsIcon,
   ChevronRight,
+  KeyRound,
 } from "lucide-react";
 
 const settingsNavItems = [
   { href: "/me/settings", label: "General", icon: SettingsIcon },
   { href: "/me/settings/profile", label: "Profile", icon: User },
+  { href: "/me/settings/password", label: "Password", icon: KeyRound },
   {
     href: "/me/settings/notifications",
     label: "Notifications",
