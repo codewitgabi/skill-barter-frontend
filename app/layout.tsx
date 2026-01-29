@@ -135,7 +135,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Skill Barter" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#10b981" />
+        <meta name="theme-color" content="#fafafa" />
 
         {/* Apple touch icons */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
