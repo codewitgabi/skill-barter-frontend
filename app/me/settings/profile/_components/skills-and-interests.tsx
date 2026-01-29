@@ -33,6 +33,14 @@ interface UserResponseData {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
+  skillsToLearn: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
   language: string;
   timezone: string;
   website: string;
@@ -54,6 +62,8 @@ function mapUserResponseToUser(data: UserResponseData): User {
     weekly_availability: data.weekly_availability,
     skills: data.skills,
     interests: data.interests,
+    skillsToTeach: data.skillsToTeach || [],
+    skillsToLearn: data.skillsToLearn || [],
     language: data.language,
     timezone: data.timezone,
     website: data.website || "",
@@ -73,26 +83,30 @@ function SkillsAndInterests() {
   // Convert skills/interests to strings (handle both string arrays and object arrays)
   const defaultSkills = useMemo(() => {
     if (!user?.skills) return [];
-    return (user.skills as unknown[]).map((item) => {
-      if (typeof item === "string") return item;
-      if (typeof item === "object" && item !== null) {
-        const obj = item as { name?: string; skill?: string };
-        return obj.name || obj.skill || "";
-      }
-      return "";
-    }).filter(Boolean);
+    return (user.skills as unknown[])
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (typeof item === "object" && item !== null) {
+          const obj = item as { name?: string; skill?: string };
+          return obj.name || obj.skill || "";
+        }
+        return "";
+      })
+      .filter(Boolean);
   }, [user?.skills]);
 
   const defaultInterests = useMemo(() => {
     if (!user?.interests) return [];
-    return (user.interests as unknown[]).map((item) => {
-      if (typeof item === "string") return item;
-      if (typeof item === "object" && item !== null) {
-        const obj = item as { name?: string; skill?: string };
-        return obj.name || obj.skill || "";
-      }
-      return "";
-    }).filter(Boolean);
+    return (user.interests as unknown[])
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (typeof item === "object" && item !== null) {
+          const obj = item as { name?: string; skill?: string };
+          return obj.name || obj.skill || "";
+        }
+        return "";
+      })
+      .filter(Boolean);
   }, [user?.interests]);
 
   const [skills, setSkills] = useState<string[]>(() => defaultSkills);
@@ -140,7 +154,10 @@ function SkillsAndInterests() {
         interests,
       };
 
-      const response = await apiPatch<UserResponseData>("/users/me", updateData);
+      const response = await apiPatch<UserResponseData>(
+        "/users/me",
+        updateData,
+      );
 
       if (response.status === "success" && response.data) {
         const updatedUser = mapUserResponseToUser(response.data);
@@ -154,7 +171,10 @@ function SkillsAndInterests() {
       }
     } catch (error) {
       toast.error("Failed to update skills and interests", {
-        description: error instanceof Error ? error.message : "An unexpected error occurred.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
       });
     } finally {
       setIsSaving(false);
@@ -198,7 +218,9 @@ function SkillsAndInterests() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">No skills added yet</p>
+                <p className="text-sm text-muted-foreground">
+                  No skills added yet
+                </p>
               )}
               <div className="flex gap-2">
                 <Input
@@ -212,7 +234,11 @@ function SkillsAndInterests() {
                     }
                   }}
                 />
-                <Button type="button" onClick={handleAddSkill} variant="outline">
+                <Button
+                  type="button"
+                  onClick={handleAddSkill}
+                  variant="outline"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add
                 </Button>
@@ -249,7 +275,9 @@ function SkillsAndInterests() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">No interests added yet</p>
+                <p className="text-sm text-muted-foreground">
+                  No interests added yet
+                </p>
               )}
               <div className="flex gap-2">
                 <Input
@@ -263,7 +291,11 @@ function SkillsAndInterests() {
                     }
                   }}
                 />
-                <Button type="button" onClick={handleAddInterest} variant="outline">
+                <Button
+                  type="button"
+                  onClick={handleAddInterest}
+                  variant="outline"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add
                 </Button>

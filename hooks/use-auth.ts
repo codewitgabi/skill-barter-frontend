@@ -19,6 +19,14 @@ interface UserResponseData {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
+  skillsToLearn: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
   language: string;
   timezone: string;
   website: string;
@@ -40,6 +48,8 @@ function mapUserResponseToUser(data: UserResponseData): User {
     weekly_availability: data.weekly_availability,
     skills: data.skills,
     interests: data.interests,
+    skillsToTeach: data.skillsToTeach || [],
+    skillsToLearn: data.skillsToLearn || [],
     language: data.language,
     timezone: data.timezone,
     website: data.website || "",

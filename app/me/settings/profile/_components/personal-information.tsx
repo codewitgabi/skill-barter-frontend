@@ -33,6 +33,14 @@ interface UserResponseData {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
+  skillsToLearn: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
   language: string;
   timezone: string;
   website: string;
@@ -54,6 +62,8 @@ function mapUserResponseToUser(data: UserResponseData): User {
     weekly_availability: data.weekly_availability,
     skills: data.skills,
     interests: data.interests,
+    skillsToTeach: data.skillsToTeach || [],
+    skillsToLearn: data.skillsToLearn || [],
     language: data.language,
     timezone: data.timezone,
     website: data.website || "",
@@ -67,7 +77,7 @@ function PersonalInformation() {
   const { user } = useAuth();
   const { setUser } = useAuthStore();
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const defaultFormData = useMemo(() => {
     if (!user) {
       return {
@@ -80,9 +90,10 @@ function PersonalInformation() {
         website: "",
       };
     }
-    const location = user.city && user.country 
-      ? `${user.city}, ${user.country}` 
-      : user.city || user.country || "";
+    const location =
+      user.city && user.country
+        ? `${user.city}, ${user.country}`
+        : user.city || user.country || "";
     return {
       firstName: user.first_name || "",
       lastName: user.last_name || "",
@@ -97,7 +108,7 @@ function PersonalInformation() {
   // Use key-based reset pattern: reset state when user._id changes
   const [formData, setFormData] = useState(() => defaultFormData);
   const previousUserIdRef = useRef<string | null>(null);
-  
+
   // Reset form when user data changes
   // Note: We use an effect here because React recommends using a key prop for this pattern,
   // but we can't control the key from inside the component. Using startTransition to
@@ -131,7 +142,9 @@ function PersonalInformation() {
       let country = "";
       if (formData.location) {
         if (formData.location.includes(",")) {
-          const locationParts = formData.location.split(",").map((part) => part.trim());
+          const locationParts = formData.location
+            .split(",")
+            .map((part) => part.trim());
           city = locationParts[0] || "";
           country = locationParts[1] || "";
         } else {
@@ -150,7 +163,10 @@ function PersonalInformation() {
         website: formData.website || "",
       };
 
-      const response = await apiPatch<UserResponseData>("/users/me", updateData);
+      const response = await apiPatch<UserResponseData>(
+        "/users/me",
+        updateData,
+      );
 
       if (response.status === "success" && response.data) {
         const updatedUser = mapUserResponseToUser(response.data);
@@ -164,7 +180,10 @@ function PersonalInformation() {
       }
     } catch (error) {
       toast.error("Failed to update personal information", {
-        description: error instanceof Error ? error.message : "An unexpected error occurred.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
       });
     } finally {
       setIsSaving(false);

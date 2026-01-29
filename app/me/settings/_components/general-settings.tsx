@@ -32,6 +32,14 @@ interface UserResponseData {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
+  skillsToLearn: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
   language: string;
   timezone: string;
   website: string;
@@ -53,6 +61,8 @@ function mapUserResponseToUser(data: UserResponseData): User {
     weekly_availability: data.weekly_availability,
     skills: data.skills,
     interests: data.interests,
+    skillsToTeach: data.skillsToTeach || [],
+    skillsToLearn: data.skillsToLearn || [],
     language: data.language,
     timezone: data.timezone,
     website: data.website || "",
@@ -66,11 +76,14 @@ function GeneralSettings() {
   const { user } = useAuth();
   const { setUser } = useAuthStore();
   const [isSaving, setIsSaving] = useState(false);
-  
-  const defaultSettings = useMemo(() => ({
-    language: user?.language || "en",
-    timezone: user?.timezone || "UTC",
-  }), [user?.language, user?.timezone]);
+
+  const defaultSettings = useMemo(
+    () => ({
+      language: user?.language || "en",
+      timezone: user?.timezone || "UTC",
+    }),
+    [user?.language, user?.timezone],
+  );
 
   const [language, setLanguage] = useState(() => defaultSettings.language);
   const [timezone, setTimezone] = useState(() => defaultSettings.timezone);
@@ -153,59 +166,129 @@ function GeneralSettings() {
               <option value="UTC">UTC (Coordinated Universal Time)</option>
             </optgroup>
             <optgroup label="North America">
-              <option value="America/New_York">Eastern Time (ET) - New York</option>
-              <option value="America/Chicago">Central Time (CT) - Chicago</option>
-              <option value="America/Denver">Mountain Time (MT) - Denver</option>
-              <option value="America/Los_Angeles">Pacific Time (PT) - Los Angeles</option>
-              <option value="America/Phoenix">Mountain Time (MST) - Phoenix</option>
-              <option value="America/Anchorage">Alaska Time (AKT) - Anchorage</option>
-              <option value="Pacific/Honolulu">Hawaii Time (HST) - Honolulu</option>
+              <option value="America/New_York">
+                Eastern Time (ET) - New York
+              </option>
+              <option value="America/Chicago">
+                Central Time (CT) - Chicago
+              </option>
+              <option value="America/Denver">
+                Mountain Time (MT) - Denver
+              </option>
+              <option value="America/Los_Angeles">
+                Pacific Time (PT) - Los Angeles
+              </option>
+              <option value="America/Phoenix">
+                Mountain Time (MST) - Phoenix
+              </option>
+              <option value="America/Anchorage">
+                Alaska Time (AKT) - Anchorage
+              </option>
+              <option value="Pacific/Honolulu">
+                Hawaii Time (HST) - Honolulu
+              </option>
               <option value="America/Toronto">Eastern Time - Toronto</option>
-              <option value="America/Vancouver">Pacific Time - Vancouver</option>
+              <option value="America/Vancouver">
+                Pacific Time - Vancouver
+              </option>
             </optgroup>
             <optgroup label="Europe">
-              <option value="Europe/London">Greenwich Mean Time (GMT) - London</option>
-              <option value="Europe/Paris">Central European Time (CET) - Paris</option>
-              <option value="Europe/Berlin">Central European Time - Berlin</option>
+              <option value="Europe/London">
+                Greenwich Mean Time (GMT) - London
+              </option>
+              <option value="Europe/Paris">
+                Central European Time (CET) - Paris
+              </option>
+              <option value="Europe/Berlin">
+                Central European Time - Berlin
+              </option>
               <option value="Europe/Rome">Central European Time - Rome</option>
-              <option value="Europe/Madrid">Central European Time - Madrid</option>
-              <option value="Europe/Amsterdam">Central European Time - Amsterdam</option>
-              <option value="Europe/Stockholm">Central European Time - Stockholm</option>
+              <option value="Europe/Madrid">
+                Central European Time - Madrid
+              </option>
+              <option value="Europe/Amsterdam">
+                Central European Time - Amsterdam
+              </option>
+              <option value="Europe/Stockholm">
+                Central European Time - Stockholm
+              </option>
               <option value="Europe/Moscow">Moscow Time (MSK)</option>
-              <option value="Europe/Istanbul">Turkey Time (TRT) - Istanbul</option>
+              <option value="Europe/Istanbul">
+                Turkey Time (TRT) - Istanbul
+              </option>
             </optgroup>
             <optgroup label="Asia">
-              <option value="Asia/Dubai">Gulf Standard Time (GST) - Dubai</option>
+              <option value="Asia/Dubai">
+                Gulf Standard Time (GST) - Dubai
+              </option>
               <option value="Asia/Karachi">Pakistan Standard Time (PKT)</option>
-              <option value="Asia/Kolkata">India Standard Time (IST) - Mumbai</option>
+              <option value="Asia/Kolkata">
+                India Standard Time (IST) - Mumbai
+              </option>
               <option value="Asia/Dhaka">Bangladesh Standard Time (BST)</option>
-              <option value="Asia/Bangkok">Indochina Time (ICT) - Bangkok</option>
+              <option value="Asia/Bangkok">
+                Indochina Time (ICT) - Bangkok
+              </option>
               <option value="Asia/Singapore">Singapore Time (SGT)</option>
               <option value="Asia/Hong_Kong">Hong Kong Time (HKT)</option>
-              <option value="Asia/Shanghai">China Standard Time (CST) - Shanghai</option>
-              <option value="Asia/Tokyo">Japan Standard Time (JST) - Tokyo</option>
-              <option value="Asia/Seoul">Korea Standard Time (KST) - Seoul</option>
+              <option value="Asia/Shanghai">
+                China Standard Time (CST) - Shanghai
+              </option>
+              <option value="Asia/Tokyo">
+                Japan Standard Time (JST) - Tokyo
+              </option>
+              <option value="Asia/Seoul">
+                Korea Standard Time (KST) - Seoul
+              </option>
             </optgroup>
             <optgroup label="Australia & Pacific">
-              <option value="Australia/Sydney">Australian Eastern Time (AET) - Sydney</option>
-              <option value="Australia/Melbourne">Australian Eastern Time - Melbourne</option>
-              <option value="Australia/Brisbane">Australian Eastern Standard Time - Brisbane</option>
-              <option value="Australia/Perth">Australian Western Time (AWST) - Perth</option>
-              <option value="Pacific/Auckland">New Zealand Time (NZST) - Auckland</option>
+              <option value="Australia/Sydney">
+                Australian Eastern Time (AET) - Sydney
+              </option>
+              <option value="Australia/Melbourne">
+                Australian Eastern Time - Melbourne
+              </option>
+              <option value="Australia/Brisbane">
+                Australian Eastern Standard Time - Brisbane
+              </option>
+              <option value="Australia/Perth">
+                Australian Western Time (AWST) - Perth
+              </option>
+              <option value="Pacific/Auckland">
+                New Zealand Time (NZST) - Auckland
+              </option>
             </optgroup>
             <optgroup label="South America">
-              <option value="America/Sao_Paulo">Brasília Time (BRT) - São Paulo</option>
-              <option value="America/Argentina/Buenos_Aires">Argentina Time (ART) - Buenos Aires</option>
+              <option value="America/Sao_Paulo">
+                Brasília Time (BRT) - São Paulo
+              </option>
+              <option value="America/Argentina/Buenos_Aires">
+                Argentina Time (ART) - Buenos Aires
+              </option>
               <option value="America/Lima">Peru Time (PET) - Lima</option>
-              <option value="America/Santiago">Chile Time (CLT) - Santiago</option>
+              <option value="America/Santiago">
+                Chile Time (CLT) - Santiago
+              </option>
             </optgroup>
             <optgroup label="Africa & Middle East">
-              <option value="Africa/Cairo">Eastern European Time (EET) - Cairo</option>
-              <option value="Africa/Johannesburg">South Africa Standard Time (SAST)</option>
-              <option value="Africa/Lagos">West Africa Time (WAT) - Lagos</option>
-              <option value="Asia/Riyadh">Arabia Standard Time (AST) - Riyadh</option>
-              <option value="Asia/Tehran">Iran Standard Time (IRST) - Tehran</option>
-              <option value="Asia/Jerusalem">Israel Standard Time (IST) - Jerusalem</option>
+              <option value="Africa/Cairo">
+                Eastern European Time (EET) - Cairo
+              </option>
+              <option value="Africa/Johannesburg">
+                South Africa Standard Time (SAST)
+              </option>
+              <option value="Africa/Lagos">
+                West Africa Time (WAT) - Lagos
+              </option>
+              <option value="Asia/Riyadh">
+                Arabia Standard Time (AST) - Riyadh
+              </option>
+              <option value="Asia/Tehran">
+                Iran Standard Time (IRST) - Tehran
+              </option>
+              <option value="Asia/Jerusalem">
+                Israel Standard Time (IST) - Jerusalem
+              </option>
             </optgroup>
           </select>
         </div>

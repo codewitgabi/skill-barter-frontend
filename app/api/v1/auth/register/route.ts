@@ -18,6 +18,14 @@ interface RegisterResponseData {
     weekly_availability: number;
     skills: unknown[];
     interests: unknown[];
+    skillsToTeach: {
+      name: string;
+      difficulty: "beginner" | "intermediate" | "advanced";
+    }[];
+    skillsToLearn: {
+      name: string;
+      difficulty: "beginner" | "intermediate" | "advanced";
+    }[];
     language: string;
     timezone: string;
     createdAt: string;

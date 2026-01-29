@@ -1,3 +1,8 @@
+export interface SkillItem {
+  name: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+}
+
 export interface User {
   _id: string;
   first_name: string;
@@ -11,6 +16,8 @@ export interface User {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: SkillItem[];
+  skillsToLearn: SkillItem[];
   language: string;
   timezone: string;
   website: string;

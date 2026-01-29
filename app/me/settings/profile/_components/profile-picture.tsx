@@ -31,6 +31,14 @@ interface UserResponseData {
   weekly_availability: number;
   skills: unknown[];
   interests: unknown[];
+  skillsToTeach: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
+  skillsToLearn: {
+    name: string;
+    difficulty: "beginner" | "intermediate" | "advanced";
+  }[];
   language: string;
   timezone: string;
   website: string;
@@ -52,6 +60,8 @@ function mapUserResponseToUser(data: UserResponseData): User {
     weekly_availability: data.weekly_availability,
     skills: data.skills,
     interests: data.interests,
+    skillsToTeach: data.skillsToTeach || [],
+    skillsToLearn: data.skillsToLearn || [],
     language: data.language,
     timezone: data.timezone,
     website: data.website || "",
@@ -122,7 +132,10 @@ function ProfilePicture() {
       }
     } catch (error) {
       toast.error("Failed to update profile picture", {
-        description: error instanceof Error ? error.message : "An unexpected error occurred.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
       });
     } finally {
       setIsUploading(false);
@@ -177,7 +190,10 @@ function ProfilePicture() {
         <div className="flex items-center max-sm:flex-col gap-6">
           <div className="relative">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={user?.profile_picture || "/placeholder-avatar.jpg"} alt="Profile" />
+              <AvatarImage
+                src={user?.profile_picture || "/placeholder-avatar.jpg"}
+                alt="Profile"
+              />
               <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-2xl">
                 {getUserInitials()}
               </AvatarFallback>

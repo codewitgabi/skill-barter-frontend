@@ -10,11 +10,13 @@ import {
   Settings as SettingsIcon,
   ChevronRight,
   KeyRound,
+  Sparkles,
 } from "lucide-react";
 
 const settingsNavItems = [
   { href: "/me/settings", label: "General", icon: SettingsIcon },
   { href: "/me/settings/profile", label: "Profile", icon: User },
+  { href: "/me/settings/skills", label: "Skills", icon: Sparkles },
   { href: "/me/settings/password", label: "Password", icon: KeyRound },
   {
     href: "/me/settings/notifications",
