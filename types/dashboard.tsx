@@ -50,7 +50,7 @@ export interface ISkillProgress {
 }
 
 export interface IRecentActivity {
-  id: number;
+  id: string;
   type: "review" | "exchange" | "session" | "achievement";
   message: string;
   skill: string;

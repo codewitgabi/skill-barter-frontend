@@ -79,7 +79,7 @@ function summarizeNotification(notification: FirebaseNotification): IRecentActiv
   }
 
   return {
-    id: parseInt(notification.id.slice(-8), 16) || Date.now(),
+    id: notification.id,
     type: activityType,
     message,
     skill,

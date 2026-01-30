@@ -83,13 +83,14 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
     isRecipient && (booking.status === "pending" || booking.status === "changes_made");
 
   // Form state for proposer (draft/changes_requested)
-  const [daysPerWeek, setDaysPerWeek] = useState(booking.daysPerWeek);
+  // Use strings to allow clearing input fields completely
+  const [daysPerWeek, setDaysPerWeek] = useState(String(booking.daysPerWeek));
   const [selectedDays, setSelectedDays] = useState<string[]>(
     booking.daysOfWeek,
   );
   const [startTime, setStartTime] = useState(booking.startTime);
-  const [duration, setDuration] = useState(booking.duration);
-  const [totalSessions, setTotalSessions] = useState(booking.totalSessions);
+  const [duration, setDuration] = useState(String(booking.duration));
+  const [totalSessions, setTotalSessions] = useState(String(booking.totalSessions));
 
   // Form state for recipient (pending)
   const [message, setMessage] = useState(booking.message || "");
@@ -100,11 +101,11 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
 
   // Update form state when booking changes
   useEffect(() => {
-    setDaysPerWeek(booking.daysPerWeek);
+    setDaysPerWeek(String(booking.daysPerWeek));
     setSelectedDays(booking.daysOfWeek);
     setStartTime(booking.startTime);
-    setDuration(booking.duration);
-    setTotalSessions(booking.totalSessions);
+    setDuration(String(booking.duration));
+    setTotalSessions(String(booking.totalSessions));
     setMessage(booking.message || "");
   }, [booking]);
 
@@ -124,6 +125,11 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
     try {
       setIsSaving(true);
 
+      // Parse string values to numbers
+      const daysPerWeekNum = parseInt(daysPerWeek, 10);
+      const durationNum = parseInt(duration, 10);
+      const totalSessionsNum = parseInt(totalSessions, 10);
+
       // Validation
       if (isEditableForProposer) {
         if (selectedDays.length === 0) {
@@ -131,17 +137,17 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
           setIsSaving(false);
           return;
         }
-        if (daysPerWeek < 1 || daysPerWeek > 7) {
+        if (isNaN(daysPerWeekNum) || daysPerWeekNum < 1 || daysPerWeekNum > 7) {
           toast.error("Days per week must be between 1 and 7");
           setIsSaving(false);
           return;
         }
-        if (duration < 15) {
+        if (isNaN(durationNum) || durationNum < 15) {
           toast.error("Duration must be at least 15 minutes");
           setIsSaving(false);
           return;
         }
-        if (totalSessions < 1) {
+        if (isNaN(totalSessionsNum) || totalSessionsNum < 1) {
           toast.error("Total sessions must be at least 1");
           setIsSaving(false);
           return;
@@ -166,11 +172,11 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
 
       if (isEditableForProposer) {
         // Proposer: send all fields except message
-        requestBody.daysPerWeek = daysPerWeek;
+        requestBody.daysPerWeek = daysPerWeekNum;
         requestBody.daysOfWeek = selectedDays;
         requestBody.startTime = startTime;
-        requestBody.duration = duration;
-        requestBody.totalSessions = totalSessions;
+        requestBody.duration = durationNum;
+        requestBody.totalSessions = totalSessionsNum;
       } else if (isEditableForRecipient) {
         // Recipient: only send message
         requestBody.message = message || null;
@@ -310,7 +316,7 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
                 min="1"
                 max="7"
                 value={daysPerWeek}
-                onChange={(e) => setDaysPerWeek(parseInt(e.target.value) || 1)}
+                onChange={(e) => setDaysPerWeek(e.target.value)}
                 disabled={!isEditableForProposer}
               />
             </div>
@@ -363,7 +369,7 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
                 min="15"
                 step="15"
                 value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value) || 15)}
+                onChange={(e) => setDuration(e.target.value)}
                 disabled={!isEditableForProposer}
               />
             </div>
@@ -376,9 +382,7 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
                 type="number"
                 min="1"
                 value={totalSessions}
-                onChange={(e) =>
-                  setTotalSessions(parseInt(e.target.value) || 1)
-                }
+                onChange={(e) => setTotalSessions(e.target.value)}
                 disabled={!isEditableForProposer}
               />
             </div>
