@@ -5,12 +5,16 @@ interface SessionListProps {
   sessions: Array<ISession>;
   onJoin?: (id: number) => void;
   onViewDetails?: (id: number) => void;
+  onMarkComplete?: (id: number) => void;
+  completingId?: number | null;
 }
 
 function SessionList({
   sessions,
   onJoin,
   onViewDetails,
+  onMarkComplete,
+  completingId,
 }: SessionListProps) {
   if (sessions.length === 0) {
     return null;
@@ -24,6 +28,8 @@ function SessionList({
           session={session}
           onJoin={onJoin}
           onViewDetails={onViewDetails}
+          onMarkComplete={onMarkComplete}
+          isCompleting={completingId === session.id}
         />
       ))}
     </div>

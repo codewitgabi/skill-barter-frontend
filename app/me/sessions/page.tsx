@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { apiGet } from "@/lib/api-client";
+import { apiGet, apiPost } from "@/lib/api-client";
 import { formatSessionDate } from "@/lib/helpers";
 import { useAuth } from "@/hooks/use-auth";
 import { useSessions } from "./_components/use-sessions";
@@ -88,6 +88,7 @@ function mapSessionResponseToISession(
   
   return {
     id: idNumber,
+    originalId: session.id,
     type,
     skill: session.skill,
     partner: {
@@ -122,6 +123,7 @@ function Page() {
     scheduled: 0,
     completed: 0,
   });
+  const [completingId, setCompletingId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -188,6 +190,59 @@ function Page() {
     }
   };
 
+  const handleMarkComplete = async (id: number) => {
+    const session = sessions.find((s) => s.id === id);
+    if (!session) return;
+
+    setCompletingId(id);
+
+    try {
+      const response = await apiPost(
+        `/sessions/${session.originalId}/complete`,
+        {},
+      );
+
+      if (response.status === "success") {
+        // Update local state to reflect the completed status
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === id
+              ? {
+                  ...s,
+                  status: "completed" as const,
+                  completedAt: formatSessionDate(new Date().toISOString()),
+                }
+              : s,
+          ),
+        );
+        // Update dashboard stats
+        setDashboardStats((prev) => ({
+          ...prev,
+          active: Math.max(0, prev.active - 1),
+          scheduled: session.status === "scheduled" ? Math.max(0, prev.scheduled - 1) : prev.scheduled,
+          completed: prev.completed + 1,
+        }));
+        toast.success("Session marked as completed", {
+          description: `Your ${session.skill} session has been completed.`,
+        });
+      } else {
+        const errorResponse = response as { error?: { message?: string } };
+        toast.error("Failed to complete session", {
+          description:
+            errorResponse.error?.message || "Please try again later.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to complete session", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+      });
+    } finally {
+      setCompletingId(null);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -219,6 +274,8 @@ function Page() {
               sessions={filteredSessions}
               onJoin={handleJoin}
               onViewDetails={handleViewDetails}
+              onMarkComplete={handleMarkComplete}
+              completingId={completingId}
             />
           )}
         </div>

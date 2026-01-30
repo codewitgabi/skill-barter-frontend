@@ -9,6 +9,7 @@ export type SessionStatus = "active" | "scheduled" | "completed" | "cancelled";
 
 export interface ISession {
   id: number;
+  originalId: string; // Original session ID from API for API calls
   type: SessionType;
   skill: string;
   partner: ISessionPartner;

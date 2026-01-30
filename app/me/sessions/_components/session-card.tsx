@@ -11,6 +11,7 @@ import {
   Calendar,
   Star,
   Play,
+  Loader2,
 } from "lucide-react";
 import type { ISession } from "./types";
 
@@ -19,6 +20,7 @@ interface SessionCardProps {
   onJoin?: (id: number) => void;
   onViewDetails?: (id: number) => void;
   onMarkComplete?: (id: number) => void;
+  isCompleting?: boolean;
 }
 
 function SessionCard({
@@ -26,6 +28,7 @@ function SessionCard({
   onJoin,
   onViewDetails,
   onMarkComplete,
+  isCompleting,
 }: SessionCardProps) {
   // Check if current time is at or past the scheduled time
   const isSessionTimeReached = () => {
@@ -218,9 +221,14 @@ function SessionCard({
                     variant="outline"
                     className="flex-1 sm:flex-initial rounded-full font-medium text-sm py-3 sm:py-0 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-700"
                     size="sm"
+                    disabled={isCompleting}
                   >
-                    <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-                    Mark as Completed
+                    {isCompleting ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {isCompleting ? "Completing..." : "Mark as Completed"}
                   </Button>
                 )}
               {session.status === "completed" && (
