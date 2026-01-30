@@ -223,18 +223,19 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         {},
       );
 
-      if (response.status === "success" && response.data) {
+      if (response.status === "success") {
         toast.success("Session booking accepted successfully", {
           description: "Sessions have been created based on the booking details.",
         });
 
-        // Update parent component with new data
-        if (onBookingUpdate) {
+        // Update parent component with new data if available
+        if (onBookingUpdate && response.data) {
           onBookingUpdate(response.data);
         }
       } else {
+        const errorResponse = response as { error?: { message?: string } };
         toast.error("Failed to accept session booking", {
-          description: "Please try again later.",
+          description: errorResponse.error?.message || "Please try again later.",
         });
       }
     } catch (error) {
