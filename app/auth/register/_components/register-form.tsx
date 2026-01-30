@@ -258,13 +258,13 @@ function RegisterForm() {
         country: data.location.country,
         profile_picture: profilePictureUrl,
         weekly_availability: data.availability,
-        skills: data.skillsToTeach.map((skill) => ({
+        skillsToTeach: data.skillsToTeach.map((skill) => ({
           name: skill.skill,
-          level: skill.level,
+          difficulty: skill.level,
         })),
-        interests: data.skillsToLearn.map((skill) => ({
+        skillsToLearn: data.skillsToLearn.map((skill) => ({
           name: skill.skill,
-          level: skill.level,
+          difficulty: skill.level,
         })),
         language: "en",
         timezone: "UTC",
@@ -273,7 +273,7 @@ function RegisterForm() {
 
       const response = await apiPost<RegisterResponseData>(
         "/auth/register",
-        registerData,
+        registerData
       );
 
       if (response.status === "success" && response.data) {
