@@ -1,0 +1,115 @@
+import type { Metadata } from "next";
+import ProfileHeader from "./_components/profile-header";
+import ProfileStats from "./_components/profile-stats";
+import ProfileAbout from "./_components/profile-about";
+import ProfileSkills from "./_components/profile-skills";
+import ProfileReviews from "./_components/profile-reviews";
+import { mockProfile } from "./_components/types";
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+// Generate dynamic metadata for social sharing
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  
+  // TODO: Replace with actual API call to fetch user data
+  // const profile = await fetchUserProfile(id);
+  const profile = mockProfile;
+  
+  const fullName = `${profile.firstName} ${profile.lastName}`;
+  const title = `${fullName} (@${profile.username}) | SkillBarter`;
+  const description = profile.bio
+    ? profile.bio.slice(0, 160) + (profile.bio.length > 160 ? "..." : "")
+    : `Connect with ${fullName} on SkillBarter. ${profile.stats.completedSessions} sessions completed with a ${profile.stats.averageRating} rating.`;
+  
+  const skillsTeaching = profile.skillsToTeach.map((s) => s.name).join(", ");
+  const skillsLearning = profile.skillsToLearn.map((s) => s.name).join(", ");
+
+  return {
+    title,
+    description,
+    keywords: [
+      fullName,
+      profile.username,
+      "skill exchange",
+      "learn",
+      "teach",
+      ...profile.skillsToTeach.map((s) => s.name),
+      ...profile.skillsToLearn.map((s) => s.name),
+    ],
+    authors: [{ name: fullName }],
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+      url: `/users/${id}`,
+      images: profile.avatar
+        ? [
+            {
+              url: profile.avatar,
+              width: 400,
+              height: 400,
+              alt: `${fullName}'s profile picture`,
+            },
+          ]
+        : [],
+      siteName: "SkillBarter",
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      username: profile.username,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: profile.avatar ? [profile.avatar] : [],
+    },
+    other: {
+      "profile:skills_teaching": skillsTeaching,
+      "profile:skills_learning": skillsLearning,
+      "profile:rating": profile.stats.averageRating.toString(),
+      "profile:sessions": profile.stats.completedSessions.toString(),
+      "profile:location": `${profile.location.city}, ${profile.location.country}`,
+    },
+  };
+}
+
+async function Page({ params }: PageProps) {
+  const { id } = await params;
+  
+  // TODO: Replace with actual API call to fetch user data
+  // const profile = await fetchUserProfile(id);
+  const profile = mockProfile;
+
+  // Suppress unused variable warning - id will be used when API is implemented
+  void id;
+
+  return (
+    <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <ProfileHeader profile={profile} />
+          
+          <ProfileStats stats={profile.stats} />
+          
+          <ProfileAbout bio={profile.bio} />
+          
+          <ProfileSkills
+            skillsToTeach={profile.skillsToTeach}
+            skillsToLearn={profile.skillsToLearn}
+          />
+          
+          <ProfileReviews
+            reviews={profile.reviews}
+            averageRating={profile.stats.averageRating}
+            totalReviews={profile.stats.totalReviews}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Page;
