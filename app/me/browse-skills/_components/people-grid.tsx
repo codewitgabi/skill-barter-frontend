@@ -134,7 +134,7 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredPeople.map((person) => (
             <Card
-              key={person.id}
+              key={person.originalId}
               className="hover:shadow-md transition-all duration-200 cursor-pointer border hover:border-primary/50"
             >
               <CardContent className="p-4 sm:p-6">

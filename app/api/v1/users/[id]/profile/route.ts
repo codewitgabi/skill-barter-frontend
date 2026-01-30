@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.V1_API_BASE_URL;
 
 export async function GET(
   request: Request,
@@ -10,8 +10,18 @@ export async function GET(
   const { id } = await params;
 
   try {
+    if (!API_BASE_URL) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "API base URL not configured",
+        },
+        { status: 500 }
+      );
+    }
+
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get("access_token")?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",

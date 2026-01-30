@@ -4,7 +4,8 @@ import ProfileStats from "./_components/profile-stats";
 import ProfileAbout from "./_components/profile-about";
 import ProfileSkills from "./_components/profile-skills";
 import ProfileReviews from "./_components/profile-reviews";
-import { mockProfile } from "./_components/types";
+import ProfileNotFound from "./_components/profile-not-found";
+import { fetchUserProfile, getCurrentUserId } from "./_components/fetch-profile";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -14,9 +15,14 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   
-  // TODO: Replace with actual API call to fetch user data
-  // const profile = await fetchUserProfile(id);
-  const profile = mockProfile;
+  const { profile } = await fetchUserProfile(id);
+  
+  if (!profile) {
+    return {
+      title: "User Not Found | SkillBarter",
+      description: "The user you're looking for doesn't exist.",
+    };
+  }
   
   const fullName = `${profile.firstName} ${profile.lastName}`;
   const title = `${fullName} (@${profile.username}) | SkillBarter`;
@@ -79,18 +85,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 async function Page({ params }: PageProps) {
   const { id } = await params;
   
-  // TODO: Replace with actual API call to fetch user data
-  // const profile = await fetchUserProfile(id);
-  const profile = mockProfile;
+  // Fetch profile and current user ID in parallel
+  const [{ profile }, currentUserId] = await Promise.all([
+    fetchUserProfile(id),
+    getCurrentUserId(),
+  ]);
 
-  // Suppress unused variable warning - id will be used when API is implemented
-  void id;
+  if (!profile) {
+    return <ProfileNotFound />;
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          <ProfileHeader profile={profile} />
+          <ProfileHeader profile={profile} currentUserId={currentUserId} />
           
           <ProfileStats stats={profile.stats} />
           
@@ -101,11 +110,13 @@ async function Page({ params }: PageProps) {
             skillsToLearn={profile.skillsToLearn}
           />
           
-          <ProfileReviews
-            reviews={profile.reviews}
-            averageRating={profile.stats.averageRating}
-            totalReviews={profile.stats.totalReviews}
-          />
+          {profile.reviews.length > 0 && (
+            <ProfileReviews
+              reviews={profile.reviews}
+              averageRating={profile.stats.averageRating}
+              totalReviews={profile.stats.totalReviews}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -15,11 +18,16 @@ import {
   Award,
   CheckCircle,
   Briefcase,
+  Check,
+  Loader2,
 } from "lucide-react";
-import type { UserProfile } from "./types";
+import { apiPost } from "@/lib/api-client";
+import { useAuth } from "@/hooks/use-auth";
+import type { UserProfile, ConnectionStatus } from "./types";
 
 interface ProfileHeaderProps {
   profile: UserProfile;
+  currentUserId?: string | null;
 }
 
 function formatDate(dateString: string): string {
@@ -30,8 +38,99 @@ function formatDate(dateString: string): string {
   });
 }
 
-function ProfileHeader({ profile }: ProfileHeaderProps) {
+function ProfileHeader({ profile, currentUserId }: ProfileHeaderProps) {
+  const router = useRouter();
+  const { user } = useAuth();
+  const [isConnecting, setIsConnecting] = useState(false);
+  
   const fullName = `${profile.firstName} ${profile.lastName}`;
+  const isOwnProfile = currentUserId === profile.id;
+  const connectionStatus: ConnectionStatus = profile.connectionStatus;
+
+  const handleConnectClick = async () => {
+    if (connectionStatus === null) {
+      // User not authenticated, redirect to sign in
+      router.push("/auth/signin");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please sign in to connect");
+      router.push("/auth/signin");
+      return;
+    }
+
+    // Get user's teaching skills (skills the user can teach)
+    const userTeachingSkills = Array.isArray(user.skillsToTeach)
+      ? user.skillsToTeach.map((skill) => skill.name).filter(Boolean)
+      : [];
+
+    // Get user's learning skills (skills the user wants to learn)
+    const userLearningSkills = Array.isArray(user.skillsToLearn)
+      ? user.skillsToLearn.map((skill) => skill.name).filter(Boolean)
+      : [];
+
+    // Find a skill the user can teach that the profile wants to learn
+    const teachingSkill = profile.skillsToLearn
+      .map((s) => s.name)
+      .find((skillName) => userTeachingSkills.includes(skillName));
+
+    // Find a skill the profile can teach that the user wants to learn
+    const learningSkill = profile.skillsToTeach
+      .map((s) => s.name)
+      .find((skillName) => userLearningSkills.includes(skillName));
+
+    if (!teachingSkill || !learningSkill) {
+      toast.error("No matching skills found for exchange", {
+        description:
+          "Make sure you have skills that match what this person is looking for.",
+      });
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+
+      const response = await apiPost<{
+        id: string;
+        requester: unknown;
+        receiver: unknown;
+        message: string | null;
+        teachingSkill: string;
+        learningSkill: string;
+        status: string;
+        createdAt: string;
+      }>("/exchange-requests", {
+        receiverId: profile.id,
+        teachingSkill,
+        learningSkill,
+        message: null,
+      });
+
+      if (response.status === "success") {
+        toast.success("Connection request sent!", {
+          description: `Your exchange request has been sent to ${fullName}.`,
+        });
+      } else {
+        const errorResponse = response as { error: { message: string } };
+        toast.error("Failed to send connection request", {
+          description:
+            errorResponse.error?.message || "Please try again later.",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to send connection request", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+      });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const showConnectButton = !isOwnProfile && connectionStatus !== "connected";
 
   return (
     <Card className="overflow-hidden shadow-none">
@@ -91,17 +190,48 @@ function ProfileHeader({ profile }: ProfileHeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex gap-2 shrink-0">
-            <Button variant="outline" size="default" className="gap-2">
-              <MessageCircle className="h-4 w-4" />
-              Message
-            </Button>
-            <Button
-              size="default"
-              className="gap-2 bg-linear-to-r from-emerald-500 via-blue-500 to-purple-600 text-white hover:opacity-90 transition-opacity"
-            >
-              <UserPlus className="h-4 w-4" />
-              Connect
-            </Button>
+            {!isOwnProfile && (
+              <Button
+                variant="outline"
+                size="default"
+                className="gap-2"
+                disabled
+              >
+                <MessageCircle className="h-4 w-4" />
+                Message
+              </Button>
+            )}
+            {connectionStatus === "connected" && !isOwnProfile && (
+              <Button
+                variant="outline"
+                size="default"
+                className="gap-2 text-emerald-600 border-emerald-200 dark:border-emerald-800 cursor-default"
+                disabled
+              >
+                <Check className="h-4 w-4" />
+                Connected
+              </Button>
+            )}
+            {showConnectButton && (
+              <Button
+                size="default"
+                className="gap-2 bg-linear-to-r from-emerald-500 via-blue-500 to-purple-600 text-white hover:opacity-90 transition-opacity"
+                onClick={handleConnectClick}
+                disabled={isConnecting}
+              >
+                {isConnecting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-4 w-4" />
+                    Connect
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -117,29 +247,35 @@ function ProfileHeader({ profile }: ProfileHeaderProps) {
             </span>
           </div>
 
-          <Badge
-            variant="secondary"
-            className="gap-1.5 py-1.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
-          >
-            <Award className="h-3.5 w-3.5" />
-            Top Rated
-          </Badge>
+          {profile.stats.averageRating >= 4.5 && (
+            <Badge
+              variant="secondary"
+              className="gap-1.5 py-1.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+            >
+              <Award className="h-3.5 w-3.5" />
+              Top Rated
+            </Badge>
+          )}
 
-          <Badge
-            variant="secondary"
-            className="gap-1.5 py-1.5 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
-          >
-            <CheckCircle className="h-3.5 w-3.5" />
-            {profile.stats.completedSessions} Sessions
-          </Badge>
+          {profile.stats.completedSessions > 0 && (
+            <Badge
+              variant="secondary"
+              className="gap-1.5 py-1.5 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+            >
+              <CheckCircle className="h-3.5 w-3.5" />
+              {profile.stats.completedSessions} Sessions
+            </Badge>
+          )}
 
-          <Badge
-            variant="secondary"
-            className="gap-1.5 py-1.5 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400 border border-purple-200 dark:border-purple-800"
-          >
-            <Briefcase className="h-3.5 w-3.5" />
-            Verified Expert
-          </Badge>
+          {profile.stats.completedSessions >= 10 && (
+            <Badge
+              variant="secondary"
+              className="gap-1.5 py-1.5 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400 border border-purple-200 dark:border-purple-800"
+            >
+              <Briefcase className="h-3.5 w-3.5" />
+              Verified Expert
+            </Badge>
+          )}
         </div>
       </div>
     </Card>
