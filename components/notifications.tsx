@@ -13,6 +13,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNotifications } from "@/hooks/use-notifications";
 
 export type NotificationType =
   | "review"
@@ -134,7 +135,12 @@ export function Notifications({
     Array<INotification>
   >(notifications || generateMockNotifications());
 
-  const unreadCount = localNotifications.filter((n) => !n.isRead).length;
+  // Fetch real-time unread count from Firebase
+  const { unreadCount: firebaseUnreadCount, isLoading } = useNotifications();
+
+  // Use Firebase count if available, otherwise fall back to local count
+  const localUnreadCount = localNotifications.filter((n) => !n.isRead).length;
+  const unreadCount = firebaseUnreadCount ?? localUnreadCount;
 
   // Notify parent of unread count changes
   React.useEffect(() => {
@@ -194,8 +200,8 @@ export function Notifications({
       aria-label="Notifications"
       suppressHydrationWarning
     >
-      <Bell className="h-5 w-5" />
-      {unreadCount > 0 && (
+      <Bell className={cn("h-5 w-5", isLoading && "animate-pulse")} />
+      {unreadCount > 0 && !isLoading && (
         <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
           {unreadCount > 9 ? "9+" : unreadCount}
         </span>

@@ -1,174 +1,78 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
-  requestNotificationPermission,
-  getMessagingInstance,
-  onForegroundMessage,
-} from "@/lib/firebase.config";
-import { apiPatch } from "@/lib/api-client";
-import { toast } from "sonner";
+  collection,
+  query,
+  where,
+  onSnapshot,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase.config";
+import { useAuth } from "./use-auth";
 
-interface NotificationPayload {
-  notification?: {
-    title?: string;
-    body?: string;
-    image?: string;
+export interface FirebaseNotification {
+  id: string;
+  actionUrl: string;
+  createdAt: Timestamp;
+  data: {
+    sessionId?: string;
+    message: string;
+    [key: string]: unknown;
   };
-  data?: Record<string, string>;
+  readAt: Timestamp | null;
+  status: "unread" | "read";
+  title: string;
+  type: string;
+  updatedAt: Timestamp;
+  userId: string;
 }
 
-type NotificationPermissionState =
-  | "default"
-  | "granted"
-  | "denied"
-  | "unsupported";
-
 interface UseNotificationsReturn {
-  permission: NotificationPermissionState;
+  unreadCount: number;
   isLoading: boolean;
-  fcmToken: string | null;
-  requestPermission: () => Promise<void>;
-  isSupported: boolean;
+  error: string | null;
 }
 
 export function useNotifications(): UseNotificationsReturn {
-  const [permission, setPermission] =
-    useState<NotificationPermissionState>("default");
+  const { user } = useAuth();
+  const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [fcmToken, setFcmToken] = useState<string | null>(null);
-  const [isSupported, setIsSupported] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Check initial permission state and setup foreground listener
   useEffect(() => {
-    const checkSupport = async () => {
-      if (typeof window === "undefined") {
-        setIsSupported(false);
-        return;
-      }
-
-      // Check if notifications are supported
-      if (!("Notification" in window)) {
-        setIsSupported(false);
-        setPermission("unsupported");
-        return;
-      }
-
-      // Check if service workers are supported
-      if (!("serviceWorker" in navigator)) {
-        setIsSupported(false);
-        setPermission("unsupported");
-        return;
-      }
-
-      // Set initial permission state
-      setPermission(Notification.permission as NotificationPermissionState);
-
-      // If already granted, setup messaging
-      if (Notification.permission === "granted") {
-        const messagingInstance = await getMessagingInstance();
-        if (messagingInstance) {
-          // Setup foreground message listener
-          const unsubscribe = onForegroundMessage((payload: unknown) => {
-            const typedPayload = payload as NotificationPayload;
-            const title =
-              typedPayload.notification?.title || "New Notification";
-            const body = typedPayload.notification?.body || "";
-
-            // Show toast for foreground notifications
-            toast(title, {
-              description: body,
-              action: typedPayload.data?.url
-                ? {
-                    label: "View",
-                    onClick: () => {
-                      window.location.href = typedPayload.data?.url || "/@me";
-                    },
-                  }
-                : undefined,
-            });
-          });
-
-          return () => unsubscribe();
-        }
-      }
-    };
-
-    checkSupport();
-  }, []);
-
-  // Request notification permission
-  const requestPermission = useCallback(async () => {
-    if (!isSupported) {
-      toast.error("Notifications are not supported in this browser");
+    if (!user?._id) {
       return;
     }
 
     setIsLoading(true);
+    setError(null);
 
-    try {
-      const token = await requestNotificationPermission();
+    // Query for unread notifications for the current user
+    const notificationsRef = collection(db, "notifications");
+    const q = query(
+      notificationsRef,
+      where("userId", "==", user._id),
+      where("status", "==", "unread")
+    );
 
-      if (token) {
-        setFcmToken(token);
-        setPermission("granted");
-
-        // Send token to backend
-        try {
-          await apiPatch("/users/me", { fcmToken: token });
-          toast.success("Notifications enabled successfully");
-        } catch (error) {
-          console.error("Failed to save FCM token to backend:", error);
-          // Still show success since notifications will work locally
-          toast.success("Notifications enabled");
-        }
-
-        // Setup foreground message listener
-        const messagingInstance = await getMessagingInstance();
-        if (messagingInstance) {
-          onForegroundMessage((payload: unknown) => {
-            const typedPayload = payload as NotificationPayload;
-            const title =
-              typedPayload.notification?.title || "New Notification";
-            const body = typedPayload.notification?.body || "";
-
-            toast(title, {
-              description: body,
-              action: typedPayload.data?.url
-                ? {
-                    label: "View",
-                    onClick: () => {
-                      window.location.href = typedPayload.data?.url || "/@me";
-                    },
-                  }
-                : undefined,
-            });
-          });
-        }
-      } else {
-        // Check what the current permission state is
-        if (Notification.permission === "denied") {
-          setPermission("denied");
-          toast.error(
-            "Notifications blocked. Please enable them in your browser settings.",
-          );
-        } else {
-          toast.error("Failed to enable notifications. Please try again.");
-        }
+    // Subscribe to real-time updates
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        setUnreadCount(snapshot.size);
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error("Error fetching notifications:", err);
+        setError(err.message);
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error requesting notification permission:", error);
-      toast.error("Failed to enable notifications");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isSupported]);
+    );
 
-  return {
-    permission,
-    isLoading,
-    fcmToken,
-    requestPermission,
-    isSupported,
-  };
+    // Cleanup subscription on unmount or when user changes
+    return () => unsubscribe();
+  }, [user?._id]);
+
+  return { unreadCount, isLoading, error };
 }

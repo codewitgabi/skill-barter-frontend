@@ -9,8 +9,10 @@ import {
   onMessage,
   isSupported as isMessagingSupported,
 } from "firebase/messaging";
+import { getFirestore } from "firebase/firestore";
 import type { Analytics } from "firebase/analytics";
 import type { Messaging } from "firebase/messaging";
+import type { Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBh22tBvb-quvKHMc2lqD7x7cH4a-9Tt78",
@@ -30,6 +32,9 @@ const app =
 // Analytics and Messaging are browser-only
 let analytics: Analytics | null = null;
 let messaging: Messaging | null = null;
+
+// Firestore (works in both server and client)
+export const db: Firestore = getFirestore(app);
 
 // Initialize browser-only services
 export const initializeFirebaseServices = async () => {
