@@ -40,6 +40,10 @@ const nextConfig: NextConfig = {
         destination: "/me/chat",
       },
       {
+        source: "/@me/notifications",
+        destination: "/me/notifications",
+      },
+      {
         source: "/@me/session-bookings",
         destination: "/me/session-bookings",
       },

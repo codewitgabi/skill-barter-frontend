@@ -32,7 +32,7 @@ import {
   CalendarCheck,
   ArrowLeftRight,
 } from "lucide-react";
-import { Notifications } from "@/components/notifications";
+import { useNotifications } from "@/hooks/use-notifications";
 import {
   Popover,
   PopoverContent,
@@ -82,6 +82,7 @@ export function AppNavbar() {
   const [isProfilePopoverOpen, setIsProfilePopoverOpen] = useState(false);
   const { user } = useAuth();
   const { logout } = useAuthStore();
+  const { unreadCount, isLoading: notificationsLoading } = useNotifications();
 
   const handleLogout = async () => {
     try {
@@ -149,7 +150,21 @@ export function AppNavbar() {
             {/* Right side: Icons and Profile */}
             <div className="flex items-center space-x-1 sm:space-x-3">
               {/* Notifications - visible on all screens */}
-              <Notifications />
+              <Link href="/@me/notifications">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-full"
+                  aria-label="Notifications"
+                >
+                  <BellRing className={cn("h-5 w-5", notificationsLoading && "animate-pulse")} />
+                  {unreadCount > 0 && !notificationsLoading && (
+                    <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               {/* Messages - visible on all screens */}
               <Link href="/@me/chat">
@@ -161,7 +176,7 @@ export function AppNavbar() {
                 >
                   <MessageCircle className="h-5 w-5" />
                   <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
-                    5
+                    0
                   </span>
                 </Button>
               </Link>
