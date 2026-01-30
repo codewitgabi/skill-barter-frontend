@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -52,22 +53,27 @@ function SessionDetailsDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <Avatar className="h-12 w-12">
-              <AvatarImage
-                src={session.partner.avatar}
-                alt={session.partner.name}
-              />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                {session.partner.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${session.partner.id}`}>
+              <Avatar className="h-12 w-12 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage
+                  src={session.partner.avatar}
+                  alt={session.partner.name}
+                />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                  {session.partner.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1">
               <DialogTitle className="text-xl">{session.skill}</DialogTitle>
               <DialogDescription>
-                {session.type} session with {session.partner.name}
+                {session.type} session with{" "}
+                <Link href={`/users/${session.partner.id}`} className="hover:text-primary transition-colors">
+                  {session.partner.name}
+                </Link>
               </DialogDescription>
             </div>
           </div>

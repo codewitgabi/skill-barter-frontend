@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -139,19 +140,23 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
               <CardContent className="p-4 sm:p-6">
                 {/* Header with Avatar and Info */}
                 <div className="flex items-start gap-4 mb-4">
-                  <Avatar className="h-12 w-12 sm:h-14 sm:w-14 shrink-0">
-                    <AvatarImage src={person.avatar} alt={person.name} />
-                    <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                      {person.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Link href={`/users/${person.originalId}`} onClick={(e) => e.stopPropagation()}>
+                    <Avatar className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+                      <AvatarImage src={person.avatar} alt={person.name} />
+                      <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                        {person.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base sm:text-lg mb-1 truncate">
-                      {person.name}
-                    </h3>
+                    <Link href={`/users/${person.originalId}`} onClick={(e) => e.stopPropagation()}>
+                      <h3 className="font-semibold text-base sm:text-lg mb-1 truncate hover:text-primary transition-colors cursor-pointer">
+                        {person.name}
+                      </h3>
+                    </Link>
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-2">
                       <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                       <span className="truncate">{person.location}</span>

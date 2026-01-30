@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,15 +26,17 @@ function ExchangeRequestCard({
         <div className="flex gap-3 sm:gap-4">
           {/* Avatar Section */}
           <div className="shrink-0">
-            <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-              <AvatarImage src={request.avatar} alt={request.from} />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
-                {request.from
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${request.requesterId}`}>
+              <Avatar className="h-12 w-12 sm:h-14 sm:w-14 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage src={request.avatar} alt={request.from} />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
+                  {request.from
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           </div>
 
           {/* Content Section */}
@@ -41,9 +44,11 @@ function ExchangeRequestCard({
             {/* Header with name and time */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-2">
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-semibold">
-                  {request.from}
-                </h3>
+                <Link href={`/users/${request.requesterId}`}>
+                  <h3 className="text-base sm:text-lg font-semibold hover:text-primary transition-colors cursor-pointer">
+                    {request.from}
+                  </h3>
+                </Link>
                 {request.website && (
                   <Tooltip>
                     <TooltipTrigger asChild>

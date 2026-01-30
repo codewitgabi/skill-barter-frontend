@@ -8,6 +8,7 @@ export interface IStats {
 
 export interface IUpcomingSession {
   id: number;
+  partnerId: string;
   type: "Learning" | "Teaching";
   skill: string;
   with: string;
@@ -30,6 +31,7 @@ export interface IRecentExchange {
 export interface IExchangeRequest {
   id: number;
   originalId: string;
+  requesterId: string;
   from: string;
   skill: string;
   wantsToLearn: string;

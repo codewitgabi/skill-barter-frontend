@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -161,26 +162,30 @@ function QuickExchanges() {
             key={request.id}
             className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
-            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0">
-              <AvatarImage
-                src={request.requester.avatarUrl || "/placeholder-avatar.jpg"}
-                alt={request.requester.name}
-              />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                {request.requester.initials ||
-                  request.requester.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${request.requester.id}`} onClick={(e) => e.stopPropagation()}>
+              <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage
+                  src={request.requester.avatarUrl || "/placeholder-avatar.jpg"}
+                  alt={request.requester.name}
+                />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                  {request.requester.initials ||
+                    request.requester.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-semibold truncate">
-                      {request.requester.name}
-                    </span>
+                    <Link href={`/users/${request.requester.id}`} onClick={(e) => e.stopPropagation()}>
+                      <span className="font-semibold truncate hover:text-primary transition-colors cursor-pointer">
+                        {request.requester.name}
+                      </span>
+                    </Link>
                     <Badge
                       variant={
                         request.status === "accepted"

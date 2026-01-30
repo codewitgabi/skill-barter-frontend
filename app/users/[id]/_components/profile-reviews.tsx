@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -52,17 +53,21 @@ function ReviewCard({ review }: { review: UserReview }) {
   return (
     <div className="p-4 sm:p-5 rounded-xl border bg-linear-to-r from-background to-muted/20">
       <div className="flex items-start gap-4">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src={review.reviewer.avatar} alt={review.reviewer.name} />
-          <AvatarFallback className="bg-linear-to-br from-emerald-500 to-blue-500 text-white font-medium">
-            {review.reviewer.initials}
-          </AvatarFallback>
-        </Avatar>
+        <Link href={`/users/${review.reviewer.id}`}>
+          <Avatar className="h-12 w-12 cursor-pointer hover:opacity-80 transition-opacity">
+            <AvatarImage src={review.reviewer.avatar} alt={review.reviewer.name} />
+            <AvatarFallback className="bg-linear-to-br from-emerald-500 to-blue-500 text-white font-medium">
+              {review.reviewer.initials}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
 
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <p className="font-semibold">{review.reviewer.name}</p>
+              <Link href={`/users/${review.reviewer.id}`}>
+                <p className="font-semibold hover:text-primary transition-colors cursor-pointer">{review.reviewer.name}</p>
+              </Link>
               <p className="text-sm text-muted-foreground">
                 @{review.reviewer.username}
               </p>

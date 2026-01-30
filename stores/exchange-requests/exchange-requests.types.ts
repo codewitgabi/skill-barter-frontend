@@ -1,11 +1,14 @@
 export interface IExchangeRequest {
   id: number;
+  originalId: string;
+  requesterId: string;
   from: string;
   skill: string;
   wantsToLearn: string;
   message: string;
   avatar: string;
   time: string;
+  website?: string;
 }
 
 export interface ExchangeRequestsState {

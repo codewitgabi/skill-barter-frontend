@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -108,6 +109,7 @@ function UpcomingSessions() {
 
               return {
                 id: idNumber,
+                partnerId: partner.id,
                 type,
                 skill: session.skill,
                 with: partner.name,
@@ -181,15 +183,17 @@ function UpcomingSessions() {
             key={session.id}
             className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={session.avatar} alt={session.with} />
-              <AvatarFallback>
-                {session.with
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${session.partnerId}`} onClick={(e) => e.stopPropagation()}>
+              <Avatar className="h-10 w-10 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage src={session.avatar} alt={session.with} />
+                <AvatarFallback>
+                  {session.with
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <Badge

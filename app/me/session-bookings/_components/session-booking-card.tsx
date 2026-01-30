@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -82,15 +83,17 @@ function SessionBookingCard({ booking, onClick }: SessionBookingCardProps) {
         <div className="flex gap-3 sm:gap-4">
           {/* Avatar Section */}
           <div className="shrink-0">
-            <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-              <AvatarImage src={partner.avatarUrl || "/placeholder-avatar.jpg"} alt={partner.name} />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
-                {partner.initials || partner.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${partner.id}`} onClick={(e) => e.stopPropagation()}>
+              <Avatar className="h-12 w-12 sm:h-14 sm:w-14 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage src={partner.avatarUrl || "/placeholder-avatar.jpg"} alt={partner.name} />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
+                  {partner.initials || partner.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           </div>
 
           {/* Content Section */}
@@ -98,9 +101,11 @@ function SessionBookingCard({ booking, onClick }: SessionBookingCardProps) {
             {/* Header with name and status */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-base sm:text-lg font-semibold">
-                  {partner.name}
-                </h3>
+                <Link href={`/users/${partner.id}`} onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-base sm:text-lg font-semibold hover:text-primary transition-colors cursor-pointer">
+                    {partner.name}
+                  </h3>
+                </Link>
                 <Badge 
                   variant={booking.userRole === "proposer" ? "default" : "outline"} 
                   className="text-xs"

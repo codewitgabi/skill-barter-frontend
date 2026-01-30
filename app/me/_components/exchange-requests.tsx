@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -74,6 +75,7 @@ function ExchangeRequests() {
               return {
                 id: numericId,
                 originalId: req.id,
+                requesterId: req.requester.id,
                 from: req.requester.name || req.requester.username,
                 skill: req.teachingSkill,
                 wantsToLearn: req.learningSkill,
@@ -143,19 +145,23 @@ function ExchangeRequests() {
             key={request.id}
             className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
           >
-            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0">
-              <AvatarImage src={request.avatar} alt={request.from} />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
-                {request.from
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${request.requesterId}`} onClick={(e) => e.stopPropagation()}>
+              <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage src={request.avatar} alt={request.from} />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">
+                  {request.from
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
                 <div className="min-w-0 flex-1">
-                  <span className="font-semibold block">{request.from}</span>
+                  <Link href={`/users/${request.requesterId}`} onClick={(e) => e.stopPropagation()}>
+                    <span className="font-semibold block hover:text-primary transition-colors cursor-pointer">{request.from}</span>
+                  </Link>
                   <p className="text-sm text-muted-foreground mt-1 wrap-break-word">
                     {request.message}
                   </p>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -65,18 +66,20 @@ function SessionCard({
         <div className="flex gap-3 sm:gap-4">
           {/* Avatar */}
           <div className="shrink-0">
-            <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-              <AvatarImage
-                src={session.partner.avatar}
-                alt={session.partner.name}
-              />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
-                {session.partner.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${session.partner.id}`}>
+              <Avatar className="h-12 w-12 sm:h-14 sm:w-14 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage
+                  src={session.partner.avatar}
+                  alt={session.partner.name}
+                />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-sm sm:text-base">
+                  {session.partner.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           </div>
 
           {/* Content */}

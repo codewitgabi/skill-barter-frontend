@@ -81,6 +81,7 @@ function Page() {
               return {
                 id: numericId,
                 originalId: req.id,
+                requesterId: req.requester.id,
                 from: req.requester.name || req.requester.username,
                 skill: req.teachingSkill,
                 wantsToLearn: req.learningSkill,

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -79,24 +80,28 @@ function SessionBookingDetailHeader({
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
           {/* Avatar Section */}
           <div className="shrink-0">
-            <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
-              <AvatarImage
-                src={partner.avatarUrl || "/placeholder-avatar.jpg"}
-                alt={partner.name}
-              />
-              <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg sm:text-xl">
-                {partner.initials || partner.name.split(" ").map((n) => n[0]).join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/users/${partner.id}`}>
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20 cursor-pointer hover:opacity-80 transition-opacity">
+                <AvatarImage
+                  src={partner.avatarUrl || "/placeholder-avatar.jpg"}
+                  alt={partner.name}
+                />
+                <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white text-lg sm:text-xl">
+                  {partner.initials || partner.name.split(" ").map((n) => n[0]).join("")}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           </div>
 
           {/* Content Section */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-1">
-                  {partner.name}
-                </h1>
+                <Link href={`/users/${partner.id}`}>
+                  <h1 className="text-2xl sm:text-3xl font-bold mb-1 hover:text-primary transition-colors cursor-pointer">
+                    {partner.name}
+                  </h1>
+                </Link>
                 <p className="text-sm text-muted-foreground">@{partner.username}</p>
               </div>
               <div className="flex flex-col sm:items-end gap-2">
