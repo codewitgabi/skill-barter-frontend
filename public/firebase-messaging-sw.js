@@ -61,7 +61,7 @@ self.addEventListener("notificationclick", (event) => {
   }
 
   // Get the URL to open from the notification data
-  const urlToOpen = event.notification.data?.url || "/@me";
+  const urlToOpen = event.notification.data?.actionUrl || "/@me";
 
   event.waitUntil(
     clients
