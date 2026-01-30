@@ -68,7 +68,9 @@ interface SessionsData {
 function UpcomingSessions() {
   const router = useRouter();
   const { user } = useAuth();
-  const [upcomingSessions, setUpcomingSessions] = useState<IUpcomingSession[]>([]);
+  const [upcomingSessions, setUpcomingSessions] = useState<IUpcomingSession[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -77,7 +79,9 @@ function UpcomingSessions() {
 
       try {
         setIsLoading(true);
-        const response = await apiGet<SessionsData>("/sessions?limit=3");
+        const response = await apiGet<SessionsData>(
+          "/sessions?limit=3&status=scheduled",
+        );
 
         if (response.status === "success" && response.data) {
           // Filter for scheduled/active sessions and map to IUpcomingSession
@@ -90,7 +94,9 @@ function UpcomingSessions() {
             .map((session, index) => {
               // Determine if current user is the instructor
               const isInstructor = session.instructor.id === user._id;
-              const partner = isInstructor ? session.learner : session.instructor;
+              const partner = isInstructor
+                ? session.learner
+                : session.instructor;
 
               // If user is instructor, it's Teaching; otherwise Learning
               const type: "Learning" | "Teaching" = isInstructor

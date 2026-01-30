@@ -95,6 +95,9 @@ export async function GET(request: NextRequest) {
     if (searchParams.get("limit")) {
       queryParams.append("limit", searchParams.get("limit")!);
     }
+    if (searchParams.get("status")) {
+      queryParams.append("status", searchParams.get("status")!);
+    }
 
     const queryString = queryParams.toString();
     const url = `${API_BASE_URL}/sessions${queryString ? `?${queryString}` : ""}`;
