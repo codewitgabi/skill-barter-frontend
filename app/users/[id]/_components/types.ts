@@ -27,6 +27,8 @@ export interface UserStats {
   skillsLearned: number;
 }
 
+export type ConnectionStatus = "connected" | "none" | null;
+
 export interface UserProfile {
   id: string;
   firstName: string;
@@ -39,13 +41,14 @@ export interface UserProfile {
     city: string;
     country: string;
   };
-  website: string;
+  website: string | null;
   weeklyAvailability: number;
   skillsToTeach: UserSkill[];
   skillsToLearn: UserSkill[];
   stats: UserStats;
   reviews: UserReview[];
   memberSince: string;
+  connectionStatus: ConnectionStatus;
 }
 
 // Mock data for development
@@ -166,4 +169,5 @@ I believe in the power of skill exchange - teaching helps me understand concepts
       createdAt: "2025-01-10T11:30:00Z",
     },
   ],
+  connectionStatus: "none",
 };
