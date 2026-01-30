@@ -97,6 +97,7 @@ function mapSessionResponseToISession(
     },
     status,
     scheduledTime: formatSessionDate(session.scheduledDate),
+    scheduledDate: session.scheduledDate,
     duration: session.duration,
     location: session.location === "online" ? "online" : "in-person",
     meetingLink: session.meetingLink || undefined,
@@ -154,7 +155,7 @@ function Page() {
     };
 
     fetchSessions();
-  }, [user?._id]);
+  }, [user]);
 
   const { filteredSessions, stats: calculatedStats, activeFilter, setActiveFilter } =
     useSessions({ sessions });

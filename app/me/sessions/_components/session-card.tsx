@@ -18,13 +18,23 @@ interface SessionCardProps {
   session: ISession;
   onJoin?: (id: number) => void;
   onViewDetails?: (id: number) => void;
+  onMarkComplete?: (id: number) => void;
 }
 
 function SessionCard({
   session,
   onJoin,
   onViewDetails,
+  onMarkComplete,
 }: SessionCardProps) {
+  // Check if current time is at or past the scheduled time
+  const isSessionTimeReached = () => {
+    if (!session.scheduledDate) return false;
+    const scheduledDate = new Date(session.scheduledDate);
+    const now = new Date();
+    return now >= scheduledDate;
+  };
+
   const getStatusColor = () => {
     switch (session.status) {
       case "active":
@@ -189,7 +199,7 @@ function SessionCard({
                   Join Session
                 </Button>
               )}
-              {session.status === "scheduled" && (
+              {session.status === "scheduled" && !isSessionTimeReached() && (
                 <Button
                   onClick={() => onViewDetails?.(session.id)}
                   variant="outline"
@@ -200,6 +210,19 @@ function SessionCard({
                   View Details
                 </Button>
               )}
+              {session.status !== "completed" &&
+                session.status !== "cancelled" &&
+                isSessionTimeReached() && (
+                  <Button
+                    onClick={() => onMarkComplete?.(session.id)}
+                    variant="outline"
+                    className="flex-1 sm:flex-initial rounded-full font-medium text-sm py-3 sm:py-0 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-700"
+                    size="sm"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+                    Mark as Completed
+                  </Button>
+                )}
               {session.status === "completed" && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <CheckCircle2 className="h-3.5 w-3.5" />

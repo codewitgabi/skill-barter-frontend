@@ -14,6 +14,7 @@ export interface ISession {
   partner: ISessionPartner;
   status: SessionStatus;
   scheduledTime: string;
+  scheduledDate: string; // ISO date string for comparisons
   duration: number; // in minutes
   location: "online" | "in-person";
   meetingLink?: string;
