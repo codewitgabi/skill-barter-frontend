@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import { apiPost } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { trackConnectionRequest, trackUserCardClick } from "@/lib/analytics";
 
 interface PeopleGridProps {
   filteredPeople: {
@@ -102,6 +103,7 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
       });
 
       if (response.status === "success") {
+        trackConnectionRequest(person.originalId, teachingSkill, learningSkill);
         toast.success("Connection request sent!", {
           description: `Your exchange request has been sent to ${person.name}.`,
         });
@@ -140,7 +142,10 @@ function PeopleGrid({ filteredPeople }: PeopleGridProps) {
               <CardContent className="p-4 sm:p-6">
                 {/* Header with Avatar and Info */}
                 <div className="flex items-start gap-4 mb-4">
-                  <Link href={`/users/${person.originalId}`} onClick={(e) => e.stopPropagation()}>
+                  <Link href={`/users/${person.originalId}`} onClick={(e) => {
+                    e.stopPropagation();
+                    trackUserCardClick(person.originalId, "browse-skills");
+                  }}>
                     <Avatar className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
                       <AvatarImage src={person.avatar} alt={person.name} />
                       <AvatarFallback className="bg-linear-to-r from-[#10b981] via-[#3b82f6] to-[#8b5cf6] text-white">

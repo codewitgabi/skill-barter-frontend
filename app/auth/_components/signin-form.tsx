@@ -22,6 +22,7 @@ import OAuthButtons from "./oauth-buttons";
 import { loginSchema, type LoginFormData } from "../_lib/validation";
 import { apiPost } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { trackSignIn, trackError, trackFormSubmit } from "@/lib/analytics";
 import type { User, SkillItem } from "@/stores/auth/auth.types";
 
 interface UserResponseData {
@@ -107,16 +108,23 @@ function SignInForm() {
       if (response.status === "success" && response.data) {
         const mappedUser = mapUserResponseToUser(response.data.user);
         login(response.data.accessToken, mappedUser);
+        trackSignIn("email");
+        trackFormSubmit("signin", true);
         toast.success("Login successful", {
           description: `Welcome back, ${mappedUser.first_name}!`,
         });
         router.push("/@me");
       } else {
         const errorResponse = response as { error: { message: string } };
-        setError(errorResponse.error?.message || "Login failed");
+        const errorMessage = errorResponse.error?.message || "Login failed";
+        setError(errorMessage);
+        trackFormSubmit("signin", false);
+        trackError("auth", errorMessage, "signin-form");
       }
     } catch {
       setError("An unexpected error occurred. Please try again.");
+      trackFormSubmit("signin", false);
+      trackError("auth", "Unexpected error during login", "signin-form");
     } finally {
       setIsLoading(false);
     }

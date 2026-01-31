@@ -23,6 +23,7 @@ import {
 } from "../../_lib/validation";
 import { apiPost } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { trackSignUp, trackError, trackFormSubmit } from "@/lib/analytics";
 import type { User, SkillItem } from "@/stores/auth/auth.types";
 
 const TOTAL_STEPS = 4;
@@ -279,25 +280,28 @@ function RegisterForm() {
       if (response.status === "success" && response.data) {
         const mappedUser = mapUserResponseToUser(response.data.user);
         login(response.data.accessToken, mappedUser);
+        trackSignUp("email");
+        trackFormSubmit("registration", true);
         toast.success("Registration successful!", {
           description: `Welcome, ${mappedUser.first_name}!`,
         });
         router.push("/@me");
       } else {
         const errorResponse = response as { error: { message: string } };
+        const errorMessage = errorResponse.error?.message || "Registration failed. Please try again.";
         form.setError("root", {
-          message:
-            errorResponse.error?.message ||
-            "Registration failed. Please try again.",
+          message: errorMessage,
         });
+        trackFormSubmit("registration", false);
+        trackError("auth", errorMessage, "register-form");
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred. Please try again.";
       form.setError("root", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred. Please try again.",
+        message: errorMessage,
       });
+      trackFormSubmit("registration", false);
+      trackError("auth", errorMessage, "register-form");
     } finally {
       setIsSubmitting(false);
     }

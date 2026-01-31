@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { apiGet, apiPatch } from "@/lib/api-client";
 import { timeSince } from "@/lib/helpers";
+import { trackConnectionAccept, trackConnectionReject } from "@/lib/analytics";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,6 +63,7 @@ function Page() {
   const [requestToDecline, setRequestToDecline] = useState<{
     id: number;
     originalId: string;
+    requesterId: string;
     from: string;
   } | null>(null);
 
@@ -119,6 +121,7 @@ function Page() {
       const response = await apiPatch(`/exchange-requests/${request.originalId}/accept`, {});
 
       if (response.status === "success") {
+        trackConnectionAccept(request.originalId, request.requesterId);
         toast.success("Exchange request accepted!", {
           description: `You've started a session with ${request.from}. Check your sessions page.`,
         });
@@ -149,6 +152,7 @@ function Page() {
     setRequestToDecline({
       id: request.id,
       originalId: request.originalId,
+      requesterId: request.requesterId,
       from: request.from,
     });
     setDeclineDialogOpen(true);
@@ -157,7 +161,7 @@ function Page() {
   const handleDeclineConfirm = async () => {
     if (!requestToDecline) return;
 
-    const { id, originalId, from } = requestToDecline;
+    const { id, originalId, requesterId, from } = requestToDecline;
     setProcessing((prev) => new Set(prev).add(id));
     setDeclineDialogOpen(false);
 
@@ -165,6 +169,7 @@ function Page() {
       const response = await apiPatch(`/exchange-requests/${originalId}/decline`, {});
 
       if (response.status === "success") {
+        trackConnectionReject(originalId, requesterId);
         toast.info("Exchange request declined", {
           description: `You've declined the request from ${from}.`,
         });

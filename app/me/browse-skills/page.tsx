@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/api-client";
+import { trackSkillSearch, trackSkillFilter, trackBrowsePeople } from "@/lib/analytics";
 import {
   Users,
   Code,
@@ -253,6 +254,18 @@ function Page() {
           );
           setPeople(mappedPeople);
           setPagination(response.data.pagination);
+          
+          // Track search and browse analytics
+          if (debouncedSearchQuery) {
+            trackSkillSearch(debouncedSearchQuery, response.data.pagination.total);
+          }
+          if (selectedCategory !== "all") {
+            trackSkillFilter({ category: selectedCategory });
+          }
+          trackBrowsePeople(
+            selectedCategory !== "all" ? 1 : 0,
+            response.data.pagination.total
+          );
         } else {
           toast.error("Failed to load connections", {
             description: "Please try again later.",

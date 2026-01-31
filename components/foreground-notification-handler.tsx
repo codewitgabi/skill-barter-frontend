@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { onForegroundMessage, getMessagingInstance } from "@/lib/firebase.config";
+import { trackNotificationClick } from "@/lib/analytics";
 import { Bell } from "lucide-react";
 
 interface NotificationPayload {
@@ -48,7 +49,10 @@ export function ForegroundNotificationHandler() {
           action: actionUrl
             ? {
                 label: "View",
-                onClick: () => router.push(actionUrl),
+                onClick: () => {
+                  trackNotificationClick("foreground", actionUrl);
+                  router.push(actionUrl);
+                },
               }
             : undefined,
           duration: 5000,

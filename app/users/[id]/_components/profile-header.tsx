@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { apiPost } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { trackProfileView, trackConnectionRequest } from "@/lib/analytics";
 import type { UserProfile, ConnectionStatus } from "./types";
 
 interface ProfileHeaderProps {
@@ -46,6 +47,13 @@ function ProfileHeader({ profile, currentUserId }: ProfileHeaderProps) {
   const fullName = `${profile.firstName} ${profile.lastName}`;
   const isOwnProfile = currentUserId === profile.id;
   const connectionStatus: ConnectionStatus = profile.connectionStatus;
+
+  // Track profile view on mount
+  useEffect(() => {
+    if (!isOwnProfile) {
+      trackProfileView(profile.id, profile.username);
+    }
+  }, [profile.id, profile.username, isOwnProfile]);
 
   const handleConnectClick = async () => {
     if (connectionStatus === null) {
@@ -108,6 +116,7 @@ function ProfileHeader({ profile, currentUserId }: ProfileHeaderProps) {
       });
 
       if (response.status === "success") {
+        trackConnectionRequest(profile.id, teachingSkill, learningSkill);
         toast.success("Connection request sent!", {
           description: `Your exchange request has been sent to ${fullName}.`,
         });

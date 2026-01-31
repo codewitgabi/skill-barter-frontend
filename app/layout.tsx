@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Elms_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 
 const elmsSans = Elms_Sans({
   weight: ["400", "500", "600", "700"],
@@ -166,7 +168,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${elmsSans.className} antialiased`}>
-        {children}
+        <Suspense fallback={null}>
+          <AnalyticsProvider>{children}</AnalyticsProvider>
+        </Suspense>
         <Toaster closeButton />
       </body>
     </html>

@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiPatch } from "@/lib/api-client";
+import { trackSessionAccept, trackFormSubmit } from "@/lib/analytics";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -224,6 +225,8 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
       );
 
       if (response.status === "success") {
+        trackSessionAccept(booking.id, booking.skill);
+        trackFormSubmit("session-booking-accept", true);
         toast.success("Session booking accepted successfully", {
           description: "Sessions have been created based on the booking details.",
         });
@@ -234,11 +237,13 @@ function SessionBookingForm({ booking, onBookingUpdate }: SessionBookingFormProp
         }
       } else {
         const errorResponse = response as { error?: { message?: string } };
+        trackFormSubmit("session-booking-accept", false);
         toast.error("Failed to accept session booking", {
           description: errorResponse.error?.message || "Please try again later.",
         });
       }
     } catch (error) {
+      trackFormSubmit("session-booking-accept", false);
       toast.error("Failed to accept session booking", {
         description:
           error instanceof Error
