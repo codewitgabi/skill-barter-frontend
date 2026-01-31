@@ -246,6 +246,7 @@ function PersonalInformation() {
               value={formData.email}
               onChange={handleChange}
               placeholder="user@example.com"
+              disabled
             />
           </div>
 
