@@ -10,13 +10,16 @@ import {
   isSupported as isMessagingSupported,
 } from "firebase/messaging";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 import type { Analytics } from "firebase/analytics";
 import type { Messaging } from "firebase/messaging";
 import type { Firestore } from "firebase/firestore";
+import type { Database } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBh22tBvb-quvKHMc2lqD7x7cH4a-9Tt78",
   authDomain: "skill-barter-70f37.firebaseapp.com",
+  databaseURL: "https://skill-barter-70f37-default-rtdb.firebaseio.com",
   projectId: "skill-barter-70f37",
   storageBucket: "skill-barter-70f37.firebasestorage.app",
   messagingSenderId: "282472185862",
@@ -35,6 +38,9 @@ let messaging: Messaging | null = null;
 
 // Firestore (works in both server and client)
 export const db: Firestore = getFirestore(app);
+
+// Realtime Database (for presence system)
+export const rtdb: Database = getDatabase(app);
 
 // Initialize browser-only services
 export const initializeFirebaseServices = async () => {

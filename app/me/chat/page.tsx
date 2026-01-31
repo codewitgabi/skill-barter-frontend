@@ -8,8 +8,12 @@ import ChatArea from "./_components/chat-area";
 import EmptyState from "./_components/empty-state";
 import { useChat } from "./_components/use-chat";
 import { useMessages } from "./_components/use-messages";
+import { usePresence } from "./_components/use-presence";
 
 function Page() {
+  // Track current user's presence
+  usePresence();
+
   const { contacts, isLoading: isLoadingContacts, currentUserId } = useChat();
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
 
