@@ -4,6 +4,7 @@ import { Elms_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AnalyticsProvider } from "@/components/analytics-provider";
+import { NavigationProgressProvider } from "@/components/navigation-progress";
 
 const elmsSans = Elms_Sans({
   weight: ["400", "500", "600", "700"],
@@ -169,7 +170,9 @@ export default function RootLayout({
       </head>
       <body className={`${elmsSans.className} antialiased`}>
         <Suspense fallback={null}>
-          <AnalyticsProvider>{children}</AnalyticsProvider>
+          <NavigationProgressProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
+          </NavigationProgressProvider>
         </Suspense>
         <Toaster closeButton />
       </body>

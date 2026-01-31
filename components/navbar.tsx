@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ProgressLink } from "./progress-link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Logo from "./logo";
@@ -117,9 +118,9 @@ export function AppNavbar() {
           <div className="flex h-16 items-center justify-between">
             {/* Left side: Logo and Navigation */}
             <div className="flex items-center space-x-4 sm:space-x-8">
-              <Link href="/@me" className="flex items-center space-x-2">
+              <ProgressLink href="/@me" className="flex items-center space-x-2">
                 <Logo />
-              </Link>
+              </ProgressLink>
 
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-1">
@@ -129,7 +130,7 @@ export function AppNavbar() {
                     (link.href === "/@me" && pathname === "/@me") ||
                     (link.href !== "/@me" && pathname?.startsWith(link.href));
                   return (
-                    <Link
+                    <ProgressLink
                       key={link.href}
                       href={link.href}
                       className={cn(
@@ -143,7 +144,7 @@ export function AppNavbar() {
                       {isActive && (
                         <span className="absolute -bottom-3.5 left-0 right-0 h-0.5 bg-primary" />
                       )}
-                    </Link>
+                    </ProgressLink>
                   );
                 })}
               </div>
@@ -152,7 +153,7 @@ export function AppNavbar() {
             {/* Right side: Icons and Profile */}
             <div className="flex items-center space-x-1 sm:space-x-3">
               {/* Notifications - visible on all screens */}
-              <Link href="/@me/notifications">
+              <ProgressLink href="/@me/notifications">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -166,10 +167,10 @@ export function AppNavbar() {
                     </span>
                   )}
                 </Button>
-              </Link>
+              </ProgressLink>
 
               {/* Messages - visible on all screens */}
-              <Link href="/@me/chat">
+              <ProgressLink href="/@me/chat">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -183,7 +184,7 @@ export function AppNavbar() {
                     </span>
                   )}
                 </Button>
-              </Link>
+              </ProgressLink>
 
               {/* Profile Picture with Popover - visible on all screens */}
               <Popover
@@ -321,7 +322,7 @@ export function AppNavbar() {
               (link.href === "/@me" && pathname === "/@me") ||
               (link.href !== "/@me" && pathname?.startsWith(link.href));
             return (
-              <Link
+              <ProgressLink
                 key={link.href}
                 href={link.href}
                 className={cn(
@@ -335,7 +336,7 @@ export function AppNavbar() {
                 <span className="text-[10px] mt-1 font-medium truncate max-w-full">
                   {link.label}
                 </span>
-              </Link>
+              </ProgressLink>
             );
           })}
         </nav>
