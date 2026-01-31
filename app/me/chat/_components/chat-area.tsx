@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Send, MoreVertical } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Contact, Message } from "./types";
 
@@ -16,6 +16,7 @@ interface ChatAreaProps {
   onSendMessage: (content: string) => void;
   onBack: () => void;
   showBackButton: boolean;
+  isLoadingMessages?: boolean;
 }
 
 function ChatArea({
@@ -25,6 +26,7 @@ function ChatArea({
   onSendMessage,
   onBack,
   showBackButton,
+  isLoadingMessages = false,
 }: ChatAreaProps) {
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -76,7 +78,7 @@ function ChatArea({
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="shrink-0 md:hidden"
+            className="shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -111,7 +113,12 @@ function ChatArea({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/10">
-        {messages.length === 0 ? (
+        {isLoadingMessages ? (
+          <div className="flex flex-col items-center justify-center h-full">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground mt-2">Loading messages...</p>
+          </div>
+        ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <p className="text-muted-foreground text-sm">
               No messages yet. Start the conversation!
