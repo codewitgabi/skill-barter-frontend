@@ -33,6 +33,7 @@ import {
   ArrowLeftRight,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useChatUnread } from "@/hooks/use-chat-unread";
 import {
   Popover,
   PopoverContent,
@@ -83,6 +84,7 @@ export function AppNavbar() {
   const { user } = useAuth();
   const { logout } = useAuthStore();
   const { unreadCount, isLoading: notificationsLoading } = useNotifications();
+  const { totalUnread: chatUnreadCount, isLoading: chatLoading } = useChatUnread();
 
   const handleLogout = async () => {
     try {
@@ -174,10 +176,12 @@ export function AppNavbar() {
                   className="relative rounded-full"
                   aria-label="Messages"
                 >
-                  <MessageCircle className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
-                    0
-                  </span>
+                  <MessageCircle className={cn("h-5 w-5", chatLoading && "animate-pulse")} />
+                  {chatUnreadCount > 0 && !chatLoading && (
+                    <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white px-1.5">
+                      {chatUnreadCount > 9 ? "9+" : chatUnreadCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
 
