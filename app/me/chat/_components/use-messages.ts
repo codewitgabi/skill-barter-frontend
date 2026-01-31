@@ -11,6 +11,9 @@ import {
   doc,
   serverTimestamp,
   increment,
+  where,
+  getDocs,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase.config";
 import type { Message, FirestoreMessage } from "./types";
@@ -88,22 +91,41 @@ export function useMessages({
     return () => unsubscribe();
   }, [conversationId]);
 
-  // Mark conversation as read when opened
+  // Mark conversation and messages as read when opened
   useEffect(() => {
-    if (!conversationId || !currentUserId) return;
+    if (!conversationId || !currentUserId || !otherUserId) return;
 
     const markAsRead = async () => {
       try {
+        // Reset unread count for current user
         await updateDoc(doc(db, "conversations", conversationId), {
           [`unreadCount.${currentUserId}`]: 0,
         });
+
+        // Mark all unread messages from the other user as read
+        const messagesRef = collection(db, "conversations", conversationId, "messages");
+        const unreadQuery = query(
+          messagesRef,
+          where("senderId", "==", otherUserId),
+          where("isRead", "==", false)
+        );
+
+        const unreadSnapshot = await getDocs(unreadQuery);
+
+        if (!unreadSnapshot.empty) {
+          const batch = writeBatch(db);
+          unreadSnapshot.docs.forEach((docSnapshot) => {
+            batch.update(docSnapshot.ref, { isRead: true });
+          });
+          await batch.commit();
+        }
       } catch (error) {
         console.error("Error marking conversation as read:", error);
       }
     };
 
     markAsRead();
-  }, [conversationId, currentUserId]);
+  }, [conversationId, currentUserId, otherUserId]);
 
   // Send message function
   const sendMessage = useCallback(

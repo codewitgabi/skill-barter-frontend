@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Send, MoreVertical, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Loader2, Check, CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Contact, Message } from "./types";
 
@@ -146,16 +146,36 @@ function ChatArea({
                   <p className="text-sm whitespace-pre-wrap wrap-break-word">
                     {message.content}
                   </p>
-                  <p
+                  <div
                     className={cn(
-                      "text-[10px] mt-1",
-                      isOwn
-                        ? "text-primary-foreground/70"
-                        : "text-muted-foreground"
+                      "flex items-center gap-1 mt-1",
+                      isOwn ? "justify-end" : "justify-start"
                     )}
                   >
-                    {message.timestamp}
-                  </p>
+                    <span
+                      className={cn(
+                        "text-[10px]",
+                        isOwn
+                          ? "text-primary-foreground/70"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {message.timestamp}
+                    </span>
+                    {isOwn && (
+                      message.isRead ? (
+                        <CheckCheck className={cn(
+                          "h-3.5 w-3.5",
+                          "text-primary-foreground/70"
+                        )} />
+                      ) : (
+                        <Check className={cn(
+                          "h-3.5 w-3.5",
+                          "text-primary-foreground/70"
+                        )} />
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             );
