@@ -95,6 +95,9 @@ async function Page({ params }: PageProps) {
     return <ProfileNotFound />;
   }
 
+  const fullName = `${profile.firstName} ${profile.lastName}`;
+  const isOwnProfile = currentUserId === profile.id;
+
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -110,13 +113,16 @@ async function Page({ params }: PageProps) {
             skillsToLearn={profile.skillsToLearn}
           />
           
-          {profile.reviews.length > 0 && (
-            <ProfileReviews
-              reviews={profile.reviews}
-              averageRating={profile.stats.averageRating}
-              totalReviews={profile.stats.totalReviews}
-            />
-          )}
+          <ProfileReviews
+            reviews={profile.reviews}
+            averageRating={profile.stats.averageRating}
+            totalReviews={profile.stats.totalReviews}
+            userId={profile.id}
+            userName={fullName}
+            skills={profile.skillsToTeach}
+            connectionStatus={profile.connectionStatus}
+            isOwnProfile={isOwnProfile}
+          />
         </div>
       </div>
     </div>

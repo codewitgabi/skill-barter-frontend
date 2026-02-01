@@ -7,12 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Star } from "lucide-react";
-import type { UserReview } from "./types";
+import WriteReviewDialog from "./write-review-dialog";
+import type { UserReview, UserSkill, ConnectionStatus } from "./types";
 
 interface ProfileReviewsProps {
   reviews: UserReview[];
   averageRating: number;
   totalReviews: number;
+  userId: string;
+  userName: string;
+  skills: UserSkill[];
+  connectionStatus: ConnectionStatus;
+  isOwnProfile: boolean;
+  onReviewSubmitted?: () => void;
 }
 
 function formatReviewDate(dateString: string): string {
@@ -72,20 +79,19 @@ function ReviewCard({ review }: { review: UserReview }) {
                 @{review.reviewer.username}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <Badge
+                variant="secondary"
+                className="bg-primary/10 text-primary border-0"
+              >
+                {review.skill}
+              </Badge>
               <StarRating rating={review.rating} />
               <span className="text-sm text-muted-foreground">
                 {formatReviewDate(review.createdAt)}
               </span>
             </div>
           </div>
-
-          <Badge
-            variant="secondary"
-            className="mt-3 bg-primary/10 text-primary border-0"
-          >
-            {review.skill}
-          </Badge>
 
           <p className="mt-3 text-muted-foreground leading-relaxed">
             &ldquo;{review.comment}&rdquo;
@@ -100,7 +106,18 @@ function ProfileReviews({
   reviews,
   averageRating,
   totalReviews,
+  userId,
+  userName,
+  skills,
+  connectionStatus,
+  isOwnProfile,
+  onReviewSubmitted,
 }: ProfileReviewsProps) {
+  // Only show write review button if:
+  // - Not the user's own profile
+  // - User is connected to this person
+  const canWriteReview = !isOwnProfile && connectionStatus === "connected";
+
   return (
     <Card className="shadow-none">
       <CardHeader>
@@ -117,32 +134,65 @@ function ProfileReviews({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                    className={`h-5 w-5 ${
+                      star <= Math.round(averageRating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "fill-muted text-muted"
+                    }`}
                   />
                 ))}
               </div>
-              <span className="text-lg font-bold">{averageRating}</span>
+              <span className="text-lg font-bold">{averageRating.toFixed(1)}</span>
             </div>
             <span className="text-muted-foreground">{totalReviews} reviews</span>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {reviews.map((review, index) => (
-          <div key={review.id}>
-            <ReviewCard review={review} />
-            {index < reviews.length - 1 && (
-              <Separator className="my-4 bg-transparent" />
-            )}
+        {/* Write Review Button */}
+        {canWriteReview && (
+          <div className="flex justify-end pb-2">
+            <WriteReviewDialog
+              userId={userId}
+              userName={userName}
+              skills={skills}
+              onReviewSubmitted={onReviewSubmitted}
+            />
           </div>
-        ))}
+        )}
 
-        {/* Load More Button */}
-        <div className="pt-4 text-center">
-          <Button variant="outline" className="px-8">
-            Load More Reviews
-          </Button>
-        </div>
+        {/* Reviews List */}
+        {reviews.length > 0 ? (
+          <>
+            {reviews.map((review, index) => (
+              <div key={review.id}>
+                <ReviewCard review={review} />
+                {index < reviews.length - 1 && (
+                  <Separator className="my-4 bg-transparent" />
+                )}
+              </div>
+            ))}
+
+            {/* Load More Button */}
+            {totalReviews > reviews.length && (
+              <div className="pt-4 text-center">
+                <Button variant="outline" className="px-8">
+                  Load More Reviews
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="py-8 text-center">
+            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <Star className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground">
+              No reviews yet.
+              {canWriteReview && " Be the first to write one!"}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
