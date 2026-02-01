@@ -24,7 +24,7 @@ import {
 import { Star, PenLine, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiPost } from "@/lib/api-client";
-import { trackReviewSubmit } from "@/lib/analytics";
+import { trackUserReviewSubmit } from "@/lib/analytics";
 import type { UserSkill } from "./types";
 
 interface WriteReviewDialogProps {
@@ -109,7 +109,7 @@ function WriteReviewDialog({
       });
 
       if (response.status === "success") {
-        trackReviewSubmit(userId, rating, skill);
+        trackUserReviewSubmit(userId, rating, skill);
         toast.success("Review submitted!", {
           description: `Your review for ${userName} has been posted.`,
         });

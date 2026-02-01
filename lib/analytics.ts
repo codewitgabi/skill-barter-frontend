@@ -335,6 +335,21 @@ export const trackReviewSubmit = async (
   });
 };
 
+export const trackUserReviewSubmit = async (
+  userId: string,
+  rating: number,
+  skill: string
+): Promise<void> => {
+  const analytics = await initializeAnalytics();
+  if (!analytics) return;
+
+  logEvent(analytics, "user_review_submit", {
+    reviewed_user_id: userId,
+    rating,
+    skill,
+  });
+};
+
 // ============================================================
 // Notification Events
 // ============================================================
